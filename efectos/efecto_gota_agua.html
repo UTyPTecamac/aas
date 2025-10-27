@@ -32,10 +32,8 @@
         }
 
         .organic-shape {
-            width: min(80vw, 80vh, 400px);
-            height: min(80vw, 80vh, 400px);
-            max-width: 90%;
-            max-height: 90%;
+            width: 100%;
+            height: 100%;
             position: relative;
             filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.2));
         }
@@ -212,12 +210,12 @@
 
         .info {
             position: absolute;
-            bottom: min(30px, 5vh);
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             color: rgba(255, 255, 255, 0.7);
             text-align: center;
-            font-size: clamp(12px, 2.5vw, 16px);
+            font-size: 14px;
             padding: 0 20px;
             max-width: 90%;
         }
@@ -227,27 +225,21 @@
             line-height: 1.4;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .info {
-                bottom: min(20px, 3vh);
-                font-size: clamp(10px, 3vw, 14px);
+                bottom: 15px;
+                font-size: 12px;
             }
             
             .particles {
-                display: none; /* Ocultar partículas en móviles para mejor rendimiento */
+                display: none;
             }
         }
 
-        @media (max-height: 500px) {
+        @media (max-width: 400px) {
             .info {
-                display: none; /* Ocultar info en pantallas muy bajas */
-            }
-        }
-
-        @media (orientation: landscape) and (max-height: 600px) {
-            .organic-shape {
-                width: min(60vh, 60vw, 350px);
-                height: min(60vh, 60vw, 350px);
+                bottom: 10px;
+                font-size: 11px;
             }
         }
     </style>
@@ -342,10 +334,7 @@
             <div class="particle"></div>
         </div>
         
-        <div class="info">
-            <p>Figura orgánica con movimiento natural</p>
-            <p>Observa cómo se contrae, expande y flota suavemente</p>
-        </div>
+
     </div>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994f5098516e6dba',t:'MTc2MTUzNzkyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994f5a7511516dba',t:'MTc2MTUzODMyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
