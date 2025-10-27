@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figura Orgánica Animada</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .organic-shape {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.2));
+        }
+
+        .blob {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            position: absolute;
+            animation: 
+                morph var(--morph-duration, 8s) ease-in-out infinite,
+                colorShift var(--color-duration, 12s) ease-in-out infinite,
+                float var(--float-duration, 6s) ease-in-out infinite,
+                pulse var(--pulse-duration, 4s) ease-in-out infinite;
+        }
+
+        .blob::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border-radius: 50% 60% 40% 30% / 40% 50% 60% 30%;
+            animation: innerMorph var(--inner-duration, 6s) ease-in-out infinite reverse;
+        }
+
+        .blob::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, rgba(255,255,255,0.4), transparent);
+            border-radius: 50%;
+            animation: highlight var(--highlight-duration, 5s) ease-in-out infinite;
+        }
+
+        @keyframes morph {
+            0%, 100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            12.5% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: translate(-10px, -15px) scale(1.05) rotate(5deg);
+            }
+            25% {
+                border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+                transform: translate(8px, -8px) scale(0.95) rotate(-3deg);
+            }
+            37.5% {
+                border-radius: 70% 30% 60% 40% / 40% 50% 60% 30%;
+                transform: translate(-5px, 12px) scale(1.08) rotate(7deg);
+            }
+            50% {
+                border-radius: 40% 60% 70% 30% / 60% 40% 30% 70%;
+                transform: translate(12px, 5px) scale(0.92) rotate(-2deg);
+            }
+            62.5% {
+                border-radius: 60% 40% 30% 70% / 30% 70% 40% 60%;
+                transform: translate(-8px, -10px) scale(1.06) rotate(4deg);
+            }
+            75% {
+                border-radius: 30% 70% 40% 60% / 70% 30% 60% 40%;
+                transform: translate(6px, 8px) scale(0.97) rotate(-6deg);
+            }
+            87.5% {
+                border-radius: 50% 30% 70% 40% / 40% 60% 30% 70%;
+                transform: translate(-12px, 3px) scale(1.03) rotate(2deg);
+            }
+        }
+
+        @keyframes innerMorph {
+            0%, 100% {
+                border-radius: 50% 60% 40% 30% / 40% 50% 60% 30%;
+                transform: scale(1) rotate(0deg);
+            }
+            33% {
+                border-radius: 30% 50% 60% 40% / 60% 30% 40% 50%;
+                transform: scale(1.1) rotate(120deg);
+            }
+            66% {
+                border-radius: 60% 30% 50% 40% / 30% 60% 50% 40%;
+                transform: scale(0.9) rotate(240deg);
+            }
+        }
+
+        @keyframes colorShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 100% 50%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            75% {
+                background-position: 0% 100%;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                filter: brightness(1) saturate(1);
+            }
+            50% {
+                filter: brightness(1.2) saturate(1.3);
+            }
+        }
+
+        @keyframes highlight {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.2);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: particleFloat var(--particle-duration, 8s) linear infinite;
+        }
+
+        .particle:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 40%; animation-delay: -2s; }
+        .particle:nth-child(3) { left: 60%; animation-delay: -4s; }
+        .particle:nth-child(4) { left: 80%; animation-delay: -6s; }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .info {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .organic-shape {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Configurar color (acepta hex sin #, nombres de colores, o gradientes predefinidos)
+        const colorParam = urlParams.get('color') || 'default';
+        
+        // Configurar velocidad (1 = normal, 0.5 = lento, 2 = rápido)
+        const speedParam = parseFloat(urlParams.get('speed')) || 1;
+        
+        // Aplicar configuraciones cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const blob = document.querySelector('.blob');
+            const root = document.documentElement;
+            
+            // Configurar velocidad de animación
+            const baseSpeed = speedParam;
+            root.style.setProperty('--morph-duration', (8 / baseSpeed) + 's');
+            root.style.setProperty('--color-duration', (12 / baseSpeed) + 's');
+            root.style.setProperty('--float-duration', (6 / baseSpeed) + 's');
+            root.style.setProperty('--pulse-duration', (4 / baseSpeed) + 's');
+            root.style.setProperty('--inner-duration', (6 / baseSpeed) + 's');
+            root.style.setProperty('--highlight-duration', (5 / baseSpeed) + 's');
+            root.style.setProperty('--particle-duration', (8 / baseSpeed) + 's');
+            
+            // Configurar colores
+            let gradient;
+            switch(colorParam.toLowerCase()) {
+                case 'fire':
+                case 'fuego':
+                    gradient = 'linear-gradient(45deg, #ff4757, #ff6348, #ff7675, #fd79a8, #fdcb6e)';
+                    break;
+                case 'ocean':
+                case 'oceano':
+                    gradient = 'linear-gradient(45deg, #0984e3, #74b9ff, #00cec9, #55efc4, #81ecec)';
+                    break;
+                case 'forest':
+                case 'bosque':
+                    gradient = 'linear-gradient(45deg, #00b894, #55efc4, #6c5ce7, #a29bfe, #fd79a8)';
+                    break;
+                case 'sunset':
+                case 'atardecer':
+                    gradient = 'linear-gradient(45deg, #fd79a8, #fdcb6e, #e17055, #d63031, #74b9ff)';
+                    break;
+                case 'purple':
+                case 'morado':
+                    gradient = 'linear-gradient(45deg, #6c5ce7, #a29bfe, #fd79a8, #fdcb6e, #e17055)';
+                    break;
+                case 'gold':
+                case 'oro':
+                    gradient = 'linear-gradient(45deg, #fdcb6e, #e17055, #d63031, #fd79a8, #6c5ce7)';
+                    break;
+                default:
+                    // Si es un color hex o nombre de color
+                    if (colorParam !== 'default') {
+                        const color = colorParam.startsWith('#') ? colorParam : '#' + colorParam;
+                        // Crear variaciones del color base
+                        gradient = `linear-gradient(45deg, ${color}, ${color}88, ${color}66, ${color}44, ${color}22)`;
+                    } else {
+                        gradient = 'linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57)';
+                    }
+            }
+            
+            blob.style.background = gradient;
+            blob.style.backgroundSize = '400% 400%';
+            
+            // Actualizar información
+            const info = document.querySelector('.info');
+            info.innerHTML = `
+                <p>Figura orgánica personalizable</p>
+                <p>Color: ${colorParam} | Velocidad: ${speedParam}x</p>
+                <p style="font-size: 12px; margin-top: 10px;">
+                    Usa: ?color=fire&speed=2 para personalizar
+                </p>
+            `;
+        });
+    </script>
+    <div class="container">
+        <div class="organic-shape">
+            <div class="blob"></div>
+        </div>
+        
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
+        <div class="info">
+            <p>Figura orgánica con movimiento natural</p>
+            <p>Observa cómo se contrae, expande y flota suavemente</p>
+        </div>
+    </div>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994f3b7b529d6dba',t:'MTc2MTUzNzA1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
