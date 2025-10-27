@@ -32,9 +32,8 @@
         }
 
         .organic-shape {
-            width: 90%;
-            height: 90%;
-            aspect-ratio: 1;
+            width: min(90%, 90vh);
+            height: min(90%, 90vh);
             position: relative;
             filter: drop-shadow(0 0 15px rgba(138, 43, 226, 0.2));
         }
@@ -209,38 +208,9 @@
             }
         }
 
-        .info {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.7);
-            text-align: center;
-            font-size: 14px;
-            padding: 0 20px;
-            max-width: 90%;
-        }
-
-        .info p {
-            margin: 5px 0;
-            line-height: 1.4;
-        }
-
         @media (max-width: 600px) {
-            .info {
-                bottom: 15px;
-                font-size: 12px;
-            }
-            
             .particles {
                 display: none;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .info {
-                bottom: 10px;
-                font-size: 11px;
             }
         }
     </style>
@@ -312,15 +282,7 @@
             blob.style.background = gradient;
             blob.style.backgroundSize = '400% 400%';
             
-            // Actualizar información
-            const info = document.querySelector('.info');
-            info.innerHTML = `
-                <p>Figura orgánica personalizable</p>
-                <p>Color: ${colorParam} | Velocidad: ${speedParam}x</p>
-                <p style="font-size: 12px; margin-top: 10px;">
-                    Usa: ?color=fire&speed=2 para personalizar
-                </p>
-            `;
+
         });
     </script>
     <div class="container">
@@ -337,5 +299,5 @@
         
 
     </div>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994f6042d03e6dba',t:'MTc2MTUzODU2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994f6601a6f76dba',t:'MTc2MTUzODgwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
