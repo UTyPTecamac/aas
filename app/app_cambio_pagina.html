@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            background: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -24,34 +24,20 @@
             position: relative;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
         .pdf-title {
             position: fixed;
             top: 20px;
             left: 20px;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(0, 0, 0, 0.8);
             font-size: 1.1rem;
             font-weight: 600;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             padding: 8px 16px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             display: none;
             max-width: 300px;
             overflow: hidden;
@@ -66,9 +52,10 @@
             right: -350px;
             width: 350px;
             height: calc(100vh - 60px);
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
             z-index: 2000;
             transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             overflow-y: auto;
@@ -83,28 +70,29 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
-            color: white;
-            border: none;
+            color: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 12px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 18px;
             z-index: 2100;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .menu-toggle:hover {
-            background: rgba(120, 119, 198, 0.9);
+            background: rgba(120, 119, 198, 0.15);
             transform: scale(1.1);
+            color: rgba(120, 119, 198, 1);
         }
 
         .menu-section {
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .menu-section:last-child {
@@ -112,7 +100,7 @@
         }
 
         .menu-title {
-            color: white;
+            color: rgba(0, 0, 0, 0.8);
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 15px;
@@ -142,14 +130,14 @@
         }
 
         .file-text-menu {
-            color: white;
+            color: rgba(0, 0, 0, 0.7);
             font-size: 0.9rem;
             font-weight: 500;
             margin-bottom: 5px;
         }
 
         .file-subtext-menu {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(0, 0, 0, 0.5);
             font-size: 0.75rem;
         }
 
@@ -171,11 +159,12 @@
         .loading {
             display: none;
             text-align: center;
-            color: white;
+            color: rgba(0, 0, 0, 0.8);
             font-size: 24px;
             margin: 50px 0;
             position: relative;
             z-index: 10;
+            font-weight: 500;
         }
 
         .loading::after {
@@ -183,7 +172,7 @@
             display: inline-block;
             width: 40px;
             height: 40px;
-            border: 6px solid rgba(255, 255, 255, 0.2);
+            border: 6px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
             border-top-color: #7877c6;
             animation: spin 1s ease-in-out infinite;
@@ -233,9 +222,9 @@
         }
 
         .menu-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
@@ -247,23 +236,27 @@
         }
 
         .menu-btn:hover {
-            background: rgba(120, 119, 198, 0.6);
+            background: rgba(120, 119, 198, 0.15);
+            color: rgba(120, 119, 198, 1);
+            border-color: rgba(120, 119, 198, 0.3);
             transform: translateY(-1px);
         }
 
         .menu-btn:disabled {
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.02);
+            color: rgba(0, 0, 0, 0.3);
             cursor: not-allowed;
             transform: none;
+            border-color: rgba(0, 0, 0, 0.05);
         }
 
         .page-info-menu {
-            color: white;
+            color: rgba(0, 0, 0, 0.7);
             font-size: 0.9rem;
             text-align: center;
             padding: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 8px;
             margin-bottom: 10px;
         }
@@ -275,9 +268,9 @@
         }
 
         .zoom-btn-menu {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 8px;
             border-radius: 6px;
             cursor: pointer;
@@ -288,11 +281,13 @@
         }
 
         .zoom-btn-menu:hover {
-            background: rgba(255, 119, 198, 0.6);
+            background: rgba(120, 119, 198, 0.15);
+            color: rgba(120, 119, 198, 1);
+            border-color: rgba(120, 119, 198, 0.3);
         }
 
         .zoom-level-menu {
-            color: white;
+            color: rgba(0, 0, 0, 0.7);
             font-size: 0.8rem;
             min-width: 45px;
             text-align: center;
@@ -710,34 +705,37 @@
             justify-content: center;
             min-height: 100vh;
             text-align: center;
-            color: white;
+            color: rgba(0, 0, 0, 0.7);
         }
 
         .welcome-icon {
             font-size: 4rem;
             margin-bottom: 20px;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         .welcome-text {
             font-size: 1.5rem;
             margin-bottom: 10px;
             opacity: 0.9;
+            color: rgba(0, 0, 0, 0.8);
         }
 
         .welcome-subtext {
             font-size: 1rem;
             opacity: 0.6;
             margin-bottom: 30px;
+            color: rgba(0, 0, 0, 0.6);
         }
 
         .open-menu-hint {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.05);
             padding: 12px 20px;
             border-radius: 25px;
             font-size: 0.9rem;
             opacity: 0.8;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.6);
         }
 
         @media (max-width: 1200px) {
@@ -778,9 +776,10 @@
             left: 0;
             right: 0;
             height: 60px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             z-index: 1500;
             display: flex;
             align-items: center;
@@ -802,7 +801,7 @@
             align-items: center;
             gap: 8px;
             padding: 0 15px;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .toolbar-group:last-child {
@@ -810,9 +809,9 @@
         }
 
         .toolbar-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             padding: 8px;
             border-radius: 8px;
             cursor: pointer;
@@ -826,24 +825,29 @@
         }
 
         .toolbar-btn:hover {
-            background: rgba(120, 119, 198, 0.6);
+            background: rgba(120, 119, 198, 0.15);
+            color: rgba(120, 119, 198, 1);
+            border-color: rgba(120, 119, 198, 0.3);
             transform: translateY(-1px);
         }
 
         .toolbar-btn:disabled {
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.02);
+            color: rgba(0, 0, 0, 0.3);
             cursor: not-allowed;
             transform: none;
+            border-color: rgba(0, 0, 0, 0.05);
         }
 
         .toolbar-btn.active {
-            background: rgba(120, 119, 198, 0.8);
-            box-shadow: 0 2px 8px rgba(120, 119, 198, 0.3);
+            background: rgba(120, 119, 198, 0.2);
+            color: rgba(120, 119, 198, 1);
+            border-color: rgba(120, 119, 198, 0.4);
+            box-shadow: 0 2px 8px rgba(120, 119, 198, 0.2);
         }
 
         .zoom-display {
-            color: white;
+            color: rgba(0, 0, 0, 0.7);
             font-size: 14px;
             font-weight: 500;
             min-width: 50px;
@@ -851,7 +855,7 @@
         }
 
         .page-info {
-            color: white;
+            color: rgba(0, 0, 0, 0.7);
             font-size: 14px;
             font-weight: 500;
             min-width: 120px;
@@ -908,40 +912,6 @@
     <button class="menu-toggle" id="menuToggle">☰</button>
     
             <div class="side-menu" id="sideMenu">
-        <div class="menu-section">
-            <div class="menu-title">Cargar PDF</div>
-            
-            <!-- Opción para cargar desde URL -->
-            <div class="url-input-section" style="margin-bottom: 20px;">
-                <div class="menu-title" style="font-size: 0.9rem; margin-bottom: 10px;">Desde URL</div>
-                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                    <input type="url" id="pdfUrl" placeholder="https://ejemplo.com/documento.pdf" 
-                           style="flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.2); 
-                                  border-radius: 6px; background: rgba(255,255,255,0.1); 
-                                  color: white; font-size: 0.85rem;">
-                    <button class="menu-btn" id="loadUrlBtn" style="min-width: 60px; font-size: 0.8rem;">Cargar</button>
-                </div>
-                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 15px;">
-                    Ingresa la URL de un PDF para cargarlo directamente
-                </div>
-            </div>
-            
-            <!-- Separador -->
-            <div style="text-align: center; margin: 15px 0; color: rgba(255,255,255,0.4); font-size: 0.8rem;">
-                ──── o ────
-            </div>
-            
-            <!-- Opción para cargar archivo local -->
-            <div class="file-input-menu">
-                <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
-                <label for="pdfFile" style="cursor: pointer; display: block;">
-                    <div class="file-icon-menu">📄</div>
-                    <div class="file-text-menu">Seleccionar PDF local</div>
-                    <div class="file-subtext-menu">Arrastra aquí o haz clic</div>
-                </label>
-            </div>
-        </div>
-
         <div class="menu-section" id="navigationSection" style="display: none;">
             <div class="menu-title">Navegación</div>
             <div class="page-info-menu" id="pageInfoMenu">Página 1 de 1</div>
@@ -986,13 +956,12 @@
 
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-icon">📚</div>
-        <div class="welcome-text">PDF FlipBook 3D</div>
-        <div class="welcome-subtext">Carga un PDF para comenzar</div>
-        <div class="open-menu-hint">Haz clic en ☰ para abrir el menú</div>
+        <div class="welcome-text">Ebook Viewer</div>
+        <div class="welcome-subtext">Cargando ebook...</div>
     </div>
 
-    <div class="loading" id="loading" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px; color: white;">
-        Procesando PDF...
+    <div class="loading" id="loading" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000; background: rgba(255,255,255,0.95); padding: 30px 40px; border-radius: 15px; color: rgba(0,0,0,0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-size: 18px; font-weight: 500;">
+        Cargando ebook...
     </div>
 
     <div class="error-message" id="errorMessage">
@@ -1028,7 +997,7 @@
                 
                 this.initializeElements();
                 this.bindEvents();
-                this.setupDragAndDrop();
+                // setupDragAndDrop ya no es necesario ya que eliminamos la opción de cargar archivos
                 this.setupPanMode();
                 
                 // Verificar si hay parámetros pdf y zoom en la URL para carga automática y configuración de zoom
@@ -1036,9 +1005,6 @@
             }
 
             initializeElements() {
-                this.fileInput = document.getElementById('pdfFile');
-                this.pdfUrl = document.getElementById('pdfUrl');
-                this.loadUrlBtn = document.getElementById('loadUrlBtn');
                 this.loading = document.getElementById('loading');
                 this.errorMessage = document.getElementById('errorMessage');
                 this.flipbookContainer = document.getElementById('flipbookContainer');
@@ -1110,6 +1076,10 @@
                 if (pdfUrl) {
                     console.log('Parámetro pdf encontrado:', pdfUrl);
                     
+                    // Ocultar pantalla de bienvenida y mostrar cargador
+                    if (this.welcomeScreen) {
+                        this.welcomeScreen.style.display = 'none';
+                    }
                     // Mostrar indicador de carga
                     this.showLoading(true);
                     this.hideError();
@@ -1218,11 +1188,6 @@
                         }, 100);
                     }
                     
-                    // Limpiar el campo de URL si existe
-                    if (this.pdfUrl) {
-                        this.pdfUrl.value = '';
-                    }
-                    
                     console.log('PDF cargado exitosamente desde URL:', finalUrl);
                     
                 } catch (error) {
@@ -1251,56 +1216,52 @@
             }
 
             bindEvents() {
-                this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-                this.loadUrlBtn.addEventListener('click', () => this.handleUrlLoad());
-                this.pdfUrl.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.handleUrlLoad();
-                    }
-                });
-                this.menuToggle.addEventListener('click', () => this.toggleMenu());
+                if (this.menuToggle) {
+                    this.menuToggle.addEventListener('click', () => this.toggleMenu());
+                }
                 
                 // Menu navigation controls
-                this.prevBtnMenu.addEventListener('click', () => this.previousPage());
-                this.nextBtnMenu.addEventListener('click', () => this.nextPage());
-                this.firstPageBtn.addEventListener('click', () => this.goToFirstPage());
-                this.lastPageBtn.addEventListener('click', () => this.goToLastPage());
-                this.fullscreenBtnMenu.addEventListener('click', () => this.toggleFullscreen());
+                if (this.prevBtnMenu) this.prevBtnMenu.addEventListener('click', () => this.previousPage());
+                if (this.nextBtnMenu) this.nextBtnMenu.addEventListener('click', () => this.nextPage());
+                if (this.firstPageBtn) this.firstPageBtn.addEventListener('click', () => this.goToFirstPage());
+                if (this.lastPageBtn) this.lastPageBtn.addEventListener('click', () => this.goToLastPage());
+                if (this.fullscreenBtnMenu) this.fullscreenBtnMenu.addEventListener('click', () => this.toggleFullscreen());
                 
                 // Menu zoom controls
-                this.zoomInBtnMenu.addEventListener('click', () => this.zoomIn());
-                this.zoomOutBtnMenu.addEventListener('click', () => this.zoomOut());
-                this.fitBtnMenu.addEventListener('click', () => this.fitToScreen());
-                this.panBtnMenu.addEventListener('click', () => this.pan());
+                if (this.zoomInBtnMenu) this.zoomInBtnMenu.addEventListener('click', () => this.zoomIn());
+                if (this.zoomOutBtnMenu) this.zoomOutBtnMenu.addEventListener('click', () => this.zoomOut());
+                if (this.fitBtnMenu) this.fitBtnMenu.addEventListener('click', () => this.fitToScreen());
+                if (this.panBtnMenu) this.panBtnMenu.addEventListener('click', () => this.pan());
                 
                 // Quality controls
                 this.qualityLowBtn = document.getElementById('qualityLowBtn');
                 this.qualityMediumBtn = document.getElementById('qualityMediumBtn');
                 this.qualityHighBtn = document.getElementById('qualityHighBtn');
                 
-                this.qualityLowBtn.addEventListener('click', () => this.setQuality('low'));
-                this.qualityMediumBtn.addEventListener('click', () => this.setQuality('medium'));
-                this.qualityHighBtn.addEventListener('click', () => this.setQuality('high'));
+                if (this.qualityLowBtn) this.qualityLowBtn.addEventListener('click', () => this.setQuality('low'));
+                if (this.qualityMediumBtn) this.qualityMediumBtn.addEventListener('click', () => this.setQuality('medium'));
+                if (this.qualityHighBtn) this.qualityHighBtn.addEventListener('click', () => this.setQuality('high'));
                 
                 // Top toolbar controls
-                this.firstPageToolbar.addEventListener('click', () => this.goToFirstPage());
-                this.prevPageToolbar.addEventListener('click', () => this.previousPage());
-                this.nextPageToolbar.addEventListener('click', () => this.nextPage());
-                this.lastPageToolbar.addEventListener('click', () => this.goToLastPage());
-                this.zoomOutToolbar.addEventListener('click', () => this.zoomOut());
-                this.zoomInToolbar.addEventListener('click', () => this.zoomIn());
-                this.fitScreenToolbar.addEventListener('click', () => this.fitToScreen());
-                this.panToolbar.addEventListener('click', () => this.pan());
-                this.fullscreenToolbar.addEventListener('click', () => this.toggleFullscreen());
+                if (this.firstPageToolbar) this.firstPageToolbar.addEventListener('click', () => this.goToFirstPage());
+                if (this.prevPageToolbar) this.prevPageToolbar.addEventListener('click', () => this.previousPage());
+                if (this.nextPageToolbar) this.nextPageToolbar.addEventListener('click', () => this.nextPage());
+                if (this.lastPageToolbar) this.lastPageToolbar.addEventListener('click', () => this.goToLastPage());
+                if (this.zoomOutToolbar) this.zoomOutToolbar.addEventListener('click', () => this.zoomOut());
+                if (this.zoomInToolbar) this.zoomInToolbar.addEventListener('click', () => this.zoomIn());
+                if (this.fitScreenToolbar) this.fitScreenToolbar.addEventListener('click', () => this.fitToScreen());
+                if (this.panToolbar) this.panToolbar.addEventListener('click', () => this.pan());
+                if (this.fullscreenToolbar) this.fullscreenToolbar.addEventListener('click', () => this.toggleFullscreen());
                 
                 // Quality toolbar controls
-                this.qualityLowToolbar.addEventListener('click', () => this.setQuality('low'));
-                this.qualityMediumToolbar.addEventListener('click', () => this.setQuality('medium'));
-                this.qualityHighToolbar.addEventListener('click', () => this.setQuality('high'));
+                if (this.qualityLowToolbar) this.qualityLowToolbar.addEventListener('click', () => this.setQuality('low'));
+                if (this.qualityMediumToolbar) this.qualityMediumToolbar.addEventListener('click', () => this.setQuality('medium'));
+                if (this.qualityHighToolbar) this.qualityHighToolbar.addEventListener('click', () => this.setQuality('high'));
                 
                 // Close menu when clicking outside
                 document.addEventListener('click', (e) => {
-                    if (!this.sideMenu.contains(e.target) && !this.menuToggle.contains(e.target)) {
+                    if (this.sideMenu && this.menuToggle && 
+                        !this.sideMenu.contains(e.target) && !this.menuToggle.contains(e.target)) {
                         this.closeMenu();
                     }
                 });
@@ -1340,75 +1301,37 @@
                     }
                 });
 
-                this.flipbookContainer.addEventListener('wheel', (e) => {
-                    if (e.ctrlKey) {
-                        e.preventDefault();
-                        if (e.deltaY < 0) {
-                            this.zoomIn();
-                        } else {
-                            this.zoomOut();
+                if (this.flipbookContainer) {
+                    this.flipbookContainer.addEventListener('wheel', (e) => {
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            if (e.deltaY < 0) {
+                                this.zoomIn();
+                            } else {
+                                this.zoomOut();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             toggleMenu() {
-                this.sideMenu.classList.toggle('open');
+                if (this.sideMenu) {
+                    this.sideMenu.classList.toggle('open');
+                }
             }
 
             closeMenu() {
-                this.sideMenu.classList.remove('open');
-            }
-
-            setupDragAndDrop() {
-                const container = this.fileInput.parentElement;
-                
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    container.addEventListener(eventName, (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
-                });
-
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    container.addEventListener(eventName, () => {
-                        container.style.borderColor = 'rgba(255, 119, 198, 0.8)';
-                        container.style.background = 'rgba(255, 119, 198, 0.1)';
-                        container.style.transform = 'scale(1.02)';
-                    });
-                });
-
-                ['dragleave', 'drop'].forEach(eventName => {
-                    container.addEventListener(eventName, () => {
-                        container.style.borderColor = 'rgba(120, 119, 198, 0.6)';
-                        container.style.background = 'rgba(120, 119, 198, 0.05)';
-                        container.style.transform = 'none';
-                    });
-                });
-
-                container.addEventListener('drop', (e) => {
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        this.fileInput.files = files;
-                        this.handleFileSelect({ target: { files: files } });
-                    }
-                });
-            }
-
-            async handleUrlLoad() {
-                const url = this.pdfUrl.value.trim();
-                if (!url) {
-                    this.showError('Por favor ingresa una URL válida.');
-                    return;
+                if (this.sideMenu) {
+                    this.sideMenu.classList.remove('open');
                 }
-
-                // Mostrar indicador de carga
-                this.showLoading(true);
-                this.hideError();
-
-                // Usar la función reutilizable para cargar el PDF
-                await this.loadPdfFromUrl(url);
             }
+
+            // setupDragAndDrop ya no es necesario ya que eliminamos la opción de cargar archivos locales
+            // setupDragAndDrop() {
+            //     const container = this.fileInput.parentElement;
+            //     ...
+            // }
 
             async handleFileSelect(event) {
                 const file = event.target.files[0];
@@ -1543,7 +1466,7 @@
                 const updateProgress = () => {
                     completedPages++;
                     const progress = Math.round((completedPages / totalPages) * 100);
-                    this.loading.textContent = `Procesando PDF... ${progress}%`;
+                    this.loading.textContent = `Cargando ebook... ${progress}%`;
                 };
                 
                 // Interceptar las promesas para mostrar progreso
@@ -1558,7 +1481,7 @@
             }
 
             hideLoadingProgress() {
-                this.loading.textContent = 'Procesando PDF...';
+                this.loading.textContent = 'Cargando ebook...';
             }
 
             async renderSinglePage(pageNum) {
@@ -2256,19 +2179,27 @@
             }
 
             showLoading(show) {
-                this.loading.style.display = show ? 'block' : 'none';
+                if (this.loading) {
+                    this.loading.style.display = show ? 'block' : 'none';
+                }
             }
 
             showError(message) {
-                this.errorMessage.textContent = message;
-                this.errorMessage.style.display = 'block';
-                setTimeout(() => {
-                    this.errorMessage.style.display = 'none';
-                }, 7000);
+                if (this.errorMessage) {
+                    this.errorMessage.textContent = message;
+                    this.errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        if (this.errorMessage) {
+                            this.errorMessage.style.display = 'none';
+                        }
+                    }, 7000);
+                }
             }
 
             hideError() {
-                this.errorMessage.style.display = 'none';
+                if (this.errorMessage) {
+                    this.errorMessage.style.display = 'none';
+                }
             }
 
             playFlipSound() {
