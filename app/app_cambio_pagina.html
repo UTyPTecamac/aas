@@ -24,6 +24,9 @@
             position: relative;
         }
 
+        /* Ajuste: reducir a la mitad el espacio inferior para la barra de progreso */
+        body { padding-bottom: 10px; }
+
         .pdf-title {
             position: fixed;
             top: 20px;
@@ -43,7 +46,16 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        all 0.3s ease;
+        }
+
+        .pdf-title.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .side-menu {
@@ -68,8 +80,9 @@
 
         .menu-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
             color: rgba(0, 0, 0, 0.8);
@@ -165,6 +178,19 @@
             position: relative;
             z-index: 10;
             font-weight: 500;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .loading.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loading.text-updating {
+            transition: opacity 0.2s ease;
         }
 
         .loading::after {
@@ -188,7 +214,7 @@
             position: fixed;
             top: 20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(-20px);
             z-index: 3000;
             max-width: 400px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
@@ -197,16 +223,49 @@
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
-            animation: shake 0.6s ease-in-out;
             font-size: 1rem;
             border: none;
             outline: none;
+            opacity: 0;
+            animation: fadeInDown 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                       shake 0.6s ease-in-out 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            25% { transform: translateX(calc(-50% - 10px)) translateY(0); }
+            75% { transform: translateX(calc(-50% + 10px)) translateY(0); }
         }
 
         .menu-controls {
@@ -259,6 +318,22 @@
             border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 8px;
             margin-bottom: 10px;
+            position: relative;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .page-info-menu.fade-out {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+
+        .page-info-menu.fade-in {
+            opacity: 0;
+            transform: translateY(5px);
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .zoom-controls-menu {
@@ -291,14 +366,30 @@
             font-size: 0.8rem;
             min-width: 45px;
             text-align: center;
+            position: relative;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .zoom-level-menu.fade-out {
+            opacity: 0;
+            transform: translateY(-3px);
+        }
+
+        .zoom-level-menu.fade-in {
+            opacity: 0;
+            transform: translateY(3px);
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .flipbook-container {
             display: none;
             position: relative;
             z-index: 10;
-            margin: 80px 0 30px 0;
-            padding-top: 20px;
+            margin: 70px 0 30px 0; /* 60px toolbar + 10px de espacio */
+            padding-top: 0;
             perspective: 2000px;
             transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -326,7 +417,7 @@
             margin: 0 auto;
             transform-style: preserve-3d;
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform-origin: center center;
+            transform-origin: top center;
         }
 
         .book-spine {
@@ -351,7 +442,8 @@
                 inset 0 0 0 1px rgba(255,255,255,0.8),
                 inset 0 1px 0 rgba(255,255,255,0.9);
             transform-origin: left center;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: opacity 0.4s ease,
+                        transform 0.4s ease;
             backface-visibility: hidden;
             cursor: pointer;
             overflow: hidden;
@@ -359,21 +451,21 @@
             align-items: center;
             justify-content: center;
             transform-style: preserve-3d;
-            opacity: 1;
+            opacity: 0;
         }
 
         .book-page.hidden {
             opacity: 0;
             pointer-events: none;
             z-index: -1;
-            transition: opacity 0.2s ease-out;
+            transition: opacity 0.25s ease;
         }
 
         .book-page.visible {
             opacity: 1;
             pointer-events: auto;
             z-index: 10;
-            transition: opacity 0.2s ease-in;
+            transition: opacity 0.3s ease;
         }
 
         .book-page.flipping {
@@ -681,6 +773,13 @@
             padding: 30px;
             position: relative;
             z-index: 10;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .book-page.visible .page-content {
+            opacity: 1;
+            transition: opacity 0.3s ease 0.1s;
         }
 
         .page-content canvas {
@@ -706,26 +805,34 @@
             min-height: 100vh;
             text-align: center;
             color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .welcome-icon {
             font-size: 4rem;
             margin-bottom: 20px;
-            opacity: 0.8;
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
         }
 
         .welcome-text {
             font-size: 1.5rem;
             margin-bottom: 10px;
-            opacity: 0.9;
+            opacity: 0;
             color: rgba(0, 0, 0, 0.8);
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .welcome-subtext {
             font-size: 1rem;
-            opacity: 0.6;
+            opacity: 0;
             margin-bottom: 30px;
             color: rgba(0, 0, 0, 0.6);
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .open-menu-hint {
@@ -733,9 +840,11 @@
             padding: 12px 20px;
             border-radius: 25px;
             font-size: 0.9rem;
-            opacity: 0.8;
+            opacity: 0;
             border: 1px solid rgba(0, 0, 0, 0.1);
             color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         @media (max-width: 1200px) {
@@ -852,6 +961,22 @@
             font-weight: 500;
             min-width: 50px;
             text-align: center;
+            position: relative;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .zoom-display.fade-out {
+            opacity: 0;
+            transform: translateY(-3px);
+        }
+
+        .zoom-display.fade-in {
+            opacity: 0;
+            transform: translateY(3px);
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .page-info {
@@ -860,6 +985,22 @@
             font-weight: 500;
             min-width: 120px;
             text-align: center;
+            position: relative;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .page-info.fade-out {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+
+        .page-info.fade-in {
+            opacity: 0;
+            transform: translateY(5px);
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         /* Ajustar el contenedor principal para la barra superior */
@@ -909,7 +1050,7 @@
         </div>
     </div>
     
-    <button class="menu-toggle" id="menuToggle">☰</button>
+    <button class="menu-toggle" id="menuToggle" title="Opciones">⚙️</button>
     
             <div class="side-menu" id="sideMenu">
         <div class="menu-section" id="navigationSection" style="display: none;">
@@ -973,6 +1114,11 @@
             <div class="book-spine"></div>
             <!-- Las páginas se crearán dinámicamente aquí -->
         </div>
+    </div>
+
+    <!-- Barra de progreso inferior -->
+    <div id="progressBar" style="position: fixed; bottom: 0; left: 0; right: 0; height: 4px; background: rgba(0,0,0,0.05); z-index: 2500;">
+        <div id="progressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, rgba(34,197,94,0.9), rgba(16,185,129,0.9)); box-shadow: 0 0 8px rgba(16,185,129,0.35);"></div>
     </div>
 
     <script>
@@ -1166,8 +1312,13 @@
                     // Extraer nombre del archivo de la URL
                     const urlParts = finalUrl.split('/');
                     const fileName = urlParts[urlParts.length - 1].replace('.pdf', '') || 'Documento PDF';
-                    this.pdfTitle.textContent = fileName;
-                    this.pdfTitle.style.display = 'block';
+                    if (this.pdfTitle) {
+                        this.pdfTitle.textContent = fileName;
+                        this.pdfTitle.style.display = 'block';
+                        // Forzar reflow y aplicar transición
+                        void this.pdfTitle.offsetWidth;
+                        this.pdfTitle.classList.add('show');
+                    }
                     
                     // Configurar y mostrar el PDF
                     await this.adjustFlipbookToPDFSize();
@@ -1350,8 +1501,13 @@
                     this.currentPage = 1;
                     
                     // Mostrar nombre del PDF
-                    this.pdfTitle.textContent = file.name.replace('.pdf', '');
-                    this.pdfTitle.style.display = 'block';
+                    if (this.pdfTitle) {
+                        this.pdfTitle.textContent = file.name.replace('.pdf', '');
+                        this.pdfTitle.style.display = 'block';
+                        // Forzar reflow y aplicar transición
+                        void this.pdfTitle.offsetWidth;
+                        this.pdfTitle.classList.add('show');
+                    }
                     
                     // Obtener dimensiones del PDF y ajustar el flipbook
                     await this.adjustFlipbookToPDFSize();
@@ -1462,18 +1618,47 @@
 
             showLoadingProgress(totalPages) {
                 let completedPages = 0;
+                let lastProgress = -1;
+                let updateTimeout = null;
                 
                 const updateProgress = () => {
                     completedPages++;
                     const progress = Math.round((completedPages / totalPages) * 100);
-                    this.loading.textContent = `Cargando ebook... ${progress}%`;
+                    
+                    // Solo actualizar si el progreso cambió
+                    if (progress !== lastProgress && this.loading) {
+                        lastProgress = progress;
+                        const newText = `Cargando ebook... ${progress}%`;
+                        
+                        // Cancelar actualización anterior si existe
+                        if (updateTimeout) {
+                            clearTimeout(updateTimeout);
+                        }
+                        
+                        // Crossfade suave para el texto de progreso
+                        this.loading.style.transition = 'opacity 0.2s ease';
+                        this.loading.style.opacity = '0';
+                        
+                        updateTimeout = setTimeout(() => {
+                            if (this.loading) {
+                                this.loading.textContent = newText;
+                                this.loading.style.opacity = '1';
+                                updateTimeout = null;
+                            }
+                        }, 200);
+                    }
                 };
                 
                 // Interceptar las promesas para mostrar progreso
+                // Almacenar la función updateProgress para ser llamada desde renderSinglePage
+                this._progressUpdate = updateProgress;
+                
                 return new Promise((resolve) => {
                     const checkProgress = setInterval(() => {
+                        updateProgress();
                         if (completedPages >= totalPages) {
                             clearInterval(checkProgress);
+                            if (updateTimeout) clearTimeout(updateTimeout);
                             resolve();
                         }
                     }, 100);
@@ -1529,6 +1714,7 @@
             }
 
             showCurrentPages() {
+                // Ocultar todas las páginas suavemente
                 this.pageElements.forEach((pageElement, index) => {
                     if (pageElement) {
                         pageElement.classList.remove('visible');
@@ -1539,37 +1725,44 @@
                 // Actualizar clases del contenedor y posición del título
                 this.updateBookLayout();
 
-                // Caso especial: Libro cerrado (solo portada)
-                if (this.isBookClosed()) {
-                    if (this.pageElements[1]) {
-                        this.pageElements[1].classList.remove('hidden');
-                        this.pageElements[1].classList.add('visible');
-                    }
-                    return;
-                }
+                // Mostrar las nuevas páginas inmediatamente pero con transición suave
+                // Usar double requestAnimationFrame para asegurar que las nuevas páginas
+                // comienzan su transición después de que las anteriores comienzan a desaparecer
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        // Caso especial: Libro cerrado (solo portada)
+                        if (this.isBookClosed()) {
+                            if (this.pageElements[1]) {
+                                this.pageElements[1].classList.remove('hidden');
+                                this.pageElements[1].classList.add('visible');
+                            }
+                            return;
+                        }
 
-                // Caso especial: Última página impar
-                if (this.isLastOddPage()) {
-                    if (this.pageElements[this.totalPages]) {
-                        this.pageElements[this.totalPages].classList.remove('hidden');
-                        this.pageElements[this.totalPages].classList.add('visible');
-                    }
-                    return;
-                }
+                        // Caso especial: Última página impar
+                        if (this.isLastOddPage()) {
+                            if (this.pageElements[this.totalPages]) {
+                                this.pageElements[this.totalPages].classList.remove('hidden');
+                                this.pageElements[this.totalPages].classList.add('visible');
+                            }
+                            return;
+                        }
 
-                // Caso normal: Mostrar spread de páginas
-                const leftPageNum = this.currentPage;
-                const rightPageNum = this.currentPage + 1;
+                        // Caso normal: Mostrar spread de páginas simultáneamente
+                        const leftPageNum = this.currentPage;
+                        const rightPageNum = this.currentPage + 1;
 
-                if (leftPageNum <= this.totalPages && this.pageElements[leftPageNum]) {
-                    this.pageElements[leftPageNum].classList.remove('hidden');
-                    this.pageElements[leftPageNum].classList.add('visible');
-                }
+                        if (leftPageNum <= this.totalPages && this.pageElements[leftPageNum]) {
+                            this.pageElements[leftPageNum].classList.remove('hidden');
+                            this.pageElements[leftPageNum].classList.add('visible');
+                        }
 
-                if (rightPageNum <= this.totalPages && this.pageElements[rightPageNum]) {
-                    this.pageElements[rightPageNum].classList.remove('hidden');
-                    this.pageElements[rightPageNum].classList.add('visible');
-                }
+                        if (rightPageNum <= this.totalPages && this.pageElements[rightPageNum]) {
+                            this.pageElements[rightPageNum].classList.remove('hidden');
+                            this.pageElements[rightPageNum].classList.add('visible');
+                        }
+                    });
+                });
             }
 
             updateBookLayout() {
@@ -2031,8 +2224,31 @@
 
             updateZoom() {
                 const zoomText = Math.round(this.zoomLevel * 100) + '%';
-                this.zoomLevelMenu.textContent = zoomText;
-                this.zoomLevelToolbar.textContent = zoomText;
+                
+                // Aplicar crossfade suave al cambiar zoom
+                if (this.zoomLevelMenu && this.zoomLevelMenu.textContent !== zoomText) {
+                    this.zoomLevelMenu.classList.add('fade-out');
+                    setTimeout(() => {
+                        this.zoomLevelMenu.textContent = zoomText;
+                        this.zoomLevelMenu.classList.remove('fade-out');
+                        this.zoomLevelMenu.classList.add('fade-in');
+                        setTimeout(() => {
+                            this.zoomLevelMenu.classList.remove('fade-in');
+                        }, 400);
+                    }, 400);
+                }
+                
+                if (this.zoomLevelToolbar && this.zoomLevelToolbar.textContent !== zoomText) {
+                    this.zoomLevelToolbar.classList.add('fade-out');
+                    setTimeout(() => {
+                        this.zoomLevelToolbar.textContent = zoomText;
+                        this.zoomLevelToolbar.classList.remove('fade-out');
+                        this.zoomLevelToolbar.classList.add('fade-in');
+                        setTimeout(() => {
+                            this.zoomLevelToolbar.classList.remove('fade-in');
+                        }, 400);
+                    }, 400);
+                }
                 
                 // Desactivar modo pan al hacer zoom
                 if (this.isPanMode) {
@@ -2051,7 +2267,12 @@
                         translateY = y || 0;
                     }
                     
-                    // Aplicar zoom manteniendo la posición de pan
+                    // Mantener visible la parte superior: evitar valores positivos de translateY que empujen hacia arriba
+                    const toolbarReserve = 70; // altura aproximada de la barra superior
+                    const minTranslateY = 0; // no permitir que se oculte la parte superior
+                    translateY = Math.max(minTranslateY, translateY);
+
+                    // Aplicar zoom manteniendo la posición y el origen en top-center
                     this.flipbook.style.transform = `translate(${translateX}px, ${translateY}px) scale(${this.zoomLevel})`;
                     
                     // Efecto visual de confirmación rápido
@@ -2112,9 +2333,30 @@
                     pageText = `Página ${this.currentPage}-${Math.min(this.currentPage + 1, this.totalPages)} de ${this.totalPages}`;
                 }
                 
-                // Actualizar tanto el menú como la barra superior
-                this.pageInfoMenu.textContent = pageText;
-                this.pageInfoToolbar.textContent = pageText;
+                // Aplicar crossfade suave al cambiar texto de página
+                if (this.pageInfoMenu && this.pageInfoMenu.textContent !== pageText) {
+                    this.pageInfoMenu.classList.add('fade-out');
+                    setTimeout(() => {
+                        this.pageInfoMenu.textContent = pageText;
+                        this.pageInfoMenu.classList.remove('fade-out');
+                        this.pageInfoMenu.classList.add('fade-in');
+                        setTimeout(() => {
+                            this.pageInfoMenu.classList.remove('fade-in');
+                        }, 400);
+                    }, 400);
+                }
+                
+                if (this.pageInfoToolbar && this.pageInfoToolbar.textContent !== pageText) {
+                    this.pageInfoToolbar.classList.add('fade-out');
+                    setTimeout(() => {
+                        this.pageInfoToolbar.textContent = pageText;
+                        this.pageInfoToolbar.classList.remove('fade-out');
+                        this.pageInfoToolbar.classList.add('fade-in');
+                        setTimeout(() => {
+                            this.pageInfoToolbar.classList.remove('fade-in');
+                        }, 400);
+                    }, 400);
+                }
                 
                 // Actualizar botones del menú
                 this.prevBtnMenu.disabled = this.isBookClosed();
@@ -2140,6 +2382,17 @@
                     this.nextPageToolbar.disabled = this.currentPage >= this.totalPages - 1;
                     this.lastPageToolbar.disabled = this.currentPage >= this.totalPages - 1;
                 }
+
+                // Actualizar barra de progreso inferior
+                try {
+                    const fill = document.getElementById('progressFill');
+                    if (fill && this.totalPages > 1) {
+                        const basePage = this.isBookClosed() ? 1 : this.currentPage;
+                        const position = Math.min(basePage, this.totalPages);
+                        const progress = Math.max(0, Math.min(1, (position - 1) / (this.totalPages - 1)));
+                        fill.style.width = (progress * 100).toFixed(1) + '%';
+                    }
+                } catch (e) {}
             }
 
             showBook() {
@@ -2180,7 +2433,19 @@
 
             showLoading(show) {
                 if (this.loading) {
-                    this.loading.style.display = show ? 'block' : 'none';
+                    if (show) {
+                        this.loading.style.display = 'block';
+                        // Forzar reflow para que la animación funcione
+                        void this.loading.offsetWidth;
+                        this.loading.classList.add('show');
+                    } else {
+                        this.loading.classList.remove('show');
+                        setTimeout(() => {
+                            if (this.loading) {
+                                this.loading.style.display = 'none';
+                            }
+                        }, 400);
+                    }
                 }
             }
 
