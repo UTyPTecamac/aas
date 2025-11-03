@@ -1,0 +1,556 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Virtualización</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: sans-serif; }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        .question-fade {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .correct-answer {
+            background: linear-gradient(135deg, #10b981, #059669);
+            animation: pulse 0.5s ease-in-out;
+        }
+        .incorrect-answer {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="bg-transparent min-h-screen">
+    <div class="h-screen w-full p-2 sm:p-4 overflow-hidden">
+        <div class="w-full h-full bg-transparent flex flex-col">
+            <!-- Compact Header -->
+            <div class="bg-gradient-to-r from-green-600 to-emerald-700 text-white p-2 sm:p-3">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
+                    <div>
+                        <h1 class="text-lg sm:text-2xl font-bold text-center sm:text-left">📚 Cuestionario de Virtualización</h1>
+                    </div>
+                    
+                    <!-- Stats in Header -->
+                    <div class="flex items-center space-x-2 sm:space-x-4 bg-white/10 rounded-xl px-2 sm:px-4 py-1 sm:py-2">
+                        <div class="text-center">
+                            <div class="text-sm sm:text-lg font-bold" id="score">0%</div>
+                            <div class="text-xs text-green-100">Puntaje</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm sm:text-lg font-bold text-green-300" id="correct">0</div>
+                            <div class="text-xs text-green-100">✓</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm sm:text-lg font-bold text-red-300" id="incorrect">0</div>
+                            <div class="text-xs text-green-100">✗</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm sm:text-lg font-bold text-yellow-300" id="timer">00:00</div>
+                            <div class="text-xs text-green-100">⏱️</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-2">
+                    <div class="flex justify-between text-xs sm:text-sm text-green-100 mb-1">
+                        <span>Progreso</span>
+                        <span id="progress-text">0 de 10</span>
+                    </div>
+                    <div class="w-full bg-white/20 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Container -->
+            <div id="quiz-container" class="flex-1 p-2 sm:p-4 flex items-center justify-center">
+                <div id="start-screen" class="text-center w-full max-w-4xl bg-white rounded-xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl mx-auto">
+                    <div class="text-4xl sm:text-6xl mb-4">🖥️</div>
+                    <h2 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-4">¡Bienvenido al Cuestionario!</h2>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-3 sm:p-4 mb-4 sm:mb-6 text-left rounded-lg">
+                        <h3 class="text-base sm:text-lg font-semibold text-blue-800 mb-2">📋 Instrucciones:</h3>
+                        <p class="text-sm sm:text-base text-blue-700 leading-relaxed">Analiza cada pregunta cuidadosamente y selecciona la opción más adecuada basándote en los materiales de estudio. Reflexiona sobre el porqué de cada concepto y cómo se relaciona con la optimización de sistemas y recursos. Tu objetivo es comprender y justificar, no solo memorizar.</p>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">Responde 10 preguntas aleatorias sobre virtualización. Necesitas 80% para aprobar.</p>
+                    <button onclick="startQuiz()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 sm:px-8 py-3 rounded-xl text-base sm:text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg w-full sm:w-auto">
+                        🚀 Comenzar Cuestionario
+                    </button>
+                </div>
+
+                <div id="question-screen" class="hidden question-fade w-full bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-2xl">
+                    <div class="mb-4">
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 leading-relaxed" id="question-text"></h3>
+                    </div>
+                    <div id="answers-container" class="space-y-2 sm:space-y-3 mb-4">
+                    </div>
+                    <div class="flex justify-end">
+                        <button id="next-btn" onclick="nextQuestion()" class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:from-green-600 hover:to-blue-600 transform hover:scale-105 transition-all duration-200 hidden shadow-lg w-full sm:w-auto">
+                            Siguiente →
+                        </button>
+                    </div>
+                </div>
+
+                <div id="results-screen" class="hidden text-center w-full max-w-3xl bg-white rounded-xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl mx-auto">
+                    <div id="result-icon" class="text-4xl sm:text-6xl mb-4"></div>
+                    <h2 id="result-title" class="text-2xl sm:text-4xl font-bold mb-4"></h2>
+                    <div class="bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+                        <div class="grid grid-cols-2 gap-4 sm:gap-6 text-center">
+                            <div>
+                                <div id="final-score" class="text-2xl sm:text-4xl font-bold text-blue-600"></div>
+                                <div class="text-sm sm:text-base text-gray-500 mt-1">Puntaje Final</div>
+                            </div>
+                            <div>
+                                <div id="final-time" class="text-2xl sm:text-4xl font-bold text-purple-600"></div>
+                                <div class="text-sm sm:text-base text-gray-500 mt-1">Tiempo Total</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p id="result-message" class="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed"></p>
+                    <button onclick="restartQuiz()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 sm:px-8 py-3 rounded-xl text-base sm:text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg w-full sm:w-auto">
+                        🔄 Intentar de Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Audio context para efectos de sonido
+        let audioContext;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playCorrectSound() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Sonido de acierto: secuencia ascendente
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            oscillator.type = 'sine';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.4);
+        }
+
+        function playIncorrectSound() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Sonido de error: tono descendente
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.type = 'sawtooth';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        // Base de preguntas sobre Virtualización
+        const questionBank = [
+            {
+                question: "¿Cuál de las siguientes afirmaciones describe mejor el concepto fundamental de la virtualización?",
+                answers: [
+                    "Es una técnica para aumentar la velocidad de procesamiento de un único servidor físico más allá de sus límites.",
+                    "Permite la creación de múltiples entornos o recursos simulados (virtuales) a partir de un único recurso físico, funcionando de forma independiente.",
+                    "Se refiere a la instalación de múltiples sistemas operativos directamente sobre el hardware sin ningún software intermedio."
+                ],
+                correct: 1
+            },
+            {
+                question: "¿Qué característica define principalmente a una Máquina Virtual (VM) según su funcionamiento en un entorno virtualizado?",
+                answers: [
+                    "Es un componente de hardware adicional que se instala en el servidor físico para mejorar su capacidad.",
+                    "Es una implementación de software de una computadora que ejecuta programas de manera aislada e independiente del hardware subyacente y de otras VMs.",
+                    "Es un sistema operativo diseñado para ejecutarse exclusivamente en un entorno físico dedicado para garantizar el máximo rendimiento."
+                ],
+                correct: 1
+            },
+            {
+                question: "Si una organización busca maximizar la utilización de sus recursos físicos y optimizar sus operaciones, ¿cómo la virtualización ofrece una solución clave?",
+                answers: [
+                    "Al reducir la necesidad de mantenimiento de software, delegando la gestión al hardware.",
+                    "Al permitir que un único servidor físico soporte múltiples máquinas virtuales, cada una con su propio sistema operativo y aplicaciones, maximizando la utilización de los recursos existentes.",
+                    "Al eliminar completamente la necesidad de hardware físico, operando únicamente en la nube sin infraestructura local."
+                ],
+                correct: 1
+            },
+            {
+                question: "Una empresa implementa la virtualización para reducir sus gastos. ¿Cuál es el impacto directo y más tangible que experimentaría en sus costos operativos?",
+                answers: [
+                    "Un aumento en los gastos de energía y refrigeración debido a una mayor densidad de servidores físicos.",
+                    "Una reducción significativa en los gastos de capital y operativos al consolidar múltiples servidores físicos en menos hardware, disminuyendo costos de energía, refrigeración y espacio.",
+                    "No habría un impacto significativo en los costos, ya que el ahorro en hardware se compensaría con el software de virtualización."
+                ],
+                correct: 1
+            },
+            {
+                question: "Un administrador de servidores necesita crear y gestionar nuevas máquinas virtuales. ¿Cuál es el componente de software indispensable para llevar a cabo esta tarea?",
+                answers: [
+                    "El sistema operativo anfitrión, que por sí mismo permite la creación de VMs.",
+                    "El hipervisor, que es el software específico que permite la creación y gestión de las máquinas virtuales.",
+                    "Un sistema de gestión de bases de datos, que automatiza la asignación de recursos a las VMs."
+                ],
+                correct: 1
+            },
+            {
+                question: "Si la prioridad principal para un entorno de producción de alta demanda es el máximo rendimiento y la seguridad inherente del sistema, ¿qué tipo de hipervisor sería la opción más adecuada y por qué?",
+                answers: [
+                    "Un hipervisor de Tipo 2 (hosted), debido a su facilidad de instalación sobre un sistema operativo existente.",
+                    "Un hipervisor de Tipo 1 (bare-metal), porque se instala directamente sobre el hardware físico del servidor, sin una capa de sistema operativo anfitrión, ofreciendo acceso directo a los recursos y un rendimiento superior.",
+                    "Un sistema operativo convencional sin virtualización, ya que siempre garantiza un rendimiento más predecible."
+                ],
+                correct: 1
+            },
+            {
+                question: "Un desarrollador busca una solución sencilla para ejecutar múltiples sistemas operativos en su computadora personal para pruebas y desarrollo. ¿Qué característica de un hipervisor de Tipo 2 (hosted) lo convierte en una opción ideal para este escenario?",
+                answers: [
+                    "Su capacidad de proporcionar un rendimiento superior y acceso directo a los recursos de hardware, sin capa intermedia.",
+                    "Se instala como una aplicación sobre un sistema operativo anfitrión convencional (como Windows o Linux), siendo más sencillo de instalar y utilizar para fines no críticos, aunque con un rendimiento potencialmente menor.",
+                    "Su arquitectura está optimizada para la gestión de miles de máquinas virtuales en grandes centros de datos."
+                ],
+                correct: 1
+            },
+            {
+                question: "Aunque la virtualización moderna es compleja, sus orígenes son mucho más antiguos. ¿En qué contexto histórico y con qué propósito fundamental surgió por primera vez el concepto de virtualización?",
+                answers: [
+                    "A finales de la década de 1990 con la popularización de VMware, para la consolidación de servidores x86.",
+                    "En la década de 1960 con los mainframes de IBM (ej. CP/CMS), buscando maximizar la utilización de costosos recursos de hardware a través de la ejecución de múltiples entornos operativos en una sola máquina física.",
+                    "En la era moderna, con la invención de los contenedores para la virtualización a nivel de sistema operativo."
+                ],
+                correct: 1
+            },
+            {
+                question: "Después de un periodo de relativa calma, la virtualización experimentó un resurgimiento significativo a finales del siglo XX y principios del XXI. ¿Cuáles fueron los dos factores principales que impulsaron esta nueva era de adopción masiva?",
+                answers: [
+                    "La necesidad de reducir el tamaño de los servidores y el desarrollo de nuevos lenguajes de programación.",
+                    "El auge de las arquitecturas x86 y la creciente necesidad de optimizar el uso de los servidores para mejorar la eficiencia y escalabilidad.",
+                    "La aparición de internet y la demanda de sistemas operativos de código abierto."
+                ],
+                correct: 1
+            },
+            {
+                question: "La virtualización se caracteriza por ofrecer una 'flexibilidad sin precedentes' y 'escalabilidad significativa'. ¿Cómo se manifiestan estas capacidades en la gestión de la infraestructura de TI?",
+                answers: [
+                    "Al limitar la capacidad de ajustar recursos dinámicamente, requiriendo reinicios completos para cualquier cambio.",
+                    "Permite la rápida creación, clonación y eliminación de máquinas virtuales, así como la capacidad de aumentar o disminuir dinámicamente los recursos asignados a las VMs sin interrupciones en el servicio.",
+                    "Solo mejora la flexibilidad para la gestión de usuarios y no para los recursos de hardware subyacentes."
+                ],
+                correct: 1
+            },
+            {
+                question: "En el ámbito de la Continuidad de Negocio y la Recuperación ante Desastres (DR), ¿qué capacidades específicas de la virtualización son consideradas vitales para garantizar que los servicios críticos permanezcan operativos incluso en caso de fallos de hardware?",
+                answers: [
+                    "La capacidad de realizar copias de seguridad de datos en la nube, sin afectar directamente la disponibilidad de los servicios en tiempo real.",
+                    "Funcionalidades como la migración en vivo (Live Migration) de VMs, la alta disponibilidad (HA) y la capacidad de replicar entornos virtuales enteros a sitios de recuperación, minimizando el tiempo de inactividad.",
+                    "La obligación de detener todos los servicios críticos y apagar las VMs para poder iniciar un proceso de recuperación manual."
+                ],
+                correct: 1
+            },
+            {
+                question: "La virtualización ha provocado una 'transformación radical' en los centros de datos. ¿Cuál es el cambio fundamental en la naturaleza de la infraestructura de TI que esta tecnología ha propiciado?",
+                answers: [
+                    "Los ha vuelto más rígidos y dependientes de procesos manuales debido a la complejidad de gestionar múltiples VMs.",
+                    "Los ha convertido en ecosistemas más ágiles y dinámicos, facilitando la implementación de la Infraestructura como Código (IaC), la automatización de tareas y la gestión centralizada de los recursos.",
+                    "Ha limitado la capacidad de los equipos de TI para innovar, al obligarlos a centrarse únicamente en el mantenimiento rutinario."
+                ],
+                correct: 1
+            },
+            {
+                question: "Para los equipos de desarrollo de software, la virtualización es considerada indispensable. ¿Qué beneficio específico aporta al ciclo de desarrollo y pruebas, que no sería fácilmente replicable sin ella?",
+                answers: [
+                    "Obliga a los desarrolladores a utilizar un único sistema operativo para todas las pruebas, estandarizando el entorno.",
+                    "Permite crear rápidamente entornos aislados para probar aplicaciones en diferentes sistemas operativos o configuraciones de manera segura, así como clonar VMs y revertir a estados anteriores, agilizando el proceso y reduciendo conflictos.",
+                    "Aumenta la dependencia entre proyectos al compartir un único entorno de prueba físico para maximizar el uso del hardware."
+                ],
+                correct: 1
+            },
+            {
+                question: "La consolidación de servidores es una de las aplicaciones más comunes de la virtualización. ¿Cuál es el principal objetivo estratégico que persiguen las organizaciones al implementar esta práctica?",
+                answers: [
+                    "Aumentar el número total de servidores físicos en el centro de datos para mejorar la redundancia.",
+                    "Reducir drásticamente el número de máquinas físicas al ejecutar múltiples servidores virtuales en un único servidor físico, lo que disminuye costos de hardware, energía y simplifica la gestión y el mantenimiento.",
+                    "Exclusivamente mejorar el rendimiento individual de cada aplicación crítica al asignarle un servidor virtual dedicado."
+                ],
+                correct: 1
+            },
+            {
+                question: "El cloud computing ha revolucionado la forma en que se entregan los servicios de TI. ¿Qué papel fundamental juega la virtualización en la provisión de servicios a gran escala (IaaS, PaaS, SaaS) y la elasticidad que caracteriza a la nube?",
+                answers: [
+                    "Es una tecnología secundaria que complementa marginalmente la infraestructura de la nube, pero no es esencial.",
+                    "Es la tecnología subyacente que impulsa el cloud computing, ya que los proveedores de servicios en la nube utilizan hipervisores para crear y gestionar las miles de máquinas virtuales que alquilan a sus clientes, permitiendo la abstracción de recursos y la elasticidad.",
+                    "No tiene relación directa con el cloud computing, que se basa en hardware dedicado y sistemas operativos personalizados para cada cliente."
+                ],
+                correct: 1
+            },
+            {
+                question: "Las Máquinas Virtuales (VMs) se caracterizan por su 'aislamiento' e 'independencia'. ¿Cuál es la implicación más importante de esta característica en un servidor físico que aloja múltiples VMs?",
+                answers: [
+                    "Permite que una VM acceda directamente a los recursos de otra VM para optimizar su rendimiento y compartir información sensible.",
+                    "Asegura que cada VM funcione de manera independiente, con su propio sistema operativo y aplicaciones, sin interferir con el hardware subyacente o con otras VMs, incluso cuando comparten recursos de CPU, memoria y red.",
+                    "Su objetivo principal es dificultar la comunicación entre diferentes aplicaciones ejecutadas en VMs separadas para proteger la propiedad intelectual."
+                ],
+                correct: 1
+            },
+            {
+                question: "Dada su capacidad para 'habilitar la creación de entornos de desarrollo y pruebas, la recuperación ante desastres y la implementación de soluciones de alta disponibilidad', ¿por qué se considera esencial la comprensión de la virtualización para cualquier especialista en administración de servidores en el ámbito profesional?",
+                answers: [
+                    "Porque es una tendencia tecnológica pasajera que pronto será reemplazada por nuevas arquitecturas.",
+                    "Porque le proporciona las bases para optimizar recursos, mejorar la eficiencia operativa y construir infraestructuras de TI más resilientes y flexibles, cruciales para la gestión moderna de servidores.",
+                    "Porque solo se aplica en entornos de TI muy específicos y su conocimiento no es de uso generalizado en la mayoría de las empresas."
+                ],
+                correct: 1
+            },
+            {
+                question: "Un equipo de TI está evaluando soluciones de virtualización para un nuevo proyecto que exige la menor latencia posible y la máxima eficiencia en la gestión de recursos de hardware. Basándose en la arquitectura de los hipervisores, ¿cuál sería la elección más lógica para cumplir con estos requisitos?",
+                answers: [
+                    "Un hipervisor de Tipo 2 (hosted), debido a su facilidad de uso y la capa adicional del sistema operativo anfitrión que mejora la compatibilidad.",
+                    "Un hipervisor de Tipo 1 (bare-metal), ya que se instala directamente sobre el hardware físico, minimizando la latencia y maximizando la eficiencia al tener acceso directo a los recursos.",
+                    "Una solución basada en contenedores, ya que no utiliza hipervisor y siempre es más rápida para cualquier tipo de carga de trabajo."
+                ],
+                correct: 1
+            },
+            {
+                question: "Los mainframes de IBM en la década de 1960, a través de sistemas como CP/CMS, sentaron las bases para la virtualización. Aunque rudimentaria, ¿qué concepto clave de la virtualización actual fue demostrado por esta fase inicial?",
+                answers: [
+                    "La necesidad de eliminar completamente el hardware físico y migrar todas las operaciones a entornos distribuidos.",
+                    "El potencial de la abstracción de hardware para optimizar la eficiencia operativa, permitiendo el aislamiento de cargas de trabajo y la compartición de recursos en una sola máquina física.",
+                    "La inviabilidad de ejecutar múltiples entornos operativos en una sola máquina debido a limitaciones de rendimiento."
+                ],
+                correct: 1
+            },
+            {
+                question: "La 'era moderna de la virtualización' ha visto una expansión del concepto más allá de los servidores. ¿En qué otras áreas clave de la infraestructura de TI ha madurado y se ha aplicado la virtualización, buscando mayor flexibilidad, escalabilidad y agilidad?",
+                answers: [
+                    "Únicamente en la creación de máquinas físicas más pequeñas y potentes para aplicaciones específicas.",
+                    "En la virtualización a nivel de sistema operativo (contenedores), la virtualización de red (SDN) y la virtualización de almacenamiento (SDS), marcando una expansión integral del concepto.",
+                    "En el desarrollo de nuevos lenguajes de programación y la mejora de los sistemas operativos de escritorio."
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let startTime;
+        let timerInterval;
+        let selectedAnswer = null;
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function startQuiz() {
+            // Seleccionar 10 preguntas aleatorias de las 20 disponibles
+            const shuffledBank = shuffleArray(questionBank);
+            currentQuestions = shuffledBank.slice(0, 10);
+            
+            // Mezclar respuestas para cada pregunta seleccionada
+            currentQuestions = currentQuestions.map(q => {
+                const correctAnswer = q.answers[q.correct];
+                const shuffledAnswers = shuffleArray(q.answers);
+                const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
+                
+                return {
+                    ...q,
+                    answers: shuffledAnswers,
+                    correct: newCorrectIndex
+                };
+            });
+
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            selectedAnswer = null;
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('question-screen').classList.remove('hidden');
+            
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                endQuiz();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+            document.getElementById('question-text').textContent = `${currentQuestionIndex + 1}. ${question.question}`;
+            
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = '';
+            
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 transform hover:scale-[1.01] font-medium leading-relaxed shadow-sm flex items-center text-base sm:text-lg';
+                button.textContent = answer;
+                button.onclick = () => selectAnswer(index);
+                answersContainer.appendChild(button);
+            });
+
+            updateProgress();
+            selectedAnswer = null;
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function selectAnswer(answerIndex) {
+            if (selectedAnswer !== null) return;
+
+            selectedAnswer = answerIndex;
+            const question = currentQuestions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('#answers-container button');
+            
+            buttons.forEach((button, index) => {
+                button.disabled = true;
+                if (index === question.correct) {
+                    button.classList.add('correct-answer');
+                    button.classList.remove('border-gray-200', 'hover:border-blue-300', 'hover:bg-blue-50');
+                    button.classList.add('text-white');
+                } else if (index === answerIndex) {
+                    button.classList.add('incorrect-answer');
+                    button.classList.remove('border-gray-200', 'hover:border-blue-300', 'hover:bg-blue-50');
+                    button.classList.add('text-white');
+                }
+            });
+
+            if (answerIndex === question.correct) {
+                correctAnswers++;
+                playCorrectSound();
+            } else {
+                incorrectAnswers++;
+                playIncorrectSound();
+            }
+
+            updateStats();
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        function updateStats() {
+            const totalQuestions = currentQuestions.length;
+            const answered = correctAnswers + incorrectAnswers;
+            score = Math.round((correctAnswers / Math.max(answered, 1)) * 100);
+            
+            document.getElementById('score').textContent = `${score}%`;
+            document.getElementById('correct').textContent = correctAnswers;
+            document.getElementById('incorrect').textContent = incorrectAnswers;
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `${currentQuestionIndex} de ${currentQuestions.length}`;
+        }
+
+        function updateTimer() {
+            const elapsed = Date.now() - startTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('question-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            
+            const finalScore = Math.round((correctAnswers / currentQuestions.length) * 100);
+            const elapsed = Date.now() - startTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('final-score').textContent = `${finalScore}%`;
+            document.getElementById('final-time').textContent = timeString;
+            
+            // Actualizar progreso al 100%
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('progress-text').textContent = `${currentQuestions.length} de ${currentQuestions.length}`;
+            
+            if (finalScore >= 80) {
+                document.getElementById('result-icon').textContent = '🎉';
+                document.getElementById('result-title').textContent = '¡Felicitaciones!';
+                document.getElementById('result-title').className = 'text-4xl font-bold mb-4 text-green-600';
+                document.getElementById('result-message').textContent = `¡Excelente trabajo! Has aprobado el cuestionario con ${finalScore}% de aciertos. Demuestras un sólido conocimiento sobre virtualización.`;
+            } else {
+                document.getElementById('result-icon').textContent = '📚';
+                document.getElementById('result-title').textContent = 'Sigue Estudiando';
+                document.getElementById('result-title').className = 'text-3xl font-bold mb-4 text-orange-600';
+                document.getElementById('result-message').textContent = `Obtuviste ${finalScore}% de aciertos. Necesitas 80% para aprobar. ¡No te desanimes! Revisa los conceptos y vuelve a intentarlo.`;
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            
+            // Reset stats display
+            document.getElementById('score').textContent = '0%';
+            document.getElementById('correct').textContent = '0';
+            document.getElementById('incorrect').textContent = '0';
+            document.getElementById('timer').textContent = '00:00';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0 de 10';
+        }
+
+        // Initialize timer display
+        document.getElementById('timer').textContent = '00:00';
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'975f5d2bc4dd5638',t:'MTc1NjMzNzUwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
