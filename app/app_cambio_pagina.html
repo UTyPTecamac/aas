@@ -397,19 +397,23 @@
         .flipbook-container.book-closed {
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             width: 100%;
+            min-height: calc(100vh - 70px);
         }
 
         .flipbook-container.book-closed .flipbook {
             position: relative;
-            left: 0;
-            right: 0;
-            margin: 0;
+            left: auto;
+            right: auto;
+            margin: 0 auto;
         }
 
         .flipbook-container.book-open {
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
         }
 
         .flipbook {
@@ -475,10 +479,10 @@
 
         /* Nuevas clases para posicionamiento sin conflictos */
         .book-page.centered {
-            right: 50% !important;
-            left: auto !important;
-            transform: translateX(50%) !important;
-            transform-origin: left center !important;
+            left: 0 !important;
+            right: auto !important;
+            transform: none !important;
+            transform-origin: center center !important;
         }
 
         .book-page.position-left {
@@ -1323,17 +1327,27 @@
                     // Configurar y mostrar el PDF
                     await this.adjustFlipbookToPDFSize();
                     await this.createAllPages();
-                    await this.renderAllPages();
+                    
+                    // Renderizar primero la portada (página 1) de manera prioritaria
+                    await this.renderSinglePage(1);
+                    
+                    // Mostrar la portada inmediatamente
                     this.showCurrentPages();
                     this.showBook();
                     this.updateControls();
                     this.showMenuSections();
                     this.closeMenu();
                     
+                    // Ocultar el loading inmediatamente después de mostrar la portada
+                    this.showLoading(false);
+                    
+                    // Continuar renderizando el resto de las páginas en segundo plano
+                    this.renderAllPages().catch(err => {
+                        console.error('Error al renderizar páginas restantes:', err);
+                    });
+                    
                     // Aplicar zoom si fue configurado desde la URL
-                    // (Se actualiza después de que todo esté renderizado)
                     if (this.zoomLevel !== 1.0) {
-                        // Pequeño delay para asegurar que todo esté renderizado
                         setTimeout(() => {
                             this.updateZoom();
                         }, 100);
@@ -1513,18 +1527,27 @@
                     await this.adjustFlipbookToPDFSize();
                     
                     await this.createAllPages();
-                    await this.renderAllPages();
                     
+                    // Renderizar primero la portada (página 1) de manera prioritaria
+                    await this.renderSinglePage(1);
+                    
+                    // Mostrar la portada inmediatamente
                     this.showCurrentPages();
                     this.showBook();
                     this.updateControls();
                     this.showMenuSections();
                     this.closeMenu();
                     
+                    // Ocultar el loading inmediatamente después de mostrar la portada
+                    this.showLoading(false);
+                    
+                    // Continuar renderizando el resto de las páginas en segundo plano
+                    this.renderAllPages().catch(err => {
+                        console.error('Error al renderizar páginas restantes:', err);
+                    });
+                    
                     // Aplicar zoom si fue configurado desde la URL
-                    // (Se actualiza después de que todo esté renderizado)
                     if (this.zoomLevel !== 1.0) {
-                        // Pequeño delay para asegurar que todo esté renderizado
                         setTimeout(() => {
                             this.updateZoom();
                         }, 100);
@@ -1533,7 +1556,7 @@
                 } catch (error) {
                     console.error('Error loading PDF:', error);
                     this.showError('Error al cargar el PDF. Verifica que el archivo no esté dañado o protegido.');
-                } finally {
+                    // Solo ocultar loading si hay error (en caso de éxito ya se ocultó antes)
                     this.showLoading(false);
                 }
             }
@@ -1562,13 +1585,16 @@
                     
                     // Lógica corregida: usar clases CSS en lugar de estilos inline
                     if (i === 1) {
-                        // Portada centrada cuando está cerrada
-                        pageElement.classList.add('right', 'centered');
+                        // Portada centrada cuando está cerrada (sin clases laterales)
+                        pageElement.classList.add('centered');
+                    } else if (i === this.totalPages) {
+                        // Última página - siempre está sola (como la portada), usar el mismo principio
+                        pageElement.classList.add('centered');
                     } else if (i % 2 === 0) {
                         // Páginas pares en el lado izquierdo
                         pageElement.classList.add('left', 'position-left');
                     } else {
-                        // Páginas impares (excepto portada) en el lado derecho
+                        // Páginas impares (excepto portada y última página) en el lado derecho
                         pageElement.classList.add('right', 'position-right');
                     }
                     
@@ -1603,12 +1629,19 @@
             async renderAllPages() {
                 const renderPromises = [];
                 
+                // Renderizar todas las páginas excepto la primera (ya renderizada)
                 // Renderizar páginas con mejor calidad y en paralelo
-                for (let i = 1; i <= this.totalPages; i++) {
+                for (let i = 2; i <= this.totalPages; i++) {
                     renderPromises.push(this.renderSinglePage(i));
                 }
                 
-                // Mostrar progreso de carga
+                // Si solo hay una página, no hay nada más que renderizar
+                if (this.totalPages <= 1) {
+                    this.allPagesLoaded = true;
+                    return;
+                }
+                
+                // Mostrar progreso de carga (solo para las páginas restantes)
                 this.showLoadingProgress(renderPromises.length);
                 
                 await Promise.all(renderPromises);
@@ -1741,9 +1774,13 @@
 
                         // Caso especial: Última página impar
                         if (this.isLastOddPage()) {
+                            console.log(`[showCurrentPages] Mostrando última página impar: totalPages=${this.totalPages}, currentPage=${this.currentPage}`);
                             if (this.pageElements[this.totalPages]) {
                                 this.pageElements[this.totalPages].classList.remove('hidden');
                                 this.pageElements[this.totalPages].classList.add('visible');
+                                console.log(`[showCurrentPages] Página ${this.totalPages} marcada como visible`);
+                            } else {
+                                console.error(`[showCurrentPages] this.pageElements[${this.totalPages}] no existe!`);
                             }
                             return;
                         }
@@ -1767,30 +1804,61 @@
 
             updateBookLayout() {
                 // Actualizar el layout del libro y la posición del título
-                if (this.isBookClosed() || this.isLastOddPage()) {
-                    // Libro cerrado o última página impar - centrar
+                if (this.isBookClosed()) {
+                    // Libro cerrado - centrar portada
                     this.flipbookContainer.classList.remove('book-open');
                     this.flipbookContainer.classList.add('book-closed');
+                    // Ajustar ancho del flipbook a una sola página para centrar correctamente
+                    if (this.pageWidth) {
+                        this.flipbook.style.width = this.pageWidth + 'px';
+                    }
                     
                     // Ajustar posición de la portada para centrarla con transición suave
                     if (this.pageElements[1]) {
                         this.pageElements[1].classList.add('centered');
                         this.pageElements[1].classList.remove('position-left', 'position-right');
-                        // Agregar transición suave para el cambio de posición
-                        this.pageElements[1].style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                        this.pageElements[1].style.transition = 'all 0.3s ease';
+                    }
+                } else if (this.isLastOddPage()) {
+                    // Última página (siempre está sola porque la portada también está sola) - centrar usando el mismo principio que la primera página
+                    console.log(`[updateBookLayout] Aplicando centrado para última página: totalPages=${this.totalPages}, currentPage=${this.currentPage}`);
+                    
+                    this.flipbookContainer.classList.remove('book-open');
+                    this.flipbookContainer.classList.add('book-closed');
+                    
+                    // Ajustar ancho del flipbook a una sola página para centrar correctamente
+                    if (this.pageWidth) {
+                        this.flipbook.style.width = this.pageWidth + 'px';
+                        console.log(`[updateBookLayout] Ancho del flipbook establecido a: ${this.pageWidth}px`);
+                    } else {
+                        console.warn(`[updateBookLayout] this.pageWidth no está definido!`);
                     }
                     
-                    // Si es última página impar, también centrarla
-                    if (this.isLastOddPage() && this.pageElements[this.totalPages]) {
-                        this.pageElements[this.totalPages].classList.add('centered');
-                        this.pageElements[this.totalPages].classList.remove('position-left', 'position-right');
-                        // Agregar transición suave para el cambio de posición
-                        this.pageElements[this.totalPages].style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    // Asegurar que todas las demás páginas no tengan la clase centered
+                    this.pageElements.forEach((pageElement, index) => {
+                        if (pageElement && index > 0 && index !== this.totalPages) {
+                            pageElement.classList.remove('centered');
+                        }
+                    });
+                    
+                    // Ajustar posición de la última página para centrarla con transición suave (igual que la portada)
+                    if (this.pageElements[this.totalPages]) {
+                        const lastPage = this.pageElements[this.totalPages];
+                        lastPage.classList.add('centered');
+                        lastPage.classList.remove('position-left', 'position-right');
+                        lastPage.style.transition = 'all 0.3s ease';
+                        console.log(`[updateBookLayout] Clase 'centered' aplicada a la página ${this.totalPages}`);
+                    } else {
+                        console.error(`[updateBookLayout] this.pageElements[${this.totalPages}] no existe!`);
                     }
                 } else {
                     // Libro abierto - layout normal con transición suave
                     this.flipbookContainer.classList.remove('book-closed');
                     this.flipbookContainer.classList.add('book-open');
+                    // Restaurar ancho del flipbook a spread (dos páginas)
+                    if (this.flipbookWidth) {
+                        this.flipbook.style.width = this.flipbookWidth + 'px';
+                    }
                     
                     // Restaurar posiciones normales de las páginas con transición
                     this.pageElements.forEach((pageElement, index) => {
@@ -1833,7 +1901,13 @@
             }
 
             isLastOddPage() {
-                return this.currentPage === this.totalPages && this.totalPages % 2 === 1;
+                // La última página SIEMPRE se muestra sola (porque la portada también está sola)
+                // Por lo tanto, si estamos en la última página, siempre está sola
+                const isLast = this.currentPage === this.totalPages;
+                if (isLast) {
+                    console.log(`[isLastOddPage] Detected: currentPage=${this.currentPage}, totalPages=${this.totalPages} - última página siempre está sola`);
+                }
+                return isLast;
             }
 
             async adjustFlipbookToPDFSize() {
@@ -1916,6 +1990,8 @@
                     // Guardar todas las dimensiones calculadas
                     this.flipbookWidth = flipbookWidth;
                     this.flipbookHeight = flipbookHeight;
+                    this.singlePageWidth = pageWidth;
+                    this.singlePageHeight = pageHeight;
                     this.pageWidth = pageWidth;
                     this.pageHeight = pageHeight;
                     this.pdfAspectRatio = pdfAspectRatio;
@@ -2017,8 +2093,48 @@
                     return;
                 }
                 
-                // Navegación normal
-                if (this.currentPage >= this.totalPages - 1) return;
+                // Navegación normal - verificar si estamos en la última página
+                // La última página SIEMPRE está sola (porque la portada también está sola)
+                if (this.isLastOddPage()) return;
+                
+                // Si estamos en totalPages o más, no podemos avanzar
+                if (this.currentPage >= this.totalPages) return;
+                
+                // Si estamos en totalPages - 1, podemos avanzar a totalPages (última página sola)
+                if (this.currentPage === this.totalPages - 1) {
+                    this.isFlipping = true;
+                    this.playFlipSound();
+                    
+                    // Preparar la última página sola
+                    if (this.pageElements[this.totalPages]) {
+                        this.pageElements[this.totalPages].classList.remove('hidden');
+                        this.pageElements[this.totalPages].classList.add('visible');
+                        this.pageElements[this.totalPages].style.zIndex = '5';
+                    }
+                    
+                    // Animar la página derecha (totalPages) volteándose
+                    const flippingPage = this.pageElements[this.totalPages];
+                    if (flippingPage) {
+                        this.clearPositioningClasses(flippingPage);
+                        flippingPage.classList.add('flipping');
+                        flippingPage.style.zIndex = '20';
+                    }
+                    
+                    setTimeout(() => {
+                        this.currentPage = this.totalPages;
+                        this.showCurrentPages();
+                        this.updateControls();
+                    }, this.flipDuration / 2);
+                    
+                    setTimeout(() => {
+                        if (flippingPage) {
+                            flippingPage.classList.remove('flipping');
+                            flippingPage.style.zIndex = '';
+                        }
+                        this.isFlipping = false;
+                    }, this.flipDuration);
+                    return;
+                }
                 
                 this.isFlipping = true;
                 this.playFlipSound();
@@ -2107,8 +2223,64 @@
                     return;
                 }
                 
-                // Navegación normal
+                // Navegación normal - verificar si estamos en la primera página
                 if (this.currentPage <= 1) return;
+                
+                // Si estamos en la última página (siempre está sola), ir a la página anterior correcta
+                if (this.isLastOddPage()) {
+                    // Estamos en la última página sola, ir a totalPages - 2 para mostrar totalPages - 1 y totalPages juntas
+                    // Pero si totalPages es 2, entonces solo hay 2 páginas (1 sola y 2 sola), así que no hay páginas anteriores juntas
+                    if (this.totalPages <= 2) {
+                        // Si solo hay 1 o 2 páginas, ir a la portada
+                        this.currentPage = 1;
+                        this.showCurrentPages();
+                        this.updateControls();
+                        return;
+                    }
+                    
+                    this.isFlipping = true;
+                    this.playFlipSound();
+                    
+                    const targetPage = this.totalPages - 2;
+                    const prevLeftPage = targetPage;
+                    const prevRightPage = targetPage + 1;
+                    
+                    // Preparar las páginas anteriores
+                    if (prevLeftPage >= 1 && this.pageElements[prevLeftPage]) {
+                        this.pageElements[prevLeftPage].classList.remove('hidden');
+                        this.pageElements[prevLeftPage].classList.add('visible');
+                        this.pageElements[prevLeftPage].style.zIndex = '5';
+                    }
+                    
+                    if (prevRightPage >= 1 && this.pageElements[prevRightPage]) {
+                        this.pageElements[prevRightPage].classList.remove('hidden');
+                        this.pageElements[prevRightPage].classList.add('visible');
+                        this.pageElements[prevRightPage].style.zIndex = '5';
+                    }
+                    
+                    // Animar la última página volteándose
+                    const lastPage = this.pageElements[this.totalPages];
+                    if (lastPage) {
+                        this.clearPositioningClasses(lastPage);
+                        lastPage.classList.add('flipping');
+                        lastPage.style.zIndex = '20';
+                    }
+                    
+                    setTimeout(() => {
+                        this.currentPage = targetPage;
+                        this.showCurrentPages();
+                        this.updateControls();
+                    }, this.flipDuration / 2);
+                    
+                    setTimeout(() => {
+                        if (lastPage) {
+                            lastPage.classList.remove('flipping');
+                            lastPage.style.zIndex = '';
+                        }
+                        this.isFlipping = false;
+                    }, this.flipDuration);
+                    return;
+                }
                 
                 this.isFlipping = true;
                 this.playFlipSound();
@@ -2163,17 +2335,18 @@
             }
 
             async goToLastPage() {
-                let lastPage;
-                if (this.totalPages % 2 === 1) {
-                    // Si el total es impar, la última página se muestra sola
-                    lastPage = this.totalPages;
-                } else {
-                    // Si el total es par, las últimas dos páginas se muestran juntas
-                    lastPage = this.totalPages - 1;
+                // La última página SIEMPRE se muestra sola (porque la portada también está sola)
+                // Por lo tanto, siempre vamos a totalPages
+                const lastPage = this.totalPages;
+                console.log(`[goToLastPage] totalPages=${this.totalPages}, siempre última página está sola`);
+                
+                if (this.currentPage === lastPage) {
+                    console.log(`[goToLastPage] Ya estamos en la última página, saliendo`);
+                    return;
                 }
                 
-                if (this.currentPage === lastPage) return;
                 this.currentPage = lastPage;
+                console.log(`[goToLastPage] currentPage actualizado a ${this.currentPage}`);
                 this.showCurrentPages();
                 this.updateControls();
             }
@@ -2377,10 +2550,12 @@
                     this.nextPageToolbar.disabled = true;
                     this.lastPageToolbar.disabled = true;
                 } else {
-                    this.nextBtnMenu.disabled = this.currentPage >= this.totalPages - 1;
-                    this.lastPageBtn.disabled = this.currentPage >= this.totalPages - 1;
-                    this.nextPageToolbar.disabled = this.currentPage >= this.totalPages - 1;
-                    this.lastPageToolbar.disabled = this.currentPage >= this.totalPages - 1;
+                    // La última página siempre está sola, así que podemos avanzar hasta totalPages
+                    // Si estamos en totalPages, no podemos avanzar más
+                    this.nextBtnMenu.disabled = this.currentPage >= this.totalPages;
+                    this.lastPageBtn.disabled = this.currentPage >= this.totalPages;
+                    this.nextPageToolbar.disabled = this.currentPage >= this.totalPages;
+                    this.lastPageToolbar.disabled = this.currentPage >= this.totalPages;
                 }
 
                 // Actualizar barra de progreso inferior
@@ -2404,17 +2579,11 @@
                 // Inicializar con el layout correcto
                 this.updateBookLayout();
                 
-                // Transición más suave y elegante
-                this.flipbookContainer.style.opacity = '0';
-                this.flipbookContainer.style.transform = 'translateY(30px) scale(0.95)';
+                // Mostrar inmediatamente sin transición larga para la portada
+                this.flipbookContainer.style.opacity = '1';
+                this.flipbookContainer.style.transform = 'translateY(0) scale(1)';
                 this.flipbookContainer.style.display = 'block';
-                
-                // Pequeño delay para asegurar que el display se aplique
-                requestAnimationFrame(() => {
-                    this.flipbookContainer.style.transition = 'all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                    this.flipbookContainer.style.opacity = '1';
-                    this.flipbookContainer.style.transform = 'translateY(0) scale(1)';
-                });
+                this.flipbookContainer.style.transition = 'opacity 0.3s ease';
             }
 
             showTopToolbar() {
@@ -2439,12 +2608,9 @@
                         void this.loading.offsetWidth;
                         this.loading.classList.add('show');
                     } else {
+                        // Ocultar inmediatamente sin delay para mostrar la portada más rápido
                         this.loading.classList.remove('show');
-                        setTimeout(() => {
-                            if (this.loading) {
-                                this.loading.style.display = 'none';
-                            }
-                        }, 400);
+                        this.loading.style.display = 'none';
                     }
                 }
             }
