@@ -1348,9 +1348,11 @@
                     
                     // Aplicar zoom si fue configurado desde la URL
                     if (this.zoomLevel !== 1.0) {
+                        console.log(`[loadPdfFromUrl] Aplicando zoom desde URL: ${this.zoomLevel} (${Math.round(this.zoomLevel * 100)}%)`);
+                        // Aplicar zoom inmediatamente después de que la portada esté visible
                         setTimeout(() => {
                             this.updateZoom();
-                        }, 100);
+                        }, 200);
                     }
                     
                     console.log('PDF cargado exitosamente desde URL:', finalUrl);
@@ -1548,9 +1550,11 @@
                     
                     // Aplicar zoom si fue configurado desde la URL
                     if (this.zoomLevel !== 1.0) {
+                        console.log(`[handleFileSelect] Aplicando zoom desde URL: ${this.zoomLevel} (${Math.round(this.zoomLevel * 100)}%)`);
+                        // Aplicar zoom inmediatamente después de que la portada esté visible
                         setTimeout(() => {
                             this.updateZoom();
-                        }, 100);
+                        }, 200);
                     }
                     
                 } catch (error) {
@@ -2428,7 +2432,8 @@
                     this.pan(); // Toggle para desactivar
                 }
                 
-                if (this.pdf && this.allPagesLoaded && !this.isFlipping) {
+                // Aplicar zoom siempre que el PDF esté cargado, incluso si no todas las páginas están renderizadas
+                if (this.pdf && !this.isFlipping) {
                     // Obtener la transformación actual para mantener la posición de pan
                     const currentTransform = this.flipbook.style.transform;
                     const translateMatch = currentTransform.match(/translate\(([^)]+)\)/);
@@ -2447,14 +2452,17 @@
 
                     // Aplicar zoom manteniendo la posición y el origen en top-center
                     this.flipbook.style.transform = `translate(${translateX}px, ${translateY}px) scale(${this.zoomLevel})`;
+                    console.log(`[updateZoom] Zoom aplicado: ${this.zoomLevel} (${Math.round(this.zoomLevel * 100)}%)`);
                     
                     // Efecto visual de confirmación rápido
                     this.flipbook.style.transition = 'transform 0.2s ease-out';
                     
-                    // Re-renderizar páginas visibles con mejor calidad después del zoom
-                    setTimeout(() => {
-                        this.reRenderVisiblePages();
-                    }, 250);
+                    // Re-renderizar páginas visibles con mejor calidad después del zoom (solo si todas las páginas están cargadas)
+                    if (this.allPagesLoaded) {
+                        setTimeout(() => {
+                            this.reRenderVisiblePages();
+                        }, 250);
+                    }
                     
                     // Restaurar transición normal después del zoom
                     setTimeout(() => {
@@ -2462,6 +2470,8 @@
                             this.flipbook.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                         }
                     }, 200);
+                } else {
+                    console.warn(`[updateZoom] No se puede aplicar zoom: pdf=${!!this.pdf}, isFlipping=${this.isFlipping}`);
                 }
             }
 
