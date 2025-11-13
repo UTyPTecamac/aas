@@ -1,1 +1,1262 @@
-{"interactiveVideo":{"video":{"startScreenOptions":{"title":"Vídeo Interactivo","hideStartTitle":false},"textTracks":{"videoTrack":[{"label":"Subtítulos","kind":"subtitles","srcLang":"en"}]},"files":[{"path":"https://youtu.be/WMeQMa49cWQ","mime":"video/YouTube","copyright":{"license":"U"},"aspectRatio":"16:9"}]},"assets":{"interactions":[{"x":1.0912265386294195,"y":27.171276079573023,"width":10,"height":10,"duration":{"from":19.768,"to":29.768},"libraryTitle":"Single Choice Set","action":{"library":"H5P.SingleChoiceSet 1.11","params":{"choices":[{"subContentId":"9ffea92e-8f3e-427e-a798-99129fc1ab55","question":"<p>Prueba 01</p>","answers":["<p>a</p>","<p>b</p>"]},{"subContentId":"65b61e54-6a5f-480e-82e2-14230927de47"}],"overallFeedback":[{"from":0,"to":100,"feedback":"100"}],"behaviour":{"autoContinue":true,"timeoutCorrect":2000,"timeoutWrong":3000,"soundEffectsEnabled":true,"enableRetry":true,"enableSolutionsButton":true,"passPercentage":100},"l10n":{"nextButtonLabel":"Siguiente pregunta","showSolutionButtonLabel":"Mostrar solución","retryButtonLabel":"Intentar de nuevo","solutionViewTitle":"Lista Solución","correctText":"¡Correcto!","incorrectText":"¡Incorrecto!","shouldSelect":"Debería haber sido seleccionada","shouldNotSelect":"NO debería haber sido seleccionada","muteButtonLabel":"Silenciar sonido de retroalimentación","closeButtonLabel":"Cerrar","slideOfTotal":"Diapositiva :num de :total","scoreBarLabel":"Has conseguido :num de un total de :total puntos","solutionListQuestionNumber":"Pregunta :num","a11yShowSolution":"Mostrar la solución. La tarea se calificará con su solución correcta.","a11yRetry":"Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."}},"subContentId":"65d6d900-2749-4d66-b28b-9bddd8a244e8","metadata":{"contentType":"Single Choice Set","license":"U","title":"Sin título Single Choice Set","authors":[],"changes":[],"extraTitle":"Sin título Single Choice Set"}},"pause":true,"displayType":"button","buttonOnMobile":false,"adaptivity":{"correct":{"allowOptOut":false,"message":"<p>intentar </p>"},"wrong":{"allowOptOut":false,"message":""},"requireCompletion":true},"label":"<p>Pregunta </p>"}],"bookmarks":[],"endscreens":[{"time":523,"label":"8:43 Pantalla de envío"}]},"summary":{"task":{"library":"H5P.Summary 1.10","params":{"intro":"Elige la oración correcta.","summaries":[{"subContentId":"6bff919c-c212-425e-b348-929b4f6d9a58","tip":""}],"overallFeedback":[{"from":0,"to":100}],"solvedLabel":"Progreso:","scoreLabel":"Respuestas incorrectas:","resultLabel":"Tu resultado","labelCorrect":"Correcta.","labelIncorrect":"¡Incorrecto! Por favor inténtalo otra vez.","alternativeIncorrectLabel":"Incorrecto","labelCorrectAnswers":"Respuestas correctas.","tipButtonLabel":"Mostrar pista","scoreBarLabel":"Has conseguido :num de un total de :total puntos","progressText":"Progreso :num de :total"},"subContentId":"32f7622e-09bc-44ed-b587-e080e5b194d0","metadata":{"contentType":"Summary","license":"U","title":"Sin título Summary","authors":[],"changes":[],"extraTitle":"Sin título Summary"}},"displayAt":3}},"override":{"autoplay":false,"loop":false,"showBookmarksmenuOnLoad":false,"showRewind10":false,"preventSkippingMode":"none","deactivateSound":false},"l10n":{"interaction":"Interacción","play":"Reproducir","pause":"Pausa","mute":"Enmudecer, actualmente sonoro","unmute":"Activar sonido, actualmente silenciado","quality":"Calidad del Vídeo","captions":"Leyendas","close":"Cerrar","fullscreen":"Pantalla Completa","exitFullscreen":"Salir de Pantalla Completa","summary":"Abrir diálogo de resumen","bookmarks":"Marcadores","endscreen":"Pantalla de Envío","defaultAdaptivitySeekLabel":"Continuar","continueWithVideo":"Continuar con el vídeo","more":"Más opciones de reproducción","playbackRate":"Velocidad de reproducción","rewind10":"Retroceder 10 segundos","navDisabled":"La navegación está deshabilitada","navForwardDisabled":"La navegación hacia adelante está deshabilitada","sndDisabled":"El sonido está deshabilitado","requiresCompletionWarning":"Debes responder correctamente a todas las preguntas antes de continuar.","back":"Atrás","hours":"Horas","minutes":"Minutos","seconds":"Segundos","currentTime":"Tiempo actual:","totalTime":"Tiempo total:","singleInteractionAnnouncement":"Interacción aparecida:","multipleInteractionsAnnouncement":"Han aparecido múltiples interacciones.","videoPausedAnnouncement":"Vídeo en pausa","content":"Contenido","answered":"@answered contestadas","endcardTitle":"@answered pregunta(s) contestada(s)","endcardInformation":"Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.","endcardInformationOnSubmitButtonDisabled":"Has contestado @answered preguntas.","endcardInformationNoAnswers":"No has respondido ninguna pregunta.","endcardInformationMustHaveAnswer":"Debes responder al menos una pregunta antes de poder enviar tus respuestas.","endcardSubmitButton":"Enviar Respuestas","endcardSubmitMessage":"¡Se han enviado tus respuestas!","endcardTableRowAnswered":"Preguntas respondidas","endcardTableRowScore":"Puntaje","endcardAnsweredScore":"respondidas","endCardTableRowSummaryWithScore":"Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.","endCardTableRowSummaryWithoutScore":"Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.","videoProgressBar":"Progreso del video","howToCreateInteractions":"Reproducir el video para comenzar a crear interacciones"}}
+[
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 15.000,
+      "to": 25.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q1-sub",
+            "question": "<p>Pregunta 1 (15 segundos): ¿Cuál de estas es una herramienta H5P?</p>",
+            "answers": [
+              "<p>Opción A (Incorrecta)</p>",
+              "<p>*Opción B (Correcta)*</p>",
+              "<p>Opción C (Incorrecta)</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q1",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 1",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 1"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 1</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 30.000,
+      "to": 40.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q2-sub",
+            "question": "<p>Pregunta 2 (30 segundos): ¿Qué permite hacer el Video Interactivo?</p>",
+            "answers": [
+              "<p>*Añadir interacciones a un video*</p>",
+              "<p>Crear un juego de memoria</p>",
+              "<p>Generar un informe en PDF</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q2",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 2",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 2"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 2</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 45.000,
+      "to": 55.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q3-sub",
+            "question": "<p>Pregunta 3 (45 segundos): ¿Cuál es el objetivo principal de Lumi?</p>",
+            "answers": [
+              "<p>Vender cursos en línea</p>",
+              "<p>Crear contenido de realidad virtual</p>",
+              "<p>*Editar y alojar contenido H5P*</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q3",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 3",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 3"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 3</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 60.000,
+      "to": 70.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q4-sub",
+            "question": "<p>Pregunta 4 (1:00): ¿Cuántas preguntas has añadido hasta ahora?</p>",
+            "answers": [
+              "<p>Una</p>",
+              "<p>Dos</p>",
+              "<p>*Cuatro*</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q4",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 4",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 4"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 4</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 75.000,
+      "to": 85.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q5-sub",
+            "question": "<p>Pregunta 5 (1:15): ¿Qué significa 'displayType: poster'?</p>",
+            "answers": [
+              "<p>Que la pregunta es un botón</p>",
+              "<p>*Que la pregunta pausa el video*</p>",
+              "<p>Que la pregunta aparece al final</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q5",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 5",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 5"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 5</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 90.000,
+      "to": 100.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q6-sub",
+            "question": "<p>Pregunta 6 (1:30): ¿Qué tipo de archivo es el H5P?</p>",
+            "answers": [
+              "<p>Un ejecutable (.exe)</p>",
+              "<p>*Un archivo ZIP comprimido*</p>",
+              "<p>Un documento de Word (.docx)</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q6",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 6",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 6"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 6</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 105.000,
+      "to": 115.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q7-sub",
+            "question": "<p>Pregunta 7 (1:45): ¿Cuál es el formato para marcar el tiempo de aparición en JSON?</p>",
+            "answers": [
+              "<p>*Segundos con decimales (ej: 105.000)*</p>",
+              "<p>Texto libre</p>",
+              "<p>HH:MM:SS</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q7",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 7",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 7"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 7</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 120.000,
+      "to": 130.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q8-sub",
+            "question": "<p>Pregunta 8 (2:00): ¿Necesitas un UUID diferente para cada pregunta?</p>",
+            "answers": [
+              "<p>No, solo uno por video</p>",
+              "<p>*Sí, para que H5P funcione correctamente*</p>",
+              "<p>Solo si la respuesta es incorrecta</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q8",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 8",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 8"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 8</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 135.000,
+      "to": 145.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q9-sub",
+            "question": "<p>Pregunta 9 (2:15): ¿Qué elemento del JSON contiene las interacciones?</p>",
+            "answers": [
+              "<p>Video</p>",
+              "<p>EndsCreen</p>",
+              "<p>*Assets.interactions*</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q9",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 9",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 9"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 9</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 150.000,
+      "to": 160.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q10-sub",
+            "question": "<p>Pregunta 10 (2:30): ¿Qué valor en 'pause' detiene el video?</p>",
+            "answers": [
+              "<p>False</p>",
+              "<p>0</p>",
+              "<p>*True*</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q10",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 10",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 10"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 10</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 165.000,
+      "to": 175.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q11-sub",
+            "question": "<p>Pregunta 11 (2:45): ¿Cuál es la principal ventaja de editar el JSON directamente?</p>",
+            "answers": [
+              "<p>Mejor rendimiento del video</p>",
+              "<p>*Edición y duplicación masiva*</p>",
+              "<p>Mejor calidad de imagen</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q11",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 11",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 11"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 11</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 180.000,
+      "to": 190.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q12-sub",
+            "question": "<p>Pregunta 12 (3:00): ¿Qué debes usar para marcar la respuesta correcta en el JSON?</p>",
+            "answers": [
+              "<p>Corchetes []</p>",
+              "<p>Un número (1)</p>",
+              "<p>*Un asterisco (*)*</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q12",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 12",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 12"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 12</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 195.000,
+      "to": 205.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q13-sub",
+            "question": "<p>Pregunta 13 (3:15): ¿Es el formato JSON sensible a las mayúsculas/minúsculas?</p>",
+            "answers": [
+              "<p>No</p>",
+              "<p>*Sí, es sensible a mayúsculas y minúsculas*</p>",
+              "<p>Solo en las URLs</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q13",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 13",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 13"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 13</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 210.000,
+      "to": 220.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q14-sub",
+            "question": "<p>Pregunta 14 (3:30): ¿Qué formato de archivo se debe renombrar a .h5p?</p>",
+            "answers": [
+              "<p>Un documento de texto</p>",
+              "<p>*Un archivo ZIP*</p>",
+              "<p>Un archivo MP4</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q14",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 14",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 14"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 14</p>"
+  },
+  {
+    "x": 1.0912265386294195,
+    "y": 27.171276079573023,
+    "width": 10,
+    "height": 10,
+    "duration": {
+      "from": 225.000,
+      "to": 235.000
+    },
+    "libraryTitle": "Single Choice Set",
+    "action": {
+      "library": "H5P.SingleChoiceSet 1.11",
+      "params": {
+        "choices": [
+          {
+            "subContentId": "uuid-q15-sub",
+            "question": "<p>Pregunta 15 (3:45): ¿Es el Video Interactivo un tipo de contenido dinámico?</p>",
+            "answers": [
+              "<p>No</p>",
+              "<p>*Sí, por sus interacciones programadas*</p>",
+              "<p>Solo en tabletas</p>"
+            ]
+          }
+        ],
+        "overallFeedback": [
+          {
+            "from": 0,
+            "to": 100,
+            "feedback": "100"
+          }
+        ],
+        "behaviour": {
+          "autoContinue": true,
+          "timeoutCorrect": 2000,
+          "timeoutWrong": 3000,
+          "soundEffectsEnabled": true,
+          "enableRetry": true,
+          "enableSolutionsButton": true,
+          "passPercentage": 100
+        },
+        "l10n": {
+          "nextButtonLabel": "Siguiente pregunta",
+          "showSolutionButtonLabel": "Mostrar solución",
+          "retryButtonLabel": "Intentar de nuevo",
+          "solutionViewTitle": "Lista Solución",
+          "correctText": "¡Correcto!",
+          "incorrectText": "¡Incorrecto!",
+          "shouldSelect": "Debería haber sido seleccionada",
+          "shouldNotSelect": "NO debería haber sido seleccionada",
+          "muteButtonLabel": "Silenciar sonido de retroalimentación",
+          "closeButtonLabel": "Cerrar",
+          "slideOfTotal": "Diapositiva :num de :total",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "solutionListQuestionNumber": "Pregunta :num",
+          "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+          "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+        }
+      },
+      "subContentId": "uuid-q15",
+      "metadata": {
+        "contentType": "Single Choice Set",
+        "license": "U",
+        "title": "Pregunta 15",
+        "authors": [],
+        "changes": [],
+        "extraTitle": "Pregunta 15"
+      }
+    },
+    "pause": true,
+    "displayType": "poster",
+    "buttonOnMobile": false,
+    "adaptivity": {
+      "correct": {
+        "allowOptOut": false,
+        "message": "<p>¡Correcto! Continuar.</p>"
+      },
+      "wrong": {
+        "allowOptOut": false,
+        "message": "<p>Intenta de nuevo.</p>"
+      },
+      "requireCompletion": true
+    },
+    "label": "<p>P. 15</p>"
+  }
+]
