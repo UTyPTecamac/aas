@@ -7,11 +7,13 @@
   
   <style>
     *, *::before, *::after { box-sizing: border-box; }
+
+    /* Fondo totalmente transparente */
     body { 
       margin: 0; 
       font-family: system-ui, Arial, sans-serif; 
-      padding: 16px; 
-      background-color: #f0f0f0;
+      padding: 16px;
+      background: transparent !important;
     }
 
     /* Contenedor con proporción 16:9 */
@@ -30,49 +32,67 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #fff;
+      background: #ffffffdd; /* blanco suave y ligeramente translúcido */
       border: 1px solid #ccc;
+      backdrop-filter: blur(3px);
     }
 
-    /* Loader centrado */
+    /* Loader centrado con fondo suave */
     #loader {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.85);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      color: #333;
       z-index: 10;
+      text-align: center;
+      padding: 20px;
     }
 
-    /* Animación simple */
+    /* Spinner moderno */
     .spinner {
-      border: 6px solid #ddd;
-      border-top: 6px solid #555;
+      width: 55px;
+      height: 55px;
+      border: 6px solid rgba(0,0,0,0.15);
+      border-top-color: rgba(0,0,0,0.6);
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 14px;
     }
 
     @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Texto UX */
+    #loader-text {
+      font-size: 1.05rem;
+      color: #333;
+      font-weight: 500;
+      opacity: 0.9;
+      animation: fadepulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes fadepulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
     }
   </style>
 </head>
 <body>
-v3.6
+v3.7
 
   <div id="h5p-wrapper">
     <div id="loader">
       <div class="spinner"></div>
+      <div id="loader-text">Preparando recurso…</div>
     </div>
+
     <div id="h5p-container"></div>
   </div>
 
@@ -91,14 +111,16 @@ v3.6
       const loader = document.getElementById('loader');
 
       // Inicializa H5P
-      const h5p = new H5PStandalone.H5P(el, options);
+      new H5PStandalone.H5P(el, options);
 
-      // El iframe tarda en aparecer, así que esperamos a que exista
+      // Espera a que se genere el iframe
       const observer = new MutationObserver(() => {
         const iframe = el.querySelector('iframe');
         if (iframe) {
           iframe.addEventListener('load', () => {
-            loader.style.display = 'none';  // Oculta el loader
+            loader.style.opacity = '0';
+            loader.style.transition = 'opacity 0.4s ease';
+            setTimeout(() => loader.style.display = 'none', 400);
           });
           observer.disconnect();
         }

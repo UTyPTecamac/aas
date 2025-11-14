@@ -4,7 +4,7 @@
       "startScreenOptions": {
         "title": "AD 01 01 01 Conceptos de Virtualización",
         "hideStartTitle": true,
-        "shortStartDescription": "Exploración a fondo de la virtualización, máquinas virtuales, hipervisores y su relevancia actual.",
+        "shortStartDescription": "La virtualización se ha consolidado como una tecnología fundamental en la infraestructura de TI contemporánea, permitien",
         "poster": {
           "path": "images/file-b_QUUDZgPOpJI8mD.jpg",
           "mime": "image/jpeg",
@@ -31,7 +31,7 @@
           "copyright": {
             "license": "U",
             "title": "https://www.youtube.com/watch?v=jCcZfY04at4",
-            "author": "Universidades del subsistema tecnológico",
+            "author": "Jesús Romero",
             "year": "2025"
           },
           "aspectRatio": "16:9"
@@ -46,8 +46,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 47,
-            "to": 57
+            "from": 54,
+            "to": 64
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -55,24 +55,22 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528a",
-                  "question": "<p><strong>¿Cuál es el problema principal que la virtualización busca resolver, según lo planteado al inicio?</strong></p>",
+                  "subContentId": "1a9c3b8a-b8b8-4f8e-a8f8-3e1b5b1b4b1b",
+                  "question": "<p>💡 <strong>¿Cuál es el problema principal de tener un servidor muy potente usando solo un 15% de su capacidad para una sola aplicación?</strong></p>",
                   "answers": [
-                    "<p>La subutilización del hardware potente.</p>",
-                    "<p>La falta de sistemas operativos compatibles.</p>",
-                    "<p>El alto costo de las licencias de software.</p>",
-                    "<p>La lentitud de las redes en los centros de datos.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "8ac87066-74ce-4174-8c69-dd09557cc199"
+                    "<p>Subutilización de hardware.</p>",
+                    "<p>Fallo de alta disponibilidad.</p>",
+                    "<p>Exceso de virtualización.</p>",
+                    "<p>Un hipervisor Tipo 2.</p>"
+                  ],
+                  "correctAnswer": 0
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Buen trabajo! Has captado la idea principal sobre la optimización de recursos."
+                  "feedback": "¡Sigue explorando!"
                 }
               ],
               "behaviour": {
@@ -85,31 +83,22 @@
                 "passPercentage": 100
               },
               "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
+                "nextButtonLabel": "Siguiente",
                 "showSolutionButtonLabel": "Mostrar solución",
                 "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
+                "solutionViewTitle": "Solución",
                 "correctText": "¡Correcto!",
                 "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "muteButtonLabel": "Silenciar",
                 "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+                "scoreBarLabel": "Puntuación: :num/:total"
               }
             },
-            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4a",
+            "subContentId": "a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 1: Problema Principal",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 1: Problema Principal"
+              "title": "Cuestionario: Eficiencia"
             }
           },
           "pause": true,
@@ -126,7 +115,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Comprobar: Eficiencia</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -134,70 +123,33 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 111,
-            "to": 121
+            "from": 128,
+            "to": 138
           },
-          "libraryTitle": "Single Choice Set",
+          "libraryTitle": "True/False",
           "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
+            "library": "H5P.TrueFalse 1.8",
             "params": {
-              "choices": [
-                {
-                  "subContentId": "b1b8543a-c7c8-4e3c-9b5f-ef163456789b",
-                  "question": "<p><strong>¿Qué característica clave define a un hipervisor Tipo 1 (Bare Metal)?</strong></p>",
-                  "answers": [
-                    "<p>Se instala directamente sobre el hardware físico.</p>",
-                    "<p>Se ejecuta como un programa más dentro de Windows o Linux.</p>",
-                    "<p>Es ideal solo para ambientes de prueba y desarrollo.</p>",
-                    "<p>Requiere un sistema operativo base para funcionar.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "c2c9654b-d8d9-4f4d-a012-gh174567890c"
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 100,
-                  "feedback": "Se explica que los Tipo 1 se instalan directo en el hardware para máximo rendimiento."
-                }
-              ],
+              "question": "<p>📌 <strong>Verdadero o Falso:</strong> Una Máquina Virtual (VM) es una computadora completa construida con software, aislada de otras VMs, aunque se ejecuten en el mismo hardware.</p>",
+              "correct": "true",
+              "feedbackOnCorrect": "¡Exacto! Ese es el concepto clave de las VMs.",
+              "feedbackOnWrong": "Revisa de nuevo. El aislamiento es una característica fundamental.",
               "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
                 "enableRetry": true,
                 "enableSolutionsButton": true,
-                "passPercentage": 100
+                "autoContinue": true
               },
               "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+                "true": "Verdadero",
+                "false": "Falso",
+                "scoreBarLabel": "Puntuación: :num/:total"
               }
             },
-            "subContentId": "e9f0a1b2-c3d4-4e5f-8b6a-7f8d9e0c1b2a",
+            "subContentId": "b2c3d4e5-f6a7-890b-c1d2-e3f4a5b67890",
             "metadata": {
-              "contentType": "Single Choice Set",
+              "contentType": "True/False",
               "license": "U",
-              "title": "Pregunta 2: Hipervisor Tipo 1",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 2: Hipervisor Tipo 1"
+              "title": "Cuestionario: Definición VM"
             }
           },
           "pause": true,
@@ -214,7 +166,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Comprobar: Definición VM</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -222,70 +174,39 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 219,
-            "to": 229
+            "from": 158,
+            "to": 168
           },
-          "libraryTitle": "Single Choice Set",
+          "libraryTitle": "Fill in the Blanks",
           "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
+            "library": "H5P.Blanks 1.14",
             "params": {
-              "choices": [
-                {
-                  "subContentId": "d3d4678a-e5e6-4f7f-a8a9-b0b1c2d3e4f5",
-                  "question": "<p><strong>¿Cuál es el caso de uso principal para los hipervisores Tipo 2 (Hosted), como VirtualBox?</strong></p>",
-                  "answers": [
-                    "<p>Ambientes de desarrollo y pruebas en una estación de trabajo personal.</p>",
-                    "<p>Entornos de producción críticos de alta demanda.</p>",
-                    "<p>Servidores que necesitan acceso directo al hardware.</p>",
-                    "<p>Reemplazar por completo al sistema operativo principal.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "f6f7g8h9-i0i1-4j2j-k3k4-l5m6n7o8p9q0"
-                }
+              "questions": [
+                "<p>⚙️ Los hipervisores de Tipo 1 (Bare Metal) se instalan *directamente* sobre el *hardware* físico, ofreciendo el mejor rendimiento.</p>"
               ],
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 100,
-                  "feedback": "Se indica que los Tipo 2 son más sencillos para ambientes de desarrollo o pruebas rápidas."
+                  "to": 100
                 }
               ],
               "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
+                "caseSensitive": false,
                 "enableRetry": true,
                 "enableSolutionsButton": true,
-                "passPercentage": 100
+                "autoCheck": false,
+                "showSolutionsRequiresInput": true
               },
               "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+                "scoreBarLabel": "Puntuación: :num/:total",
+                "fillInTheBlanks": "Rellena los huecos"
               }
             },
-            "subContentId": "a0a1b2c3-d4e5-4f6g-h7i8-j9k0l1m2n3o4",
+            "subContentId": "c3d4e5f6-a7b8-90c1-d2e3-f4a5b6c78901",
             "metadata": {
-              "contentType": "Single Choice Set",
+              "contentType": "Fill in the Blanks",
               "license": "U",
-              "title": "Pregunta 3: Hipervisor Tipo 2",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 3: Hipervisor Tipo 2"
+              "title": "Cuestionario: Hipervisor Tipo 1"
             }
           },
           "pause": true,
@@ -302,7 +223,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Comprobar: Hipervisor Tipo 1</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -310,70 +231,34 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 231,
-            "to": 241
+            "from": 228,
+            "to": 238
           },
-          "libraryTitle": "Single Choice Set",
+          "libraryTitle": "Mark the Words",
           "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
+            "library": "H5P.MarkTheWords 1.11",
             "params": {
-              "choices": [
-                {
-                  "subContentId": "e4e5f6a7-b8c9-4d0e-a1b2-c3d4e5f6a7b8",
-                  "question": "<p><strong>¿Cómo contribuye la virtualización a la \"continuidad del negocio\"?</strong></p>",
-                  "answers": [
-                    "<p>Permite que las máquinas virtuales se recuperen automáticamente si un servidor físico falla.</p>",
-                    "<p>Reduce el consumo de aire acondicionado en el rack.</p>",
-                    "<p>Facilita la compra de menos servidores físicos.</p>",
-                    "<p>Define la infraestructura usando scripts y código.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "c9d0e1f2-g3h4-4i5j-k6l7-m8n9o0p1q2r3"
-                }
-              ],
+              "taskDescription": "<p>🔎 <strong>Identifica las características clave de un hipervisor Tipo 2 (Hosted).</strong></p>",
+              "textField": "Un hipervisor Tipo 2 se *ejecuta* *como* *un* *programa* *más* *encima* de un *sistema* *operativo* base (como Windows o Linux). Son más sencillos de usar para *pruebas* o *desarrollo* en una laptop, pero tienen una capa adicional que afecta el rendimiento.",
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 100,
-                  "feedback": "Se explica la Alta Disponibilidad (HA) como una red de seguridad ante fallos."
+                  "to": 100
                 }
               ],
               "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
                 "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
+                "enableSolutionsButton": true
               },
               "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+                "scoreBarLabel": "Puntuación: :num/:total"
               }
             },
-            "subContentId": "b1c2d3e4-f5g6-4h7i-j8k9-l0m1n2o3p4q5",
+            "subContentId": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8901",
             "metadata": {
-              "contentType": "Single Choice Set",
+              "contentType": "Mark the Words",
               "license": "U",
-              "title": "Pregunta 4: Continuidad del Negocio",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 4: Continuidad del Negocio"
+              "title": "Cuestionario: Hipervisor Tipo 2"
             }
           },
           "pause": true,
@@ -390,7 +275,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Comprobar: Hipervisor Tipo 2</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -398,70 +283,35 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 289,
-            "to": 299
+            "from": 237,
+            "to": 247
           },
-          "libraryTitle": "Single Choice Set",
+          "libraryTitle": "Drag Text",
           "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
+            "library": "H5P.DragText 1.10",
             "params": {
-              "choices": [
-                {
-                  "subContentId": "f7g8h9i0-j1k2-4l3m-n4o5-p6q7r8s9t0u1",
-                  "question": "<p><strong>¿Cuál es la relación fundamental entre la virtualización y el Cloud Computing (computación en la nube)?</strong></p>",
-                  "answers": [
-                    "<p>La virtualización es la tecnología base que hace posible el Cloud Computing.</p>",
-                    "<p>La nube es un reemplazo directo de la virtualización.</p>",
-                    "<p>El Cloud Computing se usa solo para crear hipervisores Tipo 1.</p>",
-                    "<p>La virtualización solo se usa para pruebas, mientras que la nube es para producción.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "v2w3x4y5-z6a7-4b8c-d9e0-f1g2h3i4j5k6"
-                }
-              ],
+              "taskDescription": "<p>🧩 <strong>Arrastra los conceptos para completar la idea sobre continuidad del negocio.</strong></p>",
+              "textField": "La virtualización mejora la <span style=\"font-size: 1rem;\">dropzone:continuidad del negocio</span>. Si un <span style=\"font-size: 1rem;\">dropzone:servidor físico</span> falla, la <span style=\"font-size: 1rem;\">dropzone:alta disponibilidad</span> (HA) permite que las VMs se levanten <span style=\"font-size: 1rem;\">dropzone:automáticamente</span> en otro host.",
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 100,
-                  "feedback": "Se afirma que la virtualización es el \"cimiento\" del cloud computing."
+                  "to": 100
                 }
               ],
               "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
                 "enableRetry": true,
                 "enableSolutionsButton": true,
-                "passPercentage": 100
+                "instantFeedback": false
               },
               "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+                "scoreBarLabel": "Puntuación: :num/:total"
               }
             },
-            "subContentId": "c3d4e5f6-g7h8-4i9j-k0l1-m2n3o4p5q6r7",
+            "subContentId": "e5f6a7b8-c9d0-e1f2-a3b4-c5d6e7f89012",
             "metadata": {
-              "contentType": "Single Choice Set",
+              "contentType": "Drag Text",
               "license": "U",
-              "title": "Pregunta 5: Cloud Computing",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 5: Cloud Computing"
+              "title": "Cuestionario: Continuidad"
             }
           },
           "pause": true,
@@ -478,7 +328,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Comprobar: Continuidad</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -486,8 +336,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 349,
-            "to": 359
+            "from": 296,
+            "to": 306
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -495,24 +345,22 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a8b9c0d1-e2f3-4g4h-i5j6-k7l8m9n0o1p2",
-                  "question": "<p><strong>Además de los servidores, ¿hacia qué otras áreas de la infraestructura se está expandiendo el concepto de abstracción (virtualización)?</strong></p>",
+                  "subContentId": "2b9e4a7d-c7b7-4e7e-b8e8-4e2c6c2c5c2c",
+                  "question": "<p>☁️ <strong>¿Cuál es la relación fundamental entre la virtualización y el Cloud Computing?</strong></p>",
                   "answers": [
-                    "<p>Hacia las redes (SDN) y el almacenamiento (SDS).</p>",
-                    "<p>Hacia los teclados y monitores físicos.</p>",
-                    "<p>Exclusivamente hacia las aplicaciones de software.</p>",
-                    "<p>Hacia el consumo de energía y la refrigeración.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "q3r4s5t6-u7v8-4w9x-y0z1-a2b3c4d5e6f7"
+                    "<p>La virtualización es el cimiento técnico que permite a los proveedores de nube (como Amazon, Google, etc.) ofrecer sus servicios.</p>",
+                    "<p>El Cloud Computing es un software que reemplaza a los hipervisores.</p>",
+                    "<p>La virtualización es solo para redes (SDN) y el Cloud es solo para almacenamiento (SDS).</p>",
+                    "<p>No hay relación; son tecnologías competencia.</p>"
+                  ],
+                  "correctAnswer": 0
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "Se menciona la expansión a Redes Definidas por Software (SDN) y Almacenamiento Definido por Software (SDS)."
+                  "feedback": "¡Sigue adelante!"
                 }
               ],
               "behaviour": {
@@ -525,31 +373,22 @@
                 "passPercentage": 100
               },
               "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
+                "nextButtonLabel": "Siguiente",
                 "showSolutionButtonLabel": "Mostrar solución",
                 "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
+                "solutionViewTitle": "Solución",
                 "correctText": "¡Correcto!",
                 "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "muteButtonLabel": "Silenciar",
                 "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+                "scoreBarLabel": "Puntuación: :num/:total"
               }
             },
-            "subContentId": "d8e9f0a1-b2c3-4d5e-f6g7-h8i9j0k1l2m3",
+            "subContentId": "f6a7b8c9-d0e1-f2a3-b4c5-d6e7f8901234",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 6: Futuro (SDN/SDS)",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 6: Futuro (SDN/SDS)"
+              "title": "Cuestionario: Cloud"
             }
           },
           "pause": true,
@@ -566,7 +405,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Comprobar: Cloud</p>"
         }
       ],
       "bookmarks": [],
@@ -616,63 +455,63 @@
         }
       },
       "displayAt": 3
+    },
+    "override": {
+      "autoplay": true,
+      "loop": true,
+      "showBookmarksmenuOnLoad": false,
+      "showRewind10": false,
+      "preventSkippingMode": "none",
+      "deactivateSound": false
+    },
+    "l10n": {
+      "interaction": "Interacción",
+      "play": "Reproducir",
+      "pause": "Pausa",
+      "mute": "Enmudecer, actualmente sonoro",
+      "unmute": "Activar sonido, actualmente silenciado",
+      "quality": "Calidad del Vídeo",
+      "captions": "Leyendas",
+      "close": "Cerrar",
+      "fullscreen": "Pantalla Completa",
+      "exitFullscreen": "Salir de Pantalla Completa",
+      "summary": "Abrir diálogo de resumen",
+      "bookmarks": "Marcadores",
+      "endscreen": "Pantalla de Envío",
+      "defaultAdaptivitySeekLabel": "Continuar",
+      "continueWithVideo": "Continuar con el vídeo",
+      "more": "Más opciones de reproducción",
+      "playbackRate": "Velocidad de reproducción",
+      "rewind10": "Retroceder 10 segundos",
+      "navDisabled": "La navegación está deshabilitada",
+      "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
+      "sndDisabled": "El sonido está deshabilitado",
+      "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
+      "back": "Atrás",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos",
+      "currentTime": "Tiempo actual:",
+      "totalTime": "Tiempo total:",
+      "singleInteractionAnnouncement": "Interacción aparecida:",
+      "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
+      "videoPausedAnnouncement": "Vídeo en pausa",
+      "content": "Contenido",
+      "answered": "@answered contestadas",
+      "endcardTitle": "@answered pregunta(s) contestada(s)",
+      "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
+      "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
+      "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
+      "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
+      "endcardSubmitButton": "Enviar Respuestas",
+      "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
+      "endcardTableRowAnswered": "Preguntas respondidas",
+      "endcardTableRowScore": "Puntaje",
+      "endcardAnsweredScore": "respondidas",
+      "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
+      "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
+      "videoProgressBar": "Progreso del video",
+      "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
     }
-  },
-  "override": {
-    "autoplay": true,
-    "loop": true,
-    "showBookmarksmenuOnLoad": false,
-    "showRewind10": false,
-    "preventSkippingMode": "none",
-    "deactivateSound": false
-  },
-  "l10n": {
-    "interaction": "Interacción",
-    "play": "Reproducir",
-    "pause": "Pausa",
-    "mute": "Enmudecer, actualmente sonoro",
-    "unmute": "Activar sonido, actualmente silenciado",
-    "quality": "Calidad del Vídeo",
-    "captions": "Leyendas",
-    "close": "Cerrar",
-    "fullscreen": "Pantalla Completa",
-    "exitFullscreen": "Salir de Pantalla Completa",
-    "summary": "Abrir diálogo de resumen",
-    "bookmarks": "Marcadores",
-    "endscreen": "Pantalla de Envío",
-    "defaultAdaptivitySeekLabel": "Continuar",
-    "continueWithVideo": "Continuar con el vídeo",
-    "more": "Más opciones de reproducción",
-    "playbackRate": "Velocidad de reproducción",
-    "rewind10": "Retroceder 10 segundos",
-    "navDisabled": "La navegación está deshabilitada",
-    "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
-    "sndDisabled": "El sonido está deshabilitado",
-    "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
-    "back": "Atrás",
-    "hours": "Horas",
-    "minutes": "Minutos",
-    "seconds": "Segundos",
-    "currentTime": "Tiempo actual:",
-    "totalTime": "Tiempo total:",
-    "singleInteractionAnnouncement": "Interacción aparecida:",
-    "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
-    "videoPausedAnnouncement": "Vídeo en pausa",
-    "content": "Contenido",
-    "answered": "@answered contestadas",
-    "endcardTitle": "@answered pregunta(s) contestada(s)",
-    "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
-    "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
-    "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
-    "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
-    "endcardSubmitButton": "Enviar Respuestas",
-    "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
-    "endcardTableRowAnswered": "Preguntas respondidas",
-    "endcardTableRowScore": "Puntaje",
-    "endcardAnsweredScore": "respondidas",
-    "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
-    "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
-    "videoProgressBar": "Progreso del video",
-    "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
   }
 }
