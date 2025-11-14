@@ -6,7 +6,6 @@
   <title>Video interactivo</title>
   
   <style>
-    /* Reset y estilos básicos */
     *, *::before, *::after { box-sizing: border-box; }
     body { 
       margin: 0; 
@@ -15,57 +14,97 @@
       background-color: #f0f0f0;
     }
 
-    /* EL CONTENEDOR PRINCIPAL
-      Usamos el "Padding Trick" para forzar la proporción 16:9
-    */
-    #h5p-container {
-      position: relative; /* Necesario para el iframe absoluto */
+    /* Contenedor con proporción 16:9 */
+    #h5p-wrapper {
+      position: relative;
       width: 100%;
-      max-width: 1200px; /* Ancho máximo */
+      max-width: 1200px;
       margin: 0 auto;
-      
-      /* Esta es la clave: 
-        Altura 0 y padding-top fuerzan la proporción 16:9 
-        (9 / 16 = 0.5625 = 56.25%)
-      */
       height: 0;
-      padding-top: 56.25%; 
-      
-      background-color: #fff;
-      border: 1px solid #ccc;
+      padding-top: 56.25%;
     }
 
-    /* EL IFRAME INTERNO
-      Forzamos al iframe a llenar el contenedor
-    */
-    #h5p-container iframe {
-      position: absolute; /* Se posiciona sobre el 'padding' */
+    #h5p-container {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      border: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+    }
+
+    /* Loader centrado */
+    #loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #333;
+      z-index: 10;
+    }
+
+    /* Animación simple */
+    .spinner {
+      border: 6px solid #ddd;
+      border-top: 6px solid #555;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-v3.5
-  <div id="h5p-container"></div>
+v3.6
+
+  <div id="h5p-wrapper">
+    <div id="loader">
+      <div class="spinner"></div>
+    </div>
+    <div id="h5p-container"></div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/main.bundle.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      const el = document.getElementById('h5p-container');
+
       const options = {
-        // Verifica que esta ruta sea correcta
-        h5pJsonPath: 'contenido/AAS AD.01.01.01', 
-        
+        h5pJsonPath: 'contenido/AAS AD.01.01.01',
         frameJs: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/frame.bundle.js',
-        frameCss: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/styles/h5p.css',
+        frameCss: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/styles/h5p.css'
       };
 
-      const el = document.getElementById('h5p-container');
-      new H5PStandalone.H5P(el, options);
+      const loader = document.getElementById('loader');
+
+      // Inicializa H5P
+      const h5p = new H5PStandalone.H5P(el, options);
+
+      // El iframe tarda en aparecer, así que esperamos a que exista
+      const observer = new MutationObserver(() => {
+        const iframe = el.querySelector('iframe');
+        if (iframe) {
+          iframe.addEventListener('load', () => {
+            loader.style.display = 'none';  // Oculta el loader
+          });
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(el, { childList: true, subtree: true });
     });
   </script>
 </body>
