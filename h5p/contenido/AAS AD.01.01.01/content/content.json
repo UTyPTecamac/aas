@@ -38,433 +38,439 @@
         }
       ]
     },
-    "interactions": [
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 44,
-          "to": 54
-        },
-        "libraryTitle": "Single Choice Set",
-        "action": {
-          "library": "H5P.SingleChoiceSet 1.11",
-          "params": {
-            "choices": [
-              {
-                "subContentId": "1b01a8e1-6b4f-4b0d-8f9f-682467d3e0f0",
-                "question": "<p>Según el video, ¿cuál era un problema clave con los servidores potentes <strong>antes</strong> de la virtualización?</p>",
-                "answers": [
-                  "<p>Estaban subutilizados.</p>",
-                  "<p>Requerían demasiado hardware.</p>",
-                  "<p>Eran difíciles de conectar a la red.</p>",
-                  "<p>No podían ejecutar aplicaciones.</p>"
-                ]
+    "assets": {
+      "interactions": [
+        {
+          "x": 10,
+          "y": 10,
+          "width": 80,
+          "height": "auto",
+          "duration": {
+            "from": 44,
+            "to": 51
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "9a3b8b9a-1f2c-4d5e-8f6a-7b8c9d0e1f2a",
+                  "question": "<p>Según el video, ¿cuál era un problema clave con los servidores potentes <strong>antes</strong> de la virtualización?</p>",
+                  "answers": [
+                    "<p>Estaban subutilizados.</p>",
+                    "<p>Requerían demasiado hardware.</p>",
+                    "<p>Eran difíciles de conectar a la red.</p>",
+                    "<p>No podían ejecutar aplicaciones.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
-            ],
-            "overallFeedback": [],
-            "behaviour": {
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "passPercentage": 100
             },
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "shouldSelect": "Debería haber sido seleccionada",
-              "shouldNotSelect": "NO debería haber sido seleccionada",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+            "subContentId": "c4d5e6f7-a8b9-4c0d-8e1f-2a3b4c5d6e7f",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Cuestionario: Problema Inicial"
             }
           },
-          "subContentId": "6f2a7e1c-5f8a-4c9b-8e2b-1f7d9a8b0c3a",
-          "metadata": {
-            "contentType": "Single Choice Set",
-            "license": "U",
-            "title": "Cuestionario: Problema Inicial"
-          }
-        },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
-        },
-        "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
-      },
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 50,
-          "to": 60
-        },
-        "libraryTitle": "Fill in the Blanks",
-        "action": {
-          "library": "H5P.Blanks 1.14",
-          "params": {
-            "questions": [
-              "El concepto clave que permite crear versiones virtuales de componentes físicos (servidores, redes, etc.) se denomina *abstracción*."
-            ],
-            "overallFeedback": [],
-            "behaviour": {
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "caseSensitive": false,
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "passPercentage": 100
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
             },
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-            }
-          },
-          "subContentId": "a2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
-          "metadata": {
-            "contentType": "Fill in the Blanks",
-            "license": "U",
-            "title": "Concepto Clave"
-          }
-        },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
-        },
-        "label": "<p style=\"text-align:center\">Completar el concepto</p>"
-      },
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 145,
-          "to": 155
-        },
-        "libraryTitle": "Drag Text",
-        "action": {
-          "library": "H5P.DragText 1.10",
-          "params": {
-            "textField": "Arrastra las características al tipo correcto: <br/>El Hipervisor <strong>Tipo 1</strong> (Bare Metal) se instala *directamente sobre el hardware*. <br/>El Hipervisor <strong>Tipo 2</strong> (Hosted) se ejecuta *encima de tu Windows, tu Mac, tu Linux*.",
-            "overallFeedback": [],
-            "behaviour": {
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "passPercentage": 100
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
             },
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-            }
+            "requireCompletion": false
           },
-          "subContentId": "b3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f",
-          "metadata": {
-            "contentType": "Drag Text",
-            "license": "U",
-            "title": "Clasificar Hipervisores"
-          }
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
+        {
+          "x": 10,
+          "y": 10,
+          "width": 80,
+          "height": "auto",
+          "duration": {
+            "from": 52,
+            "to": 59
           },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
-        },
-        "label": "<p style=\"text-align:center\">Clasificar Tipos</p>"
-      },
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 300,
-          "to": 310
-        },
-        "libraryTitle": "Multiple Choice",
-        "action": {
-          "library": "H5P.MultiChoice 1.16",
-          "params": {
-            "question": "<p>El video afirma que la 'consolidación' reduce costos. ¿Cuáles de estos beneficios directos se mencionan? (Selecciona todos los que apliquen)</p>",
-            "answers": [
-              {
-                "text": "<p>Menos consumo eléctrico.</p>",
-                "correct": true
+          "libraryTitle": "Fill in the Blanks",
+          "action": {
+            "library": "H5P.Blanks 1.14",
+            "params": {
+              "questions": [
+                "El concepto clave para crear versiones virtuales de servidores, almacenamiento y redes se llama *abstracción*."
+              ],
+              "overallFeedback": [],
+              "behaviour": {
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "caseSensitive": false,
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "passPercentage": 100
               },
-              {
-                "text": "<p>Menos aire acondicionado.</p>",
-                "correct": true
-              },
-              {
-                "text": "<p>Menos espacio en el rack.</p>",
-                "correct": true
-              },
-              {
-                "text": "<p>Software más rápido.</p>",
-                "correct": false
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solution. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
-            ],
-            "overallFeedback": [],
-            "behaviour": {
-              "questionType": "multiple",
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "passPercentage": 100
             },
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "shouldSelect": "Debería haber sido seleccionada",
-              "shouldNotSelect": "NO debería haber sido seleccionada",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+            "subContentId": "d5e6f7a8-b9c0-4d1e-8f2a-3b4c5d6e7f8a",
+            "metadata": {
+              "contentType": "Fill in the Blanks",
+              "license": "U",
+              "title": "Concepto Clave"
             }
           },
-          "subContentId": "d5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
-          "metadata": {
-            "contentType": "Multiple Choice",
-            "license": "U",
-            "title": "Beneficios de Consolidación"
-          }
-        },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
-        },
-        "label": "<p style=\"text-align:center\">Identificar Beneficios</p>"
-      },
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 340,
-          "to": 350
-        },
-        "libraryTitle": "Mark the Words",
-        "action": {
-          "library": "H5P.MarkTheWords 1.11",
-          "params": {
-            "textField": "Haz clic en las dos funcionalidades que el video menciona como claves para la 'continuidad del negocio':<br/>La virtualización habilita la *migración en vivo* y la *alta disponibilidad* para minimizar interrupciones.",
-            "overallFeedback": [],
-            "behaviour": {
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "passPercentage": 100
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
             },
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Completar el concepto</p>"
+        },
+        {
+          "x": 10,
+          "y": 10,
+          "width": 80,
+          "height": "auto",
+          "duration": {
+            "from": 101,
+            "to": 111
+          },
+          "libraryTitle": "Drag Text",
+          "action": {
+            "library": "H5P.DragText 1.10",
+            "params": {
+              "textField": "Arrastra las características al tipo correcto: <br/>El Hipervisor <strong>Tipo 1</strong> (Bare Metal) se instala *directamente sobre el hardware*. <br/>El Hipervisor <strong>Tipo 2</strong> (Hosted) se ejecuta *como un programa más* sobre un S.O. existente.",
+              "overallFeedback": [],
+              "behaviour": {
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "e6f7a8b9-c0d1-4e2f-8a3b-4c5d6e7f8a9b",
+            "metadata": {
+              "contentType": "Drag Text",
+              "license": "U",
+              "title": "Clasificar Hipervisores"
             }
           },
-          "subContentId": "e6a7b8c9-d0e1-4f2a-8b3c-4d5e6f7a8b9c",
-          "metadata": {
-            "contentType": "Mark the Words",
-            "license": "U",
-            "title": "Continuidad del Negocio"
-          }
-        },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
-        },
-        "label": "<p style=\"text-align:center\">Marcar Palabras Clave</p>"
-      },
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 286,
-          "to": 296
-        },
-        "libraryTitle": "Free Text",
-        "action": {
-          "library": "H5P.Essay 1.5",
-          "params": {
-            "question": "Según el video, ¿de qué tecnología fundamental es la virtualización \"literalmente el cimiento\"?",
-            "placeholder": "Escribe tu respuesta aquí...",
-            "minimumLength": 10,
-            "behaviour": {
-              "inputFieldSize": "normal",
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "passPercentage": 100
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
             },
-            "overallFeedback": [],
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Clasificar Tipos</p>"
+        },
+        {
+          "x": 10,
+          "y": 10,
+          "width": 80,
+          "height": "auto",
+          "duration": {
+            "from": 185,
+            "to": 195
+          },
+          "libraryTitle": "Multiple Choice",
+          "action": {
+            "library": "H5P.MultiChoice 1.16",
+            "params": {
+              "question": "<p>El video afirma que la 'consolidación' reduce costos. ¿Cuáles de estos beneficios directos se mencionan? (Selecciona todos los que apliquen)</p>",
+              "answers": [
+                {
+                  "text": "<p>Menos consumo eléctrico.</p>",
+                  "correct": true
+                },
+                {
+                  "text": "<p>Menos aire acondicionado.</p>",
+                  "correct": true
+                },
+                {
+                  "text": "<p>Menos espacio en el rack.</p>",
+                  "correct": true
+                },
+                {
+                  "text": "<p>Software más rápido.</p>",
+                  "correct": false
+                },
+                {
+                  "text": "<p>Menos hardware.</p>",
+                  "correct": true
+                }
+              ],
+              "overallFeedback": [],
+              "behaviour": {
+                "questionType": "multiple",
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "f7a8b9c0-d1e2-4f3a-8b4c-5d6e7f8a9b0c",
+            "metadata": {
+              "contentType": "Multiple Choice",
+              "license": "U",
+              "title": "Beneficios de Consolidación"
             }
           },
-          "subContentId": "c4e5f6a7-b8c9-4d0e-8f1a-2b3c4d5e6f7a",
-          "metadata": {
-            "contentType": "Free Text",
-            "license": "U",
-            "title": "Fundamento del Cloud"
-          }
-        },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
           },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
+          "label": "<p style=\"text-align:center\">Identificar Beneficios</p>"
         },
-        "label": "<p style=\"text-align:center\">Pregunta Abierta</p>"
-      }
-    ],
-    "bookmarks": [],
-    "endscreens": [
-      {
-        "time": 398,
-        "label": "6:38 Submit Screen"
-      }
-    ],
+        {
+          "x": 10,
+          "y": 10,
+          "width": 80,
+          "height": "auto",
+          "duration": {
+            "from": 224,
+            "to": 234
+          },
+          "libraryTitle": "Mark the Words",
+          "action": {
+            "library": "H5P.MarkTheWords 1.11",
+            "params": {
+              "textField": "Haz clic en las dos funcionalidades que el video menciona como claves para la 'continuidad del negocio':<br/>La virtualización habilita la *migración en vivo* y la *alta disponibilidad* para minimizar interrupciones.",
+              "overallFeedback": [],
+              "behaviour": {
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "08b9c0d1-e2f3-4a8b-8c5d-6e7f8a9b0c1d",
+            "metadata": {
+              "contentType": "Mark the Words",
+              "license": "U",
+              "title": "Continuidad del Negocio"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Marcar Palabras Clave</p>"
+        },
+        {
+          "x": 10,
+          "y": 10,
+          "width": 80,
+          "height": "auto",
+          "duration": {
+            "from": 286,
+            "to": 296
+          },
+          "libraryTitle": "Free Text",
+          "action": {
+            "library": "H5P.Essay 1.5",
+            "params": {
+              "question": "Según el video, ¿de qué tecnología es la virtualización \"literalmente el cimiento\"?",
+              "placeholder": "Escribe tu respuesta aquí...",
+              "minimumLength": 10,
+              "behaviour": {
+                "inputFieldSize": "normal",
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "overallFeedback": [],
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "19c0d1e2-f3a4-4b9c-8d6e-7f8a9b0c1d2e",
+            "metadata": {
+              "contentType": "Free Text",
+              "license": "U",
+T              "title": "Fundamento del Cloud"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Pregunta Abierta</p>"
+        }
+      ],
+      "bookmarks": [],
+      "endscreens": [
+        {
+          "time": 396,
+          "label": "6:36 Submit Screen"
+        }
+      ]
+    },
     "summary": {
       "task": {
         "library": "H5P.Summary 1.10",
@@ -497,7 +503,10 @@
         "metadata": {
           "contentType": "Summary",
           "license": "U",
-          "title": "Sin título Summary"
+          "title": "Sin título Summary",
+          "authors": [],
+          "changes": [],
+          "extraTitle": "Sin título Summary"
         }
       },
       "displayAt": 3
@@ -559,17 +568,5 @@
       "videoProgressBar": "Progreso del video",
       "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
     }
-  },
-  "notes": [
-    {
-      "type": "correction",
-      "description": "Se corrigió la estructura del JSON. El array 'interactions' se movió para ser un hijo directo de 'interactiveVideo' en lugar de 'interactiveVideo.assets.interactions', para cumplir con la especificación técnica de H5P. Esto soluciona el error que impedía que se mostraran las preguntas."
-    }
-  ],
-  "validation": {
-    "ok": true,
-    "errors": [],
-    "warnings": [],
-    "checked_at": "2025-11-14T17:01:53-06:00"
   }
 }
