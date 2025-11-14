@@ -1,36 +1,47 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>H5P Test</title>
+  
   <style>
-    /* Reset y contenedor responsive */
+    /* Reset y estilos básicos */
     *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, Arial, sans-serif; padding: 16px; }
-    #h5p-container { width: 100%; max-width: 1200px; margin: 0 auto; }
-
-    /* Si H5P crea una envoltura de iframe, mantenemos la relación de aspecto (16:9 por defecto) */
-    .h5p-iframe-wrapper {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
+    body { 
+      margin: 0; 
+      font-family: system-ui, Arial, sans-serif; 
+      padding: 16px; 
+      background-color: #f0f0f0; /* Color de fondo para ver el contenedor */
     }
-    .h5p-iframe-wrapper iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
+
+    /* Contenedor principal para H5P 
+    */
+    #h5p-container {
+      width: 100%;
+      max-width: 1200px; /* Ancho máximo del contenido */
+      margin: 0 auto;
+
+      /* LA SOLUCIÓN CLAVE:
+        Forzamos al contenedor a tener una proporción 16:9 (video)
+      */
+      aspect-ratio: 16 / 9;
+
+      /* Estilos para centrar el contenido y verlo */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #ccc;
+      background-color: #fff; /* Fondo blanco para el contenedor */
+    }
+
+    /* Aseguramos que el iframe creado por H5P
+      llene nuestro contenedor
+    */
+    #h5p-container iframe {
       width: 100%;
       height: 100%;
       border: 0;
-    }
-
-    /* Fallback si H5P inserta directamente un iframe */
-    #h5p-container iframe {
-      width: 100% !important;
-      height: auto !important;
-      max-width: 100%;
     }
   </style>
 </head>
@@ -43,17 +54,20 @@ v3.1
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const options = {
-        h5pJsonPath: 'contenido/AAS AD.01.01.01', // Path to your self-hosted H5P content directory
+        // MUY IMPORTANTE: ¡Verifica que esta ruta sea correcta!
+        // Debe ser la ruta desde ESTE HTML hasta la CARPETA
+        // que contiene el archivo 'h5p.json'
+        h5pJsonPath: 'contenido/AAS AD.01.01.01', 
+        
         frameJs: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/frame.bundle.js',
         frameCss: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/styles/h5p.css',
       };
 
       const el = document.getElementById('h5p-container');
 
-      // H5PStandalone is globally available when main.bundle.js is included via a script tag
+      // Iniciar H5P
       new H5PStandalone.H5P(el, options);
     });
   </script>
 </body>
 </html>
-//
