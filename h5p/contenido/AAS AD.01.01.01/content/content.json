@@ -45,8 +45,8 @@
         "width": 80,
         "height": "auto",
         "duration": {
-          "from": 51,
-          "to": 56
+          "from": 44,
+          "to": 54
         },
         "libraryTitle": "Single Choice Set",
         "action": {
@@ -121,15 +121,15 @@
         "width": 80,
         "height": "auto",
         "duration": {
-          "from": 57,
-          "to": 62
+          "from": 50,
+          "to": 60
         },
         "libraryTitle": "Fill in the Blanks",
         "action": {
           "library": "H5P.Blanks 1.14",
           "params": {
             "questions": [
-              "El concepto clave para crear versiones virtuales de servidores, almacenamiento y redes se llama *abstracción*."
+              "El concepto clave que permite crear versiones virtuales de componentes físicos (servidores, redes, etc.) se denomina *abstracción*."
             ],
             "overallFeedback": [],
             "behaviour": {
@@ -187,14 +187,14 @@
         "width": 80,
         "height": "auto",
         "duration": {
-          "from": 143,
-          "to": 148
+          "from": 145,
+          "to": 155
         },
         "libraryTitle": "Drag Text",
         "action": {
           "library": "H5P.DragText 1.10",
           "params": {
-            "textField": "Arrastra las características al tipo correcto: <br/><strong>Tipo 1 (Bare Metal):</strong> Se instala *directo al hardware*.<br/><strong>Tipo 2 (Hosted):</strong> Se ejecuta *sobre un S.O.*.",
+            "textField": "Arrastra las características al tipo correcto: <br/>El Hipervisor <strong>Tipo 1</strong> (Bare Metal) se instala *directamente sobre el hardware*. <br/>El Hipervisor <strong>Tipo 2</strong> (Hosted) se ejecuta *encima de tu Windows, tu Mac, tu Linux*.",
             "overallFeedback": [],
             "behaviour": {
               "enableRetry": true,
@@ -250,74 +250,8 @@
         "width": 80,
         "height": "auto",
         "duration": {
-          "from": 293,
-          "to": 298
-        },
-        "libraryTitle": "Free Text",
-        "action": {
-          "library": "H5P.Essay 1.5",
-          "params": {
-            "question": "Según el video, ¿de qué tecnología fundamental es la virtualización \"literalmente el cimiento\"?",
-            "placeholder": "Escribe tu respuesta aquí...",
-            "minimumLength": 10,
-            "behaviour": {
-              "inputFieldSize": "normal",
-              "autoContinue": true,
-              "timeoutCorrect": 2000,
-              "timeoutWrong": 3000,
-              "soundEffectsEnabled": true,
-              "enableRetry": true,
-              "enableSolutionsButton": true,
-              "passPercentage": 100
-            },
-            "overallFeedback": [],
-            "l10n": {
-              "nextButtonLabel": "Siguiente pregunta",
-              "showSolutionButtonLabel": "Mostrar solución",
-              "retryButtonLabel": "Intentar de nuevo",
-              "solutionViewTitle": "Lista Solución",
-              "correctText": "¡Correcto!",
-              "incorrectText": "¡Incorrecto!",
-              "muteButtonLabel": "Silenciar sonido de retroalimentación",
-              "closeButtonLabel": "Cerrar",
-              "slideOfTotal": "Diapositiva :num de :total",
-              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-              "solutionListQuestionNumber": "Pregunta :num",
-              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-            }
-          },
-          "subContentId": "c4e5f6a7-b8c9-4d0e-8f1a-2b3c4d5e6f7a",
-          "metadata": {
-            "contentType": "Free Text",
-            "license": "U",
-            "title": "Fundamento del Cloud"
-          }
-        },
-        "pause": true,
-        "displayType": "poster",
-        "buttonOnMobile": false,
-        "adaptivity": {
-          "correct": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "wrong": {
-            "allowOptOut": false,
-            "message": ""
-          },
-          "requireCompletion": false
-        },
-        "label": "<p style=\"text-align:center\">Pregunta Abierta</p>"
-      },
-      {
-        "x": 10,
-        "y": 10,
-        "width": 80,
-        "height": "auto",
-        "duration": {
-          "from": 312,
-          "to": 317
+          "from": 300,
+          "to": 310
         },
         "libraryTitle": "Multiple Choice",
         "action": {
@@ -400,8 +334,8 @@
         "width": 80,
         "height": "auto",
         "duration": {
-          "from": 347,
-          "to": 352
+          "from": 340,
+          "to": 350
         },
         "libraryTitle": "Mark the Words",
         "action": {
@@ -456,13 +390,79 @@
           "requireCompletion": false
         },
         "label": "<p style=\"text-align:center\">Marcar Palabras Clave</p>"
+      },
+      {
+        "x": 10,
+        "y": 10,
+        "width": 80,
+        "height": "auto",
+        "duration": {
+          "from": 286,
+          "to": 296
+        },
+        "libraryTitle": "Free Text",
+        "action": {
+          "library": "H5P.Essay 1.5",
+          "params": {
+            "question": "Según el video, ¿de qué tecnología fundamental es la virtualización \"literalmente el cimiento\"?",
+            "placeholder": "Escribe tu respuesta aquí...",
+            "minimumLength": 10,
+            "behaviour": {
+              "inputFieldSize": "normal",
+              "autoContinue": true,
+              "timeoutCorrect": 2000,
+              "timeoutWrong": 3000,
+              "soundEffectsEnabled": true,
+              "enableRetry": true,
+              "enableSolutionsButton": true,
+              "passPercentage": 100
+            },
+            "overallFeedback": [],
+            "l10n": {
+              "nextButtonLabel": "Siguiente pregunta",
+              "showSolutionButtonLabel": "Mostrar solución",
+              "retryButtonLabel": "Intentar de nuevo",
+              "solutionViewTitle": "Lista Solución",
+              "correctText": "¡Correcto!",
+              "incorrectText": "¡Incorrecto!",
+              "muteButtonLabel": "Silenciar sonido de retroalimentación",
+              "closeButtonLabel": "Cerrar",
+              "slideOfTotal": "Diapositiva :num de :total",
+              "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+              "solutionListQuestionNumber": "Pregunta :num",
+              "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+              "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+            }
+          },
+          "subContentId": "c4e5f6a7-b8c9-4d0e-8f1a-2b3c4d5e6f7a",
+          "metadata": {
+            "contentType": "Free Text",
+            "license": "U",
+            "title": "Fundamento del Cloud"
+          }
+        },
+        "pause": true,
+        "displayType": "poster",
+        "buttonOnMobile": false,
+        "adaptivity": {
+          "correct": {
+            "allowOptOut": false,
+            "message": ""
+          },
+          "wrong": {
+            "allowOptOut": false,
+            "message": ""
+          },
+          "requireCompletion": false
+        },
+        "label": "<p style=\"text-align:center\">Pregunta Abierta</p>"
       }
     ],
     "bookmarks": [],
     "endscreens": [
       {
-        "time": 393,
-        "label": "6:33 Submit Screen"
+        "time": 398,
+        "label": "6:38 Submit Screen"
       }
     ],
     "summary": {
@@ -563,13 +563,13 @@
   "notes": [
     {
       "type": "correction",
-      "description": "Se corrigió la estructura del JSON. El array 'interactions' se movió para ser un hijo directo de 'interactiveVideo' en lugar de 'interactiveVideo.assets.interactions', para cumplir con la especificación técnica de H5P (como se describe en 'Creación Manual de H5P Interactivo.pdf')."
+      "description": "Se corrigió la estructura del JSON. El array 'interactions' se movió para ser un hijo directo de 'interactiveVideo' en lugar de 'interactiveVideo.assets.interactions', para cumplir con la especificación técnica de H5P. Esto soluciona el error que impedía que se mostraran las preguntas."
     }
   ],
   "validation": {
     "ok": true,
     "errors": [],
     "warnings": [],
-    "checked_at": "2025-11-14T16:54:47-06:00"
+    "checked_at": "2025-11-14T17:01:53-06:00"
   }
 }
