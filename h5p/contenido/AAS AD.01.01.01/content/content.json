@@ -46,8 +46,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 53,
-            "to": 58
+            "from": 45,
+            "to": 50
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -55,21 +55,81 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a9a7473a-q1-question",
-                  "question": "<p>Según la explicación, ¿cuál es el concepto clave que permite crear versiones virtuales (servidores, redes, almacenamiento) a partir de un solo equipo físico?</p>",
+                  "subContentId": "f1a1a72a-1c6e-4b8c-8c7a-de154959528a",
+                  "question": "<p><strong>En la introducción (0:42), se menciona un problema común antes de la virtualización donde un servidor potente estaba 'subutilizado'. ¿A qué se refiere esto?</strong></p><p><small>Ref: 00:42 | Muestra: 00:45</small></p>",
                   "answers": [
-                    "<p>Abstracción</p>",
-                    "<p>Consolidación</p>",
-                    "<p>Hipervisor Tipo 1</p>",
-                    "<p>Migración en vivo</p>"
+                    "<p>A que el hardware físico no estaba siendo aprovechado al máximo de su capacidad.</p>",
+                    "<p>A que el servidor no tenía suficiente memoria RAM.</p>",
+                    "<p>A que el sistema operativo era demasiado lento.</p>",
+                    "<p>A que el software de la aplicación estaba obsoleto.</p>"
+                  ]
+                },
+                {
+                  "subContentId": "b2b2b83b-2d7f-4c9d-9c8b-ef265060639b",
+                  "question": "<p><strong>¿Cuál es la diferencia fundamental entre un hipervisor Tipo 1 (Bare Metal) y un hipervisor Tipo 2 (Hosted) que se explica en el video?</strong></p><p><small>Ref: 01:45 | Muestra: 01:48</small></p>",
+                  "answers": [
+                    "<p>El Tipo 1 se instala directo en el hardware, mientras que el Tipo 2 se ejecuta sobre un sistema operativo existente.</p>",
+                    "<p>El Tipo 1 es solo para Linux y el Tipo 2 es solo para Windows.</p>",
+                    "<p>El Tipo 1 se usa para desarrollo (como VirtualBox) y el Tipo 2 para producción (como Proxmox).</p>",
+                    "<p>El Tipo 1 es gratuito y el Tipo 2 siempre es de pago.</p>"
+                  ]
+                },
+                {
+                  "subContentId": "c3c3c94c-3e8a-4d0e-ac9c-fg376171740c",
+                  "question": "<p><strong>Según se explica (1:57), ¿por qué razón principal se prefieren los hipervisores Tipo 1 (Bare Metal) para entornos de producción en grandes empresas?</strong></p><p><small>Ref: 01:57 | Muestra: 02:00</small></p>",
+                  "answers": [
+                    "<p>Porque ofrecen mejor rendimiento, velocidad y seguridad al tener acceso directo al hardware.</p>",
+                    "<p>Porque son más fáciles de instalar y configurar que los de Tipo 2.</p>",
+                    "<p>Porque son la única opción compatible con Oracle VirtualBox y VMware Workstation.</p>",
+                    "<p>Porque no requieren hardware potente para funcionar.</p>"
+                  ]
+                },
+                {
+                  "subContentId": "d4d4d05d-4f9b-4e1f-bd0d-hi487282851d",
+                  "question": "<p><strong>El video menciona la 'consolidación' (2:56) como una ventaja clave. ¿Cuál es el impacto directo de la consolidación de servidores?</strong></p><p><small>Ref: 02:56 | Muestra: 02:59</small></p>",
+                  "answers": [
+                    "<p>Reducción de costos operativos (hardware, electricidad, refrigeración) al usar menos servidores físicos.</p>",
+                    "<p>Aumento de la velocidad de internet en toda la oficina.</p>",
+                    "<p>Hacer que las máquinas virtuales individuales sean más rápidas que un servidor físico.</p>",
+                    "<p>Eliminar la necesidad de usar hipervisores Tipo 1.</p>"
+                  ]
+                },
+                {
+                  "subContentId": "e5e5e16e-50ac-4f2a-ce1e-ij598393962e",
+                  "question": "<p><strong>En el contexto de 'continuidad del negocio' (3:40), ¿qué permite hacer la 'alta disponibilidad' (HA) en un entorno virtualizado?</strong></p><p><small>Ref: 03:40 | Muestra: 03:43</small></p>",
+                  "answers": [
+                    "<p>Reiniciar automáticamente las máquinas virtuales en otro servidor físico si el hardware original falla.</p>",
+                    "<p>Crear copias de seguridad de las máquinas virtuales en la nube.</p>",
+                    "<p>Clonar una máquina virtual en cuestión de minutos para hacer pruebas.</p>",
+                    "<p>Aumentar la memoria CPU de una máquina virtual al instante sin detenerla.</p>"
+                  ]
+                },
+                {
+                  "subContentId": "f6f6f27f-61bd-403b-df2f-jk609404073f",
+                  "question": "<p><strong>¿Cuál es la relación fundamental entre la virtualización y el 'Cloud Computing' (Computación en la Nube) que se destaca en el video (4:46)?</strong></p><p><small>Ref: 04:46 | Muestra: 04:49</small></p>",
+                  "answers": [
+                    "<p>La virtualización es la tecnología base o el 'cimiento' que permite a los proveedores de nube ofrecer sus servicios.</p>",
+                    "<p>El Cloud Computing es un tipo de hipervisor Tipo 2.</p>",
+                    "<p>La virtualización solo se usa para las nubes privadas, mientras que las públicas (Amazon, Google) usan otra tecnología.</p>",
+                    "<p>La nube (Cloud) es una tecnología más antigua que la virtualización.</p>"
                   ]
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
+                  "to": 33,
+                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
+                },
+                {
+                  "from": 34,
+                  "to": 66,
+                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
+                },
+                {
+                  "from": 67,
                   "to": 100,
-                  "feedback": "¡Correcto! La abstracción es el concepto fundamental que separa el hardware físico del software virtual."
+                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
                 }
               ],
               "behaviour": {
@@ -99,14 +159,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "df8092ce-q1-action",
+            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4a",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 1: Abstracción",
+              "title": "Cuestionario: Fundamentos de Virtualización",
               "authors": [],
               "changes": [],
-              "extraTitle": "Pregunta 1: Abstracción"
+              "extraTitle": "Cuestionario: Fundamentos de Virtualización"
             }
           },
           "pause": true,
@@ -115,440 +175,15 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": "¡Correcto! La abstracción es el concepto fundamental que separa el hardware físico del software virtual."
+              "message": ""
             },
             "wrong": {
               "allowOptOut": false,
-              "message": "Incorrecto. El concepto clave es la abstracción, que es la base para crear recursos virtuales."
+              "message": ""
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q1)</p>"
-        },
-        {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
-          "duration": {
-            "from": 111,
-            "to": 116
-          },
-          "libraryTitle": "Single Choice Set",
-          "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
-            "params": {
-              "choices": [
-                {
-                  "subContentId": "a9a7473a-q2-question",
-                  "question": "<p>¿Cuál es la diferencia fundamental en rendimiento entre un hipervisor Tipo 1 (Bare Metal) y un Tipo 2 (Hosted)?</p>",
-                  "answers": [
-                    "<p>El Tipo 1 ofrece mejor rendimiento al instalarse directamente sobre el hardware, sin S.O. intermediario.</p>",
-                    "<p>El Tipo 1 es más lento porque se instala sobre un S.O. base.</p>",
-                    "<p>El Tipo 2 es más rápido por su acceso directo al hardware.</p>",
-                    "<p>No hay diferencia de rendimiento; solo se usan para fines distintos.</p>"
-                  ]
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 100,
-                  "feedback": "¡Excelente! El Tipo 1 (Bare Metal) tiene acceso directo al hardware, dándole el mejor rendimiento para producción."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
-            },
-            "subContentId": "df8092ce-q2-action",
-            "metadata": {
-              "contentType": "Single Choice Set",
-              "license": "U",
-              "title": "Pregunta 2: Hipervisores",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 2: Hipervisores"
-            }
-          },
-          "pause": true,
-          "displayType": "poster",
-          "buttonOnMobile": false,
-          "adaptivity": {
-            "correct": {
-              "allowOptOut": false,
-              "message": "¡Excelente! El Tipo 1 (Bare Metal) tiene acceso directo al hardware, dándole el mejor rendimiento para producción."
-            },
-            "wrong": {
-              "allowOptOut": false,
-              "message": "No es correcto. Recuerda que el Tipo 1 (Bare Metal) se instala directo al hardware, y el Tipo 2 (Hosted) corre sobre un S.O."
-            },
-            "requireCompletion": false
-          },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q2)</p>"
-        },
-        {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
-          "duration": {
-            "from": 179,
-            "to": 184
-          },
-          "libraryTitle": "Single Choice Set",
-          "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
-            "params": {
-              "choices": [
-                {
-                  "subContentId": "a9a7473a-q3-question",
-                  "question": "<p>¿Qué ventaja principal de la virtualización se describe como \"hacer más con menos\" al reducir la cantidad de servidores físicos, el consumo eléctrico y el espacio en rack?</p>",
-                  "answers": [
-                    "<p>Consolidación de servidores</p>",
-                    "<p>Alta Disponibilidad (HA)</p>",
-                    "<p>Migración en vivo</p>",
-                    "<p>Abstracción de redes</p>"
-                  ]
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 100,
-                  "feedback": "¡Correcto! La consolidación es una ventaja clave que reduce costos operativos y de hardware."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
-            },
-            "subContentId": "df8092ce-q3-action",
-            "metadata": {
-              "contentType": "Single Choice Set",
-              "license": "U",
-              "title": "Pregunta 3: Consolidación",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 3: Consolidación"
-            }
-          },
-          "pause": true,
-          "displayType": "poster",
-          "buttonOnMobile": false,
-          "adaptivity": {
-            "correct": {
-              "allowOptOut": false,
-              "message": "¡Correcto! La consolidación es una ventaja clave que reduce costos operativos y de hardware."
-            },
-            "wrong": {
-              "allowOptOut": false,
-              "message": "Incorrecto. La ventaja descrita es la consolidación, que optimiza el uso del hardware físico."
-            },
-            "requireCompletion": false
-          },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q3)</p>"
-        },
-        {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
-          "duration": {
-            "from": 223,
-            "to": 228
-          },
-          "libraryTitle": "Single Choice Set",
-          "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
-            "params": {
-              "choices": [
-                {
-                  "subContentId": "a9a7473a-q4-question",
-                  "question": "<p>¿Qué funcionalidad de la virtualización, como la 'alta disponibilidad' (HA), permite que las máquinas virtuales se recuperen automáticamente en otro host si el servidor físico original falla?</p>",
-                  "answers": [
-                    "<p>Continuidad del negocio y recuperación ante desastres</p>",
-                    "<p>Consolidación de servidores</p>",
-                    "<p>Infraestructura como código</p>",
-                    "<p>Aislamiento de desarrollo</p>"
-                  ]
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 100,
-                  "feedback": "¡Exacto! La alta disponibilidad y la replicación son pilares de la continuidad del negocio que la virtualización facilita."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
-            },
-            "subContentId": "df8092ce-q4-action",
-            "metadata": {
-              "contentType": "Single Choice Set",
-              "license": "U",
-              "title": "Pregunta 4: Continuidad",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 4: Continuidad"
-            }
-          },
-          "pause": true,
-          "displayType": "poster",
-          "buttonOnMobile": false,
-          "adaptivity": {
-            "correct": {
-              "allowOptOut": false,
-              "message": "¡Exacto! La alta disponibilidad y la replicación son pilares de la continuidad del negocio que la virtualización facilita."
-            },
-            "wrong": {
-              "allowOptOut": false,
-              "message": "No del todo. La capacidad de recuperarse de fallos se relaciona con la continuidad del negocio y la alta disponibilidad."
-            },
-            "requireCompletion": false
-          },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q4)</p>"
-        },
-        {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
-          "duration": {
-            "from": 289,
-            "to": 294
-          },
-          "libraryTitle": "Single Choice Set",
-          "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
-            "params": {
-              "choices": [
-                {
-                  "subContentId": "a9a7473a-q5-question",
-                  "question": "<p>Según el análisis, ¿cuál es la relación fundamental entre la virtualización y el Cloud Computing (computación en la nube)?</p>",
-                  "answers": [
-                    "<p>La virtualización es el cimiento tecnológico que permite la existencia de la nube moderna (IaaS, PaaS).</p>",
-                    "<p>El Cloud Computing es un tipo de hipervisor Tipo 1.</p>",
-                    "<p>La virtualización es una consecuencia del Cloud Computing.</p>",
-                    "<p>La virtualización y el Cloud Computing son tecnologías competidoras.</p>"
-                  ]
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 100,
-                  "feedback": "¡Muy bien! La virtualización es la base que permite a los proveedores de nube ofrecer servicios de infraestructura y plataforma."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
-            },
-            "subContentId": "df8092ce-q5-action",
-            "metadata": {
-              "contentType": "Single Choice Set",
-              "license": "U",
-              "title": "Pregunta 5: Cloud Computing",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 5: Cloud Computing"
-            }
-          },
-          "pause": true,
-          "displayType": "poster",
-          "buttonOnMobile": false,
-          "adaptivity": {
-            "correct": {
-              "allowOptOut": false,
-              "message": "¡Muy bien! La virtualización es la base que permite a los proveedores de nube ofrecer servicios de infraestructura y plataforma."
-            },
-            "wrong": {
-              "allowOptOut": false,
-              "message": "Incorrecto. El video es claro: la virtualización es el cimiento o la base sobre la que se construye el Cloud Computing."
-            },
-            "requireCompletion": false
-          },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q5)</p>"
-        },
-        {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
-          "duration": {
-            "from": 345,
-            "to": 350
-          },
-          "libraryTitle": "Single Choice Set",
-          "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
-            "params": {
-              "choices": [
-                {
-                  "subContentId": "a9a7473a-q6-question",
-                  "question": "<p>Al final de la discusión, se menciona que el concepto de abstracción se está expandiendo a otras áreas. ¿Cuáles son los dos ejemplos mencionados?</p>",
-                  "answers": [
-                    "<p>Redes Definidas por Software (SDN) y Almacenamiento Definido por Software (SDS).</p>",
-                    "<p>Hipervisores Tipo 1 y Tipo 2.</p>",
-                    "<p>Amazon AWS y Microsoft Azure.</p>",
-                    "<p>Alta Disponibilidad (HA) y Migración en Vivo.</p>"
-                  ]
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 100,
-                  "feedback": "¡Correcto! SDN y SDS son ejemplos de cómo la abstracción se aplica a las redes y al almacenamiento, respectivamente."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
-            },
-            "subContentId": "df8092ce-q6-action",
-            "metadata": {
-              "contentType": "Single Choice Set",
-              "license": "U",
-              "title": "Pregunta 6: Expansión",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Pregunta 6: Expansión"
-            }
-          },
-          "pause": true,
-          "displayType": "poster",
-          "buttonOnMobile": false,
-          "adaptivity": {
-            "correct": {
-              "allowOptOut": false,
-              "message": "¡Correcto! SDN y SDS son ejemplos de cómo la abstracción se aplica a las redes y al almacenamiento, respectivamente."
-            },
-            "wrong": {
-              "allowOptOut": false,
-              "message": "Incorrecto. Los ejemplos de expansión del concepto de abstracción mencionados fueron SDN (redes) y SDS (almacenamiento)."
-            },
-            "requireCompletion": false
-          },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q6)</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         }
       ],
       "bookmarks": [],
