@@ -4,7 +4,7 @@
       "startScreenOptions": {
         "title": "AD 01 01 01 Conceptos de Virtualización",
         "hideStartTitle": true,
-        "shortStartDescription": "La virtualización se ha consolidado como una tecnología fundamental en la infraestructura de TI contemporánea, permitien",
+        "shortStartDescription": "La virtualización se ha consolidado como una tecnología fundamental en la infraestructura de TI contemporánea.",
         "poster": {
           "path": "images/file-b_QUUDZgPOpJI8mD.jpg",
           "mime": "image/jpeg",
@@ -41,13 +41,13 @@
     "assets": {
       "interactions": [
         {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
           "duration": {
             "from": 53,
-            "to": 58
+            "to": 63
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -56,28 +56,25 @@
               "choices": [
                 {
                   "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528a",
-                  "question": "<p><strong>Según la explicación, si un servidor potente usa solo una pequeña parte de su capacidad, ¿qué concepto clave de la virtualización permite solucionar esto creando versiones virtuales de los componentes? (target: 0:50)</strong></p>",
+                  "question": "<p>Según el video, ¿cuál es el concepto clave que permite crear versiones virtuales de componentes físicos como servidores y redes?</p>",
                   "answers": [
-                    "<p>Abstracción.</p>",
-                    "<p>Consolidación.</p>",
-                    "<p>Migración en vivo.</p>",
-                    "<p>Hipervisor Tipo 2.</p>"
+                    "<p>Abstracción</p>",
+                    "<p>Consolidación</p>",
+                    "<p>Hipervisor</p>",
+                    "<p>Subutilización</p>"
                   ]
-                },
-                {
-                  "subContentId": "8ac87066-74ce-4174-8c69-dd09557cc199"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 99,
-                  "feedback": "Incorrecto. El video identifica la abstracción como el concepto clave en este punto para crear versiones virtuales."
+                  "feedback": "No es correcto. El video identifica la abstracción como el concepto clave para crear versiones virtuales."
                 },
                 {
                   "from": 100,
                   "to": 100,
-                  "feedback": "¡Correcto! La abstracción es el concepto fundamental que separa el hardware físico del software."
+                  "feedback": "¡Correcto! La abstracción es el concepto fundamental para separar el hardware físico del software."
                 }
               ],
               "behaviour": {
@@ -111,10 +108,7 @@
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Concepto Clave",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Concepto Clave"
+              "title": "Cuestionario: Abstracción"
             }
           },
           "pause": true,
@@ -131,16 +125,16 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (0:53)</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         },
         {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
           "duration": {
-            "from": 122,
-            "to": 127
+            "from": 108,
+            "to": 118
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -148,29 +142,26 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "4e9f1b3a-1e5c-4d2a-8b8a-1a2b3c4d5e6f",
-                  "question": "<p><strong>¿Por qué el video indica que los hipervisores Tipo 1 (Bare Metal) son preferidos sobre los Tipo 2 (Hosted) para entornos de producción en grandes empresas? (target: 1:59)</strong></p>",
+                  "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528b",
+                  "question": "<p>¿Cómo se conocen los hipervisores de Tipo 1 y dónde se instalan, según la explicación?</p>",
                   "answers": [
-                    "<p>Porque ofrecen mejor rendimiento y seguridad al tener acceso directo al hardware.</p>",
-                    "<p>Porque son más fáciles de instalar en una laptop.</p>",
-                    "<p>Porque se ejecutan como un programa sobre Windows o Mac.</p>",
-                    "<p>Porque son ideales para ambientes de desarrollo y pruebas rápidas.</p>"
+                    "<p>Se conocen como \"Bare Metal\" y se instalan directamente sobre el hardware físico.</p>",
+                    "<p>Se conocen como \"Hosted\" y se ejecutan sobre un sistema operativo base.</p>",
+                    "<p>Se conocen como \"Bare Metal\" y se usan solo para pruebas en laptops.</p>",
+                    "<p>Se conocen como \"Hosted\" y se instalan directamente en el hardware.</p>"
                   ]
-                },
-                {
-                  "subContentId": "5f0a2c7d-3b9e-4a1d-9c6a-7b8c9d0e1f2a"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 99,
-                  "feedback": "No exactamente. El video destaca el rendimiento y acceso directo al hardware del Tipo 1 como la razón principal."
+                  "feedback": "Revisa la explicación. El video distingue claramente los Tipo 1 (Bare Metal) de los Tipo 2 (Hosted)."
                 },
                 {
                   "from": 100,
                   "to": 100,
-                  "feedback": "¡Excelente! El acceso directo al hardware les da mayor rendimiento y seguridad, ideal para producción."
+                  "feedback": "¡Exacto! Los de Tipo 1 o \"Bare Metal\" se ejecutan sin intermediarios para un rendimiento óptimo."
                 }
               ],
               "behaviour": {
@@ -200,14 +191,11 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "6a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4b",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Tipos de Hipervisor",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Tipos de Hipervisor"
+              "title": "Cuestionario: Hipervisor Tipo 1"
             }
           },
           "pause": true,
@@ -224,16 +212,16 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (2:02)</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         },
         {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
           "duration": {
-            "from": 204,
-            "to": 209
+            "from": 139,
+            "to": 149
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -241,29 +229,26 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a",
-                  "question": "<p><strong>El video menciona la \"flexibilidad y escalabilidad\" como una ventaja clave. ¿Qué ejemplo se da para ilustrar esta capacidad? (target: 3:21)</strong></p>",
+                  "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528c",
+                  "question": "<p>¿Cuál es un ejemplo de hipervisor Tipo 2 (Hosted) mencionado en el video?</p>",
                   "answers": [
-                    "<p>Crear, clonar o ajustar recursos (CPU/memoria) de una VM en minutos.</p>",
-                    "<p>Reducir el consumo eléctrico y de aire acondicionado.</p>",
-                    "<p>Mover máquinas virtuales a otro servidor si uno falla.</p>",
-                    "<p>Definir la infraestructura usando scripts y software.</p>"
+                    "<p>Oracle Virtual Box</p>",
+                    "<p>Proxmox</p>",
+                    "<p>Hyper-V</p>",
+                    "<p>Overtic (oVirt)</p>"
                   ]
-                },
-                {
-                  "subContentId": "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 99,
-                  "feedback": "Incorrecto. El ejemplo específico dado para la escalabilidad fue la capacidad de crear, clonar o ajustar VMs rápidamente."
+                  "feedback": "No es correcto. Ese es un ejemplo de hipervisor Tipo 1 (Bare Metal) mencionado en el video."
                 },
                 {
                   "from": 100,
                   "to": 100,
-                  "feedback": "¡Correcto! Esa es la agilidad que permite la virtualización para responder a las necesidades."
+                  "feedback": "¡Correcto! El video menciona Oracle Virtual Box y VMWare Workstation como ejemplos de Tipo 2."
                 }
               ],
               "behaviour": {
@@ -293,14 +278,11 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "9b0c1d2e-3f4a-5b6c-7d8e-9f0a1b2c3d4e",
+            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4c",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Flexibilidad",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Flexibilidad"
+              "title": "Cuestionario: Hipervisor Tipo 2"
             }
           },
           "pause": true,
@@ -317,16 +299,16 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (3:24)</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         },
         {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
           "duration": {
-            "from": 231,
-            "to": 236
+            "from": 179,
+            "to": 189
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -334,29 +316,26 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
-                  "question": "<p><strong>¿Cómo contribuye la virtualización a la \"continuidad del negocio\" en caso de que un servidor físico falle, según lo explicado? (target: 3:48)</strong></p>",
+                  "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528d",
+                  "question": "<p>¿Cuál es el principal beneficio de la \"consolidación\" que se destaca en el contenido?</p>",
                   "answers": [
-                    "<p>Habilita la alta disponibilidad, levantando las VMs automáticamente en otro servidor.</p>",
-                    "<p>Permite usar menos servidores físicos, ahorrando costos.</p>",
-                    "<p>Facilita la creación de ambientes de prueba idénticos a producción.</p>",
-                    "<p>Es la base para que funcionen los proveedores de nube como Amazon.</p>"
+                    "<p>Reducción de costos al necesitar menos hardware físico, consumo eléctrico y espacio.</p>",
+                    "<p>Aumento de la velocidad de las aplicaciones de forma individual.</p>",
+                    "<p>Creación de ambientes idénticos a producción para pruebas.</p>",
+                    "<p>La capacidad de migrar máquinas virtuales en vivo.</p>"
                   ]
-                },
-                {
-                  "subContentId": "1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 99,
-                  "feedback": "Revisa esa parte. El video lo relaciona directamente con la alta disponibilidad y la capacidad de levantar las VMs en otro equipo."
+                  "feedback": "Esa es otra ventaja, pero la \"consolidación\" se refiere específicamente a reducir el número de servidores físicos."
                 },
                 {
                   "from": 100,
                   "to": 100,
-                  "feedback": "¡Así es! La alta disponibilidad y la replicación son claves para minimizar interrupciones."
+                  "feedback": "¡Muy bien! La consolidación impacta directamente en el ahorro de costos operativos y de capital."
                 }
               ],
               "behaviour": {
@@ -386,14 +365,11 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b",
+            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4d",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Continuidad del Negocio",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Continuidad del Negocio"
+              "title": "Cuestionario: Consolidación"
             }
           },
           "pause": true,
@@ -410,16 +386,103 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (3:51)</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         },
         {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 223,
+            "to": 233
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528e",
+                  "question": "<p>¿Qué funcionalidad de la virtualización, mencionada en el video, permite la \"continuidad del negocio\" haciendo que las VMs se levanten en otro servidor si uno falla?</p>",
+                  "answers": [
+                    "<p>Alta Disponibilidad (High Availability)</p>",
+                    "<p>Consolidación de servidores</p>",
+                    "<p>Abstracción de hardware</p>",
+                    "<p>Infraestructura como código</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 99,
+                  "feedback": "Intenta de nuevo. El video se refiere a la capacidad de recuperarse de fallos de hardware automáticamente."
+                },
+                {
+                  "from": 100,
+                  "to": 100,
+                  "feedback": "¡Correcto! La Alta Disponibilidad (HA) es clave para la continuidad del negocio."
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4e",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Cuestionario: Continuidad"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+        },
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
           "duration": {
             "from": 289,
-            "to": 294
+            "to": 299
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -427,29 +490,26 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c",
-                  "question": "<p><strong>¿Cuál es la relación fundamental entre la virtualización y el \"cloud computing\" (computación en la nube) que se describe en el video? (target: 4:46)</strong></p>",
+                  "subContentId": "a9a7473a-b6b7-4d2b-80f3-de154959528f",
+                  "question": "<p>Según la conversación, la virtualización es considerada el \"cimiento\" de ¿qué tecnología masiva?</p>",
                   "answers": [
-                    "<p>La virtualización es el \"cimiento\" o la base tecnológica que permite la existencia de la nube.</p>",
-                    "<p>La nube se usa principalmente para probar máquinas virtuales.</p>",
-                    "<p>La virtualización es una alternativa más barata que la nube.</p>",
-                    "<p>La nube es un tipo de hipervisor Tipo 1.</p>"
+                    "<p>Cloud Computing (Computación en la nube)</p>",
+                    "<p>Redes Definidas por Software (SDN)</p>",
+                    "<p>Almacenamiento Definido por Software (SDS)</p>",
+                    "<p>Administración avanzada de servidores</p>"
                   ]
-                },
-                {
-                  "subContentId": "4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
                   "to": 99,
-                  "feedback": "No es esa la relación. El video indica que la virtualización es la base fundamental sobre la que se construye la nube."
+                  "feedback": "No es la respuesta. Aunque se mencionan, el video dice que la virtualización es el \"cimiento\" de otra cosa."
                 },
                 {
                   "from": 100,
                   "to": 100,
-                  "feedback": "¡Exacto! El video es claro en que la virtualización es la tecnología base del cloud computing."
+                  "feedback": "¡Exacto! El video es claro en que la nube no existiría como la conocemos sin la virtualización."
                 }
               ],
               "behaviour": {
@@ -479,14 +539,11 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "5b6c7d8e-9f0a-1b2c-3d4e-5f6a7b8c9d0e",
+            "subContentId": "df8092ce-6b5e-4d2d-8b2f-6bfde2432d4f",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Cloud Computing",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Cloud Computing"
+              "title": "Cuestionario: Cloud Computing"
             }
           },
           "pause": true,
@@ -503,107 +560,14 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (4:49)</p>"
-        },
-        {
-          "x": 3.2760640929179137,
-          "y": 11.644832605531295,
-          "width": 37.12872638640303,
-          "height": 17.035533283173155,
-          "duration": {
-            "from": 351,
-            "to": 356
-          },
-          "libraryTitle": "Single Choice Set",
-          "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
-            "params": {
-              "choices": [
-                {
-                  "subContentId": "6c7d8e9f-0a1b-2c3d-4e5f-6a7b8c9d0e1f",
-                  "question": "<p><strong>Hacia el final, se menciona que el concepto de \"abstraer el hardware\" se está expandiendo más allá de los servidores. ¿A qué otras áreas se ha expandido? (target: 5:48)</strong></p>",
-                  "answers": [
-                    "<p>A las redes (SDN) y al almacenamiento (SDS).</p>",
-                    "<p>A la administración avanzada de servidores y centros de datos.</p>",
-                    "<p>A los sistemas operativos como Windows, Mac y Linux.</p>",
-                    "<p>A la creación de scripts y la infraestructura como código.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 99,
-                  "feedback": "Incorrecto. El video menciona específicamente que el concepto se está expandiendo a redes (SDN) y almacenamiento (SDS)."
-                },
-                {
-                  "from": 100,
-                  "to": 100,
-                  "feedback": "¡Muy bien! El video concluye que la abstracción ahora se aplica fuertemente a redes y almacenamiento."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
-            },
-            "subContentId": "8e9f0a1b-2c3d-4e5f-6a7b-8c9d0e1f2a3b",
-            "metadata": {
-              "contentType": "Single Choice Set",
-              "license": "U",
-              "title": "Cuestionario: Expansión del Concepto",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Expansión del Concepto"
-            }
-          },
-          "pause": true,
-          "displayType": "poster",
-          "buttonOnMobile": false,
-          "adaptivity": {
-            "correct": {
-              "allowOptOut": false,
-              "message": ""
-            },
-            "wrong": {
-              "allowOptOut": false,
-              "message": ""
-            },
-            "requireCompletion": false
-          },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (5:51)</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
         }
       ],
       "bookmarks": [],
       "endscreens": [
         {
-          "time": 396,
-          "label": "6:36 Submit Screen"
+          "time": 393,
+          "label": "6:33 Submit Screen"
         }
       ]
     },
@@ -639,70 +603,67 @@
         "metadata": {
           "contentType": "Summary",
           "license": "U",
-          "title": "Sin título Summary",
-          "authors": [],
-          "changes": [],
-          "extraTitle": "Sin título Summary"
+          "title": "Sin título Summary"
         }
       },
-      "displayAt": 3
+      "displayAt": -1
+    },
+    "override": {
+      "autoplay": true,
+      "loop": false,
+      "showBookmarksmenuOnLoad": false,
+      "showRewind10": false,
+      "preventSkippingMode": "none",
+      "deactivateSound": false
+    },
+    "l10n": {
+      "interaction": "Interacción",
+      "play": "Reproducir",
+      "pause": "Pausa",
+      "mute": "Enmudecer, actualmente sonoro",
+      "unmute": "Activar sonido, actualmente silenciado",
+      "quality": "Calidad del Vídeo",
+      "captions": "Leyendas",
+      "close": "Cerrar",
+      "fullscreen": "Pantalla Completa",
+      "exitFullscreen": "Salir de Pantalla Completa",
+      "summary": "Abrir diálogo de resumen",
+      "bookmarks": "Marcadores",
+      "endscreen": "Pantalla de Envío",
+      "defaultAdaptivitySeekLabel": "Continuar",
+      "continueWithVideo": "Continuar con el vídeo",
+      "more": "Más opciones de reproducción",
+      "playbackRate": "Velocidad de reproducción",
+      "rewind10": "Retroceder 10 segundos",
+      "navDisabled": "La navegación está deshabilitada",
+      "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
+      "sndDisabled": "El sonido está deshabilitado",
+      "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
+      "back": "Atrás",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos",
+      "currentTime": "Tiempo actual:",
+      "totalTime": "Tiempo total:",
+      "singleInteractionAnnouncement": "Interacción aparecida:",
+      "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
+      "videoPausedAnnouncement": "Vídeo en pausa",
+      "content": "Contenido",
+      "answered": "@answered contestadas",
+      "endcardTitle": "@answered pregunta(s) contestada(s)",
+      "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
+      "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
+      "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
+      "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
+      "endcardSubmitButton": "Enviar Respuestas",
+      "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
+      "endcardTableRowAnswered": "Preguntas respondidas",
+      "endcardTableRowScore": "Puntaje",
+      "endcardAnsweredScore": "respondidas",
+      "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
+      "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
+      "videoProgressBar": "Progreso del video",
+      "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
     }
-  },
-  "override": {
-    "autoplay": true,
-    "loop": true,
-    "showBookmarksmenuOnLoad": false,
-    "showRewind10": false,
-    "preventSkippingMode": "none",
-    "deactivateSound": false
-  },
-  "l10n": {
-    "interaction": "Interacción",
-    "play": "Reproducir",
-    "pause": "Pausa",
-    "mute": "Enmudecer, actualmente sonoro",
-    "unmute": "Activar sonido, actualmente silenciado",
-    "quality": "Calidad del Vídeo",
-    "captions": "Leyendas",
-    "close": "Cerrar",
-    "fullscreen": "Pantalla Completa",
-    "exitFullscreen": "Salir de Pantalla Completa",
-    "summary": "Abrir diálogo de resumen",
-    "bookmarks": "Marcadores",
-    "endscreen": "Pantalla de Envío",
-    "defaultAdaptivitySeekLabel": "Continuar",
-    "continueWithVideo": "Continuar con el vídeo",
-    "more": "Más opciones de reproducción",
-    "playbackRate": "Velocidad de reproducción",
-    "rewind10": "Retroceder 10 segundos",
-    "navDisabled": "La navegación está deshabilitada",
-    "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
-    "sndDisabled": "El sonido está deshabilitado",
-    "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
-    "back": "Atrás",
-    "hours": "Horas",
-    "minutes": "Minutos",
-    "seconds": "Segundos",
-    "currentTime": "Tiempo actual:",
-    "totalTime": "Tiempo total:",
-    "singleInteractionAnnouncement": "Interacción aparecida:",
-    "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
-    "videoPausedAnnouncement": "Vídeo en pausa",
-    "content": "Contenido",
-    "answered": "@answered contestadas",
-    "endcardTitle": "@answered pregunta(s) contestada(s)",
-    "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
-    "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
-    "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
-    "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
-    "endcardSubmitButton": "Enviar Respuestas",
-    "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
-    "endcardTableRowAnswered": "Preguntas respondidas",
-    "endcardTableRowScore": "Puntaje",
-    "endcardAnsweredScore": "respondidas",
-    "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
-    "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
-    "videoProgressBar": "Progreso del video",
-    "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
   }
 }
