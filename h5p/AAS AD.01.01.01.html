@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H5P Test</title>
+  <style>
+    /* Reset y contenedor responsive */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, Arial, sans-serif; padding: 16px; }
+    #h5p-container { width: 100%; max-width: 1200px; margin: 0 auto; }
+
+    /* Si H5P crea una envoltura de iframe, mantenemos la relación de aspecto (16:9 por defecto) */
+    .h5p-iframe-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+    }
+    .h5p-iframe-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Fallback si H5P inserta directamente un iframe */
+    #h5p-container iframe {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+v3.1
+  <div id="h5p-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/main.bundle.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const options = {
+        h5pJsonPath: 'contenido/AAS AD.01.01.01', // Path to your self-hosted H5P content directory
+        frameJs: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/frame.bundle.js',
+        frameCss: 'https://cdn.jsdelivr.net/npm/h5p-standalone@latest/dist/styles/h5p.css',
+      };
+
+      const el = document.getElementById('h5p-container');
+
+      // H5PStandalone is globally available when main.bundle.js is included via a script tag
+      new H5PStandalone.H5P(el, options);
+    });
+  </script>
+</body>
+</html>
+//

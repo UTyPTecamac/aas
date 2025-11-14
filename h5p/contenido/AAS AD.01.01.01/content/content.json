@@ -1,0 +1,639 @@
+{
+  "interactiveVideo": {
+    "video": {
+      "startScreenOptions": {
+        "title": "AD 01 01 01 Conceptos de Virtualización",
+        "hideStartTitle": true,
+        "shortStartDescription": "La virtualización se ha consolidado como una tecnología fundamental en la infraestructura de TI contemporánea, permitien",
+        "poster": {
+          "path": "images/file-b_QUUDZgPOpJI8mD.jpg",
+          "mime": "image/jpeg",
+          "copyright": {
+            "license": "U"
+          },
+          "width": 52,
+          "height": 52
+        }
+      },
+      "textTracks": {
+        "videoTrack": [
+          {
+            "label": "Subtítulos",
+            "kind": "subtitles",
+            "srcLang": "en"
+          }
+        ]
+      },
+      "files": [
+        {
+          "path": "https://www.youtube.com/watch?v=jCcZfY04at4",
+          "mime": "video/YouTube",
+          "copyright": {
+            "license": "U",
+            "title": "https://www.youtube.com/watch?v=jCcZfY04at4",
+            "author": "Jesús Romero",
+            "year": "2025"
+          },
+          "aspectRatio": "16:9"
+        }
+      ]
+    },
+    "assets": {
+      "interactions": [
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 50,
+            "to": 55
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "6b3a88c8-1e43-4c9b-8a71-a8a5b3a4a3e0",
+                  "question": "<p><strong>Si un servidor físico potente está usando solo el 15% de su capacidad para una sola aplicación (0:47), ¿cuál es la implicación <em>estratégica</em> principal que la virtualización busca resolver?</strong></p>",
+                  "answers": [
+                    "<p>Optimizar el retorno de inversión (ROI) al maximizar el uso del hardware adquirido.</p>",
+                    "<p>Demostrar que el hardware es demasiado potente para la aplicación.</p>",
+                    "<p>Facilitar la instalación de un sistema operativo diferente.</p>",
+                    "<p>Incrementar la velocidad de esa única aplicación.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 100,
+                  "feedback": "¡Bien hecho!"
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-1a1a1a1a1a1a",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Pregunta 1: Subutilización"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 1</p>"
+        },
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 130,
+            "to": 135
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "7c8b9d0e-3f5a-4b1e-8a6f-b9b8c7d6e5f4",
+                  "question": "<p><strong>Una empresa necesita implementar una base de datos crítica que requiere el <em>máximo rendimiento</em> (2:03). Según la transcripción, ¿qué tipo de hipervisor (1:45-2:12) sería el más adecuado y por qué?</strong></p>",
+                  "answers": [
+                    "<p>Un hipervisor Tipo 1 (Bare Metal), porque ofrece acceso directo al hardware sin capas intermedias.</p>",
+                    "<p>Un hipervisor Tipo 2 (Hosted), porque es más fácil de instalar sobre el sistema operativo existente.</p>",
+                    "<p>Un hipervisor Tipo 1 (Bare Metal), porque es el mejor para pruebas rápidas en laptops.</p>",
+                    "<p>Un hipervisor Tipo 2 (Hosted), porque el rendimiento no es una preocupación para bases de datos.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 100,
+                  "feedback": "¡Buen trabajo!"
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-2b2b2b2b2b2b",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Pregunta 2: Tipos de Hipervisor"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 2</p>"
+        },
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 170,
+            "to": 175
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "8d9c0e1f-4a6b-4c2d-9e8f-a0b1c2d3e4f5",
+                  "question": "<p><strong>Un desarrollador desea probar una nueva aplicación en un entorno Linux, pero su computadora portátil de trabajo utiliza Windows (2:21-2:29). ¿Qué tipo de hipervisor sería el más lógico y <em>sencillo</em> para este escenario?</strong></p>",
+                  "answers": [
+                    "<p>Un hipervisor Tipo 2 (Hosted), como VirtualBox, porque se instala como un programa más sobre su Windows.</p>",
+                    "<p>Un hipervisor Tipo 1 (Bare Metal), como Proxmox, ya que debería borrar Windows para obtener el mejor rendimiento.</p>",
+                    "<p>Ambos tipos (Tipo 1 y Tipo 2) son igualmente sencillos de instalar en una laptop.</p>",
+                    "<p>Un hipervisor Tipo 1 (Bare Metal), porque es la única forma de ejecutar Linux.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 100,
+                  "feedback": "¡Sigue así!"
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-3c3c3c3c3c3c",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Pregunta 3: Caso de Uso (Desarrollo)"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 3</p>"
+        },
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 200,
+            "to": 205
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "9e0f1a2b-5b7c-4d3e-8f9a-b1c2d3e4f5a6",
+                  "question": "<p><strong>¿Cuál es la relación fundamental entre la \"consolidación\" (3:00) y la \"flexibilidad\" (3:18) mencionadas como ventajas clave?</strong></p>",
+                  "answers": [
+                    "<p>La consolidación reduce el hardware, y la flexibilidad permite reasignar ágilmente los recursos de ese hardware consolidado.</p>",
+                    "<p>La flexibilidad es para clonar VMs (3:21) y la consolidación es para ahorrar energía (3:07).</p>",
+                    "<p>Ambos conceptos se refieren a la \"migración en vivo\" (3:44) de servidores.</p>",
+                    "<p>No tienen relación; la consolidación es un ahorro de costos y la flexibilidad es una característica técnica.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 100,
+                  "feedback": "¡Excelente análisis!"
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-4d4d4d4d4d4d",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Pregunta 4: Ventajas (Consolidación vs Flexibilidad)"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 4</p>"
+        },
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 240,
+            "to": 245
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "a0b1c2d3-6c8d-4e4f-8a0b-c2d3e4f5a6b7",
+                  "question": "<p><strong>La transcripción menciona la \"Alta Disponibilidad\" (3:46). ¿Cuál de los siguientes escenarios describe <em>mejor</em> el <em>propósito</em> de esta funcionalidad?</strong></p>",
+                  "answers": [
+                    "<p>Si un servidor físico falla (3:48), las VMs se reinician automáticamente en otro host (3:50) para minimizar la interrupción.</p>",
+                    "<p>Crear un ambiente de pruebas (4:22) idéntico al de producción para evitar errores de código.</p>",
+                    "<p>Reducir el número total de servidores físicos (3:00) en el centro de datos.</p>",
+                    "<p>Ajustar la memoria y CPU (3:28) de una VM en caliente sin necesidad de apagarla.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 100,
+                  "feedback": "¡Concepto clave entendido!"
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-5e5e5e5e5e5e",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Pregunta 5: Alta Disponibilidad (HA)"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 5</p>"
+        },
+        {
+          "x": 3.276,
+          "y": 11.644,
+          "width": 37.128,
+          "height": 17.035,
+          "duration": {
+            "from": 310,
+            "to": 315
+          },
+          "libraryTitle": "Single Choice Set",
+          "action": {
+            "library": "H5P.SingleChoiceSet 1.11",
+            "params": {
+              "choices": [
+                {
+                  "subContentId": "b1c2d3e4-7d9e-4f5a-9b1c-d3e4f5a6b7c8",
+                  "question": "<p><strong>La transcripción afirma que \"la virtualización es literalmente el cimiento del cloud computing\" (4:49). ¿Por qué es esta afirmación fundamentalmente correcta?</strong></p>",
+                  "answers": [
+                    "<p>Porque la nube (IaaS/PaaS) (5:01) depende de hipervisores (4:57) para crear, aislar y gestionar recursos virtuales bajo demanda.</p>",
+                    "<p>Porque \"cloud computing\" es solo otro nombre para referirse a la virtualización de redes (SDN) (5:50).</p>",
+                    "<p>Porque la virtualización (Tipo 2) permite a los usuarios probar la nube en sus laptops (2:29).</p>",
+                    "<p>Porque los proveedores de nube (4:54) solo usan servidores consolidados (4:36) y no ofrecen flexibilidad.</p>"
+                  ]
+                }
+              ],
+              "overallFeedback": [
+                {
+                  "from": 0,
+                  "to": 100,
+                  "feedback": "¡Excelente! Has conectado todos los conceptos."
+                }
+              ],
+              "behaviour": {
+                "autoContinue": true,
+                "timeoutCorrect": 2000,
+                "timeoutWrong": 3000,
+                "soundEffectsEnabled": true,
+                "enableRetry": true,
+                "enableSolutionsButton": true,
+                "passPercentage": 100
+              },
+              "l10n": {
+                "nextButtonLabel": "Siguiente pregunta",
+                "showSolutionButtonLabel": "Mostrar solución",
+                "retryButtonLabel": "Intentar de nuevo",
+                "solutionViewTitle": "Lista Solución",
+                "correctText": "¡Correcto!",
+                "incorrectText": "¡Incorrecto!",
+                "shouldSelect": "Debería haber sido seleccionada",
+                "shouldNotSelect": "NO debería haber sido seleccionada",
+                "muteButtonLabel": "Silenciar sonido de retroalimentación",
+                "closeButtonLabel": "Cerrar",
+                "slideOfTotal": "Diapositiva :num de :total",
+                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+                "solutionListQuestionNumber": "Pregunta :num",
+                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
+                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
+              }
+            },
+            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-6f6f6f6f6f6f",
+            "metadata": {
+              "contentType": "Single Choice Set",
+              "license": "U",
+              "title": "Pregunta 6: Virtualización y Cloud"
+            }
+          },
+          "pause": true,
+          "displayType": "poster",
+          "buttonOnMobile": false,
+          "adaptivity": {
+            "correct": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "wrong": {
+              "allowOptOut": false,
+              "message": ""
+            },
+            "requireCompletion": false
+          },
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 6</p>"
+        }
+      ],
+      "bookmarks": [],
+      "endscreens": [
+        {
+          "time": 396,
+          "label": "6:36 Submit Screen"
+        }
+      ]
+    },
+    "summary": {
+      "task": {
+        "library": "H5P.Summary 1.10",
+        "params": {
+          "intro": "Elige la oración correcta.",
+          "summaries": [
+            {
+              "subContentId": "6bff919c-c212-425e-b348-929b4f6d9a58",
+              "tip": ""
+            }
+          ],
+          "overallFeedback": [
+            {
+              "from": 0,
+              "to": 100
+            }
+          ],
+          "solvedLabel": "Progreso:",
+          "scoreLabel": "Respuestas incorrectas:",
+          "resultLabel": "Tu resultado",
+          "labelCorrect": "Correcta.",
+          "labelIncorrect": "¡Incorrecto! Por favor inténtalo otra vez.",
+          "alternativeIncorrectLabel": "Incorrecto",
+          "labelCorrectAnswers": "Respuestas correctas.",
+          "tipButtonLabel": "Mostrar pista",
+          "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
+          "progressText": "Progreso :num de :total"
+        },
+        "subContentId": "32f7622e-09bc-44ed-b587-e080e5b194d0",
+        "metadata": {
+          "contentType": "Summary",
+          "license": "U",
+          "title": "Sin título Summary"
+        }
+      },
+      "displayAt": 3
+    }
+  },
+  "override": {
+    "autoplay": true,
+    "loop": true,
+    "showBookmarksmenuOnLoad": false,
+    "showRewind10": false,
+    "preventSkippingMode": "none",
+    "deactivateSound": false
+  },
+  "l10n": {
+    "interaction": "Interacción",
+    "play": "Reproducir",
+    "pause": "Pausa",
+    "mute": "Enmudecer, actualmente sonoro",
+    "unmute": "Activar sonido, actualmente silenciado",
+    "quality": "Calidad del Vídeo",
+    "captions": "Leyendas",
+    "close": "Cerrar",
+    "fullscreen": "Pantalla Completa",
+    "exitFullscreen": "Salir de Pantalla Completa",
+    "summary": "Abrir diálogo de resumen",
+    "bookmarks": "Marcadores",
+    "endscreen": "Pantalla de Envío",
+    "defaultAdaptivitySeekLabel": "Continuar",
+    "continueWithVideo": "Continuar con el vídeo",
+    "more": "Más opciones de reproducción",
+    "playbackRate": "Velocidad de reproducción",
+    "rewind10": "Retroceder 10 segundos",
+    "navDisabled": "La navegación está deshabilitada",
+    "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
+    "sndDisabled": "El sonido está deshabilitado",
+    "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
+    "back": "Atrás",
+    "hours": "Horas",
+    "minutes": "Minutos",
+    "seconds": "Segundos",
+    "currentTime": "Tiempo actual:",
+    "totalTime": "Tiempo total:",
+    "singleInteractionAnnouncement": "Interacción aparecida:",
+    "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
+    "videoPausedAnnouncement": "Vídeo en pausa",
+    "content": "Contenido",
+    "answered": "@answered contestadas",
+    "endcardTitle": "@answered pregunta(s) contestada(s)",
+    "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
+    "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
+    "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
+    "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
+    "endcardSubmitButton": "Enviar Respuestas",
+    "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
+    "endcardTableRowAnswered": "Preguntas respondidas",
+    "endcardTableRowScore": "Puntaje",
+    "endcardAnsweredScore": "respondidas",
+    "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
+    "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
+    "videoProgressBar": "Progreso del video",
+    "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
+  }
+}
