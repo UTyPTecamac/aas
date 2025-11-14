@@ -41,13 +41,13 @@
     "assets": {
       "interactions": [
         {
-          "x": 3.276,
-          "y": 11.644,
-          "width": 37.128,
-          "height": 17.035,
+          "x": 3.2760640929179137,
+          "y": 11.644832605531295,
+          "width": 37.12872638640303,
+          "height": 17.035533283173155,
           "duration": {
-            "from": 50,
-            "to": 55
+            "from": 53,
+            "to": 58
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -55,13 +55,13 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "6b3a88c8-1e43-4c9b-8a71-a8a5b3a4a3e0",
-                  "question": "<p><strong>Si un servidor físico potente está usando solo el 15% de su capacidad para una sola aplicación (0:47), ¿cuál es la implicación <em>estratégica</em> principal que la virtualización busca resolver?</strong></p>",
+                  "subContentId": "a9a7473a-q1-question",
+                  "question": "<p>Según la explicación, ¿cuál es el concepto clave que permite crear versiones virtuales (servidores, redes, almacenamiento) a partir de un solo equipo físico?</p>",
                   "answers": [
-                    "<p>Optimizar el retorno de inversión (ROI) al maximizar el uso del hardware adquirido.</p>",
-                    "<p>Demostrar que el hardware es demasiado potente para la aplicación.</p>",
-                    "<p>Facilitar la instalación de un sistema operativo diferente.</p>",
-                    "<p>Incrementar la velocidad de esa única aplicación.</p>"
+                    "<p>Abstracción</p>",
+                    "<p>Consolidación</p>",
+                    "<p>Hipervisor Tipo 1</p>",
+                    "<p>Migración en vivo</p>"
                   ]
                 }
               ],
@@ -69,7 +69,7 @@
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Bien hecho!"
+                  "feedback": "¡Correcto! La abstracción es el concepto fundamental que separa el hardware físico del software virtual."
                 }
               ],
               "behaviour": {
@@ -99,11 +99,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-1a1a1a1a1a1a",
+            "subContentId": "df8092ce-q1-action",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 1: Subutilización"
+              "title": "Pregunta 1: Abstracción",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Pregunta 1: Abstracción"
             }
           },
           "pause": true,
@@ -112,24 +115,24 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": ""
+              "message": "¡Correcto! La abstracción es el concepto fundamental que separa el hardware físico del software virtual."
             },
             "wrong": {
               "allowOptOut": false,
-              "message": ""
+              "message": "Incorrecto. El concepto clave es la abstracción, que es la base para crear recursos virtuales."
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 1</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q1)</p>"
         },
         {
-          "x": 3.276,
-          "y": 11.644,
-          "width": 37.128,
-          "height": 17.035,
+          "x": 3.2760640929179137,
+          "y": 11.644832605531295,
+          "width": 37.12872638640303,
+          "height": 17.035533283173155,
           "duration": {
-            "from": 130,
-            "to": 135
+            "from": 111,
+            "to": 116
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -137,13 +140,13 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "7c8b9d0e-3f5a-4b1e-8a6f-b9b8c7d6e5f4",
-                  "question": "<p><strong>Una empresa necesita implementar una base de datos crítica que requiere el <em>máximo rendimiento</em> (2:03). Según la transcripción, ¿qué tipo de hipervisor (1:45-2:12) sería el más adecuado y por qué?</strong></p>",
+                  "subContentId": "a9a7473a-q2-question",
+                  "question": "<p>¿Cuál es la diferencia fundamental en rendimiento entre un hipervisor Tipo 1 (Bare Metal) y un Tipo 2 (Hosted)?</p>",
                   "answers": [
-                    "<p>Un hipervisor Tipo 1 (Bare Metal), porque ofrece acceso directo al hardware sin capas intermedias.</p>",
-                    "<p>Un hipervisor Tipo 2 (Hosted), porque es más fácil de instalar sobre el sistema operativo existente.</p>",
-                    "<p>Un hipervisor Tipo 1 (Bare Metal), porque es el mejor para pruebas rápidas en laptops.</p>",
-                    "<p>Un hipervisor Tipo 2 (Hosted), porque el rendimiento no es una preocupación para bases de datos.</p>"
+                    "<p>El Tipo 1 ofrece mejor rendimiento al instalarse directamente sobre el hardware, sin S.O. intermediario.</p>",
+                    "<p>El Tipo 1 es más lento porque se instala sobre un S.O. base.</p>",
+                    "<p>El Tipo 2 es más rápido por su acceso directo al hardware.</p>",
+                    "<p>No hay diferencia de rendimiento; solo se usan para fines distintos.</p>"
                   ]
                 }
               ],
@@ -151,7 +154,7 @@
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Buen trabajo!"
+                  "feedback": "¡Excelente! El Tipo 1 (Bare Metal) tiene acceso directo al hardware, dándole el mejor rendimiento para producción."
                 }
               ],
               "behaviour": {
@@ -181,11 +184,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-2b2b2b2b2b2b",
+            "subContentId": "df8092ce-q2-action",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 2: Tipos de Hipervisor"
+              "title": "Pregunta 2: Hipervisores",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Pregunta 2: Hipervisores"
             }
           },
           "pause": true,
@@ -194,24 +200,24 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": ""
+              "message": "¡Excelente! El Tipo 1 (Bare Metal) tiene acceso directo al hardware, dándole el mejor rendimiento para producción."
             },
             "wrong": {
               "allowOptOut": false,
-              "message": ""
+              "message": "No es correcto. Recuerda que el Tipo 1 (Bare Metal) se instala directo al hardware, y el Tipo 2 (Hosted) corre sobre un S.O."
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 2</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q2)</p>"
         },
         {
-          "x": 3.276,
-          "y": 11.644,
-          "width": 37.128,
-          "height": 17.035,
+          "x": 3.2760640929179137,
+          "y": 11.644832605531295,
+          "width": 37.12872638640303,
+          "height": 17.035533283173155,
           "duration": {
-            "from": 170,
-            "to": 175
+            "from": 179,
+            "to": 184
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -219,13 +225,13 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "8d9c0e1f-4a6b-4c2d-9e8f-a0b1c2d3e4f5",
-                  "question": "<p><strong>Un desarrollador desea probar una nueva aplicación en un entorno Linux, pero su computadora portátil de trabajo utiliza Windows (2:21-2:29). ¿Qué tipo de hipervisor sería el más lógico y <em>sencillo</em> para este escenario?</strong></p>",
+                  "subContentId": "a9a7473a-q3-question",
+                  "question": "<p>¿Qué ventaja principal de la virtualización se describe como \"hacer más con menos\" al reducir la cantidad de servidores físicos, el consumo eléctrico y el espacio en rack?</p>",
                   "answers": [
-                    "<p>Un hipervisor Tipo 2 (Hosted), como VirtualBox, porque se instala como un programa más sobre su Windows.</p>",
-                    "<p>Un hipervisor Tipo 1 (Bare Metal), como Proxmox, ya que debería borrar Windows para obtener el mejor rendimiento.</p>",
-                    "<p>Ambos tipos (Tipo 1 y Tipo 2) son igualmente sencillos de instalar en una laptop.</p>",
-                    "<p>Un hipervisor Tipo 1 (Bare Metal), porque es la única forma de ejecutar Linux.</p>"
+                    "<p>Consolidación de servidores</p>",
+                    "<p>Alta Disponibilidad (HA)</p>",
+                    "<p>Migración en vivo</p>",
+                    "<p>Abstracción de redes</p>"
                   ]
                 }
               ],
@@ -233,7 +239,7 @@
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Sigue así!"
+                  "feedback": "¡Correcto! La consolidación es una ventaja clave que reduce costos operativos y de hardware."
                 }
               ],
               "behaviour": {
@@ -263,11 +269,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-3c3c3c3c3c3c",
+            "subContentId": "df8092ce-q3-action",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 3: Caso de Uso (Desarrollo)"
+              "title": "Pregunta 3: Consolidación",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Pregunta 3: Consolidación"
             }
           },
           "pause": true,
@@ -276,24 +285,24 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": ""
+              "message": "¡Correcto! La consolidación es una ventaja clave que reduce costos operativos y de hardware."
             },
             "wrong": {
               "allowOptOut": false,
-              "message": ""
+              "message": "Incorrecto. La ventaja descrita es la consolidación, que optimiza el uso del hardware físico."
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 3</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q3)</p>"
         },
         {
-          "x": 3.276,
-          "y": 11.644,
-          "width": 37.128,
-          "height": 17.035,
+          "x": 3.2760640929179137,
+          "y": 11.644832605531295,
+          "width": 37.12872638640303,
+          "height": 17.035533283173155,
           "duration": {
-            "from": 200,
-            "to": 205
+            "from": 223,
+            "to": 228
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -301,13 +310,13 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "9e0f1a2b-5b7c-4d3e-8f9a-b1c2d3e4f5a6",
-                  "question": "<p><strong>¿Cuál es la relación fundamental entre la \"consolidación\" (3:00) y la \"flexibilidad\" (3:18) mencionadas como ventajas clave?</strong></p>",
+                  "subContentId": "a9a7473a-q4-question",
+                  "question": "<p>¿Qué funcionalidad de la virtualización, como la 'alta disponibilidad' (HA), permite que las máquinas virtuales se recuperen automáticamente en otro host si el servidor físico original falla?</p>",
                   "answers": [
-                    "<p>La consolidación reduce el hardware, y la flexibilidad permite reasignar ágilmente los recursos de ese hardware consolidado.</p>",
-                    "<p>La flexibilidad es para clonar VMs (3:21) y la consolidación es para ahorrar energía (3:07).</p>",
-                    "<p>Ambos conceptos se refieren a la \"migración en vivo\" (3:44) de servidores.</p>",
-                    "<p>No tienen relación; la consolidación es un ahorro de costos y la flexibilidad es una característica técnica.</p>"
+                    "<p>Continuidad del negocio y recuperación ante desastres</p>",
+                    "<p>Consolidación de servidores</p>",
+                    "<p>Infraestructura como código</p>",
+                    "<p>Aislamiento de desarrollo</p>"
                   ]
                 }
               ],
@@ -315,7 +324,7 @@
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Excelente análisis!"
+                  "feedback": "¡Exacto! La alta disponibilidad y la replicación son pilares de la continuidad del negocio que la virtualización facilita."
                 }
               ],
               "behaviour": {
@@ -345,11 +354,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-4d4d4d4d4d4d",
+            "subContentId": "df8092ce-q4-action",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 4: Ventajas (Consolidación vs Flexibilidad)"
+              "title": "Pregunta 4: Continuidad",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Pregunta 4: Continuidad"
             }
           },
           "pause": true,
@@ -358,24 +370,24 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": ""
+              "message": "¡Exacto! La alta disponibilidad y la replicación son pilares de la continuidad del negocio que la virtualización facilita."
             },
             "wrong": {
               "allowOptOut": false,
-              "message": ""
+              "message": "No del todo. La capacidad de recuperarse de fallos se relaciona con la continuidad del negocio y la alta disponibilidad."
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 4</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q4)</p>"
         },
         {
-          "x": 3.276,
-          "y": 11.644,
-          "width": 37.128,
-          "height": 17.035,
+          "x": 3.2760640929179137,
+          "y": 11.644832605531295,
+          "width": 37.12872638640303,
+          "height": 17.035533283173155,
           "duration": {
-            "from": 240,
-            "to": 245
+            "from": 289,
+            "to": 294
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -383,13 +395,13 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a0b1c2d3-6c8d-4e4f-8a0b-c2d3e4f5a6b7",
-                  "question": "<p><strong>La transcripción menciona la \"Alta Disponibilidad\" (3:46). ¿Cuál de los siguientes escenarios describe <em>mejor</em> el <em>propósito</em> de esta funcionalidad?</strong></p>",
+                  "subContentId": "a9a7473a-q5-question",
+                  "question": "<p>Según el análisis, ¿cuál es la relación fundamental entre la virtualización y el Cloud Computing (computación en la nube)?</p>",
                   "answers": [
-                    "<p>Si un servidor físico falla (3:48), las VMs se reinician automáticamente en otro host (3:50) para minimizar la interrupción.</p>",
-                    "<p>Crear un ambiente de pruebas (4:22) idéntico al de producción para evitar errores de código.</p>",
-                    "<p>Reducir el número total de servidores físicos (3:00) en el centro de datos.</p>",
-                    "<p>Ajustar la memoria y CPU (3:28) de una VM en caliente sin necesidad de apagarla.</p>"
+                    "<p>La virtualización es el cimiento tecnológico que permite la existencia de la nube moderna (IaaS, PaaS).</p>",
+                    "<p>El Cloud Computing es un tipo de hipervisor Tipo 1.</p>",
+                    "<p>La virtualización es una consecuencia del Cloud Computing.</p>",
+                    "<p>La virtualización y el Cloud Computing son tecnologías competidoras.</p>"
                   ]
                 }
               ],
@@ -397,7 +409,7 @@
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Concepto clave entendido!"
+                  "feedback": "¡Muy bien! La virtualización es la base que permite a los proveedores de nube ofrecer servicios de infraestructura y plataforma."
                 }
               ],
               "behaviour": {
@@ -427,11 +439,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-5e5e5e5e5e5e",
+            "subContentId": "df8092ce-q5-action",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 5: Alta Disponibilidad (HA)"
+              "title": "Pregunta 5: Cloud Computing",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Pregunta 5: Cloud Computing"
             }
           },
           "pause": true,
@@ -440,24 +455,24 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": ""
+              "message": "¡Muy bien! La virtualización es la base que permite a los proveedores de nube ofrecer servicios de infraestructura y plataforma."
             },
             "wrong": {
               "allowOptOut": false,
-              "message": ""
+              "message": "Incorrecto. El video es claro: la virtualización es el cimiento o la base sobre la que se construye el Cloud Computing."
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 5</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q5)</p>"
         },
         {
-          "x": 3.276,
-          "y": 11.644,
-          "width": 37.128,
-          "height": 17.035,
+          "x": 3.2760640929179137,
+          "y": 11.644832605531295,
+          "width": 37.12872638640303,
+          "height": 17.035533283173155,
           "duration": {
-            "from": 310,
-            "to": 315
+            "from": 345,
+            "to": 350
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -465,13 +480,13 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "b1c2d3e4-7d9e-4f5a-9b1c-d3e4f5a6b7c8",
-                  "question": "<p><strong>La transcripción afirma que \"la virtualización es literalmente el cimiento del cloud computing\" (4:49). ¿Por qué es esta afirmación fundamentalmente correcta?</strong></p>",
+                  "subContentId": "a9a7473a-q6-question",
+                  "question": "<p>Al final de la discusión, se menciona que el concepto de abstracción se está expandiendo a otras áreas. ¿Cuáles son los dos ejemplos mencionados?</p>",
                   "answers": [
-                    "<p>Porque la nube (IaaS/PaaS) (5:01) depende de hipervisores (4:57) para crear, aislar y gestionar recursos virtuales bajo demanda.</p>",
-                    "<p>Porque \"cloud computing\" es solo otro nombre para referirse a la virtualización de redes (SDN) (5:50).</p>",
-                    "<p>Porque la virtualización (Tipo 2) permite a los usuarios probar la nube en sus laptops (2:29).</p>",
-                    "<p>Porque los proveedores de nube (4:54) solo usan servidores consolidados (4:36) y no ofrecen flexibilidad.</p>"
+                    "<p>Redes Definidas por Software (SDN) y Almacenamiento Definido por Software (SDS).</p>",
+                    "<p>Hipervisores Tipo 1 y Tipo 2.</p>",
+                    "<p>Amazon AWS y Microsoft Azure.</p>",
+                    "<p>Alta Disponibilidad (HA) y Migración en Vivo.</p>"
                   ]
                 }
               ],
@@ -479,7 +494,7 @@
                 {
                   "from": 0,
                   "to": 100,
-                  "feedback": "¡Excelente! Has conectado todos los conceptos."
+                  "feedback": "¡Correcto! SDN y SDS son ejemplos de cómo la abstracción se aplica a las redes y al almacenamiento, respectivamente."
                 }
               ],
               "behaviour": {
@@ -509,11 +524,14 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c4b4a4e1-2b0e-4f8e-9d7a-6f6f6f6f6f6f",
+            "subContentId": "df8092ce-q6-action",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Pregunta 6: Virtualización y Cloud"
+              "title": "Pregunta 6: Expansión",
+              "authors": [],
+              "changes": [],
+              "extraTitle": "Pregunta 6: Expansión"
             }
           },
           "pause": true,
@@ -522,15 +540,15 @@
           "adaptivity": {
             "correct": {
               "allowOptOut": false,
-              "message": ""
+              "message": "¡Correcto! SDN y SDS son ejemplos de cómo la abstracción se aplica a las redes y al almacenamiento, respectivamente."
             },
             "wrong": {
               "allowOptOut": false,
-              "message": ""
+              "message": "Incorrecto. Los ejemplos de expansión del concepto de abstracción mencionados fueron SDN (redes) y SDS (almacenamiento)."
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento 6</p>"
+          "label": "<p style=\"text-align:center\">Comprobar Conocimiento (Q6)</p>"
         }
       ],
       "bookmarks": [],
@@ -573,7 +591,10 @@
         "metadata": {
           "contentType": "Summary",
           "license": "U",
-          "title": "Sin título Summary"
+          "title": "Sin título Summary",
+          "authors": [],
+          "changes": [],
+          "extraTitle": "Sin título Summary"
         }
       },
       "displayAt": 3
