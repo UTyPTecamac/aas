@@ -46,80 +46,20 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 122,
-            "to": 132
+            "from": 1,
+            "to": 9
           },
-          "libraryTitle": "Single Choice Set",
+          "libraryTitle": "Text",
           "action": {
-            "library": "H5P.SingleChoiceSet 1.11",
+            "library": "H5P.Text 1.1",
             "params": {
-              "choices": [
-                {
-                  "subContentId": "f1a9b2c3-1234-4d5e-8f6a-7b8c9d0e1f2a",
-                  "question": "<p><strong>¿Por qué motivo los hipervisores Tipo 1 (Bare Metal) son la elección preferida para entornos de producción en empresas grandes?</strong></p>",
-                  "answers": [
-                    "<p>Ofrecen el mejor rendimiento y seguridad al tener acceso directo al hardware.</p>",
-                    "<p>Son más fáciles de instalar y configurar para pruebas rápidas.</p>",
-                    "<p>Se ejecutan como un programa más sobre Windows o Linux.</p>",
-                    "<p>Permiten ejecutar juegos con gráficos avanzados en laptops.</p>"
-                  ]
-                },
-                {
-                  "subContentId": "e2b8c3d4-5678-4e5f-9a0b-1c2d3e4f5a6b"
-                }
-              ],
-              "overallFeedback": [
-                {
-                  "from": 0,
-                  "to": 33,
-                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
-                },
-                {
-                  "from": 34,
-                  "to": 66,
-                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
-                },
-                {
-                  "from": 67,
-                  "to": 100,
-                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
-                }
-              ],
-              "behaviour": {
-                "autoContinue": true,
-                "timeoutCorrect": 2000,
-                "timeoutWrong": 3000,
-                "soundEffectsEnabled": true,
-                "enableRetry": true,
-                "enableSolutionsButton": true,
-                "passPercentage": 100
-              },
-              "l10n": {
-                "nextButtonLabel": "Siguiente pregunta",
-                "showSolutionButtonLabel": "Mostrar solución",
-                "retryButtonLabel": "Intentar de nuevo",
-                "solutionViewTitle": "Lista Solución",
-                "correctText": "¡Correcto!",
-                "incorrectText": "¡Incorrecto!",
-                "shouldSelect": "Debería haber sido seleccionada",
-                "shouldNotSelect": "NO debería haber sido seleccionada",
-                "muteButtonLabel": "Silenciar sonido de retroalimentación",
-                "closeButtonLabel": "Cerrar",
-                "slideOfTotal": "Diapositiva :num de :total",
-                "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
-                "solutionListQuestionNumber": "Pregunta :num",
-                "a11yShowSolution": "Mostrar la solución. La tarea se calificará con su solución correcta.",
-                "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
-              }
+              "text": "<p style=\"text-align:center\"><strong>OBJETIVO DEL VÍDEO</strong></p>\n<p>Comprender a fondo qué es la virtualización, cómo funcionan las máquinas virtuales (VMs), los hipervisores (Tipo 1 y Tipo 2) y su rol como cimiento de la infraestructura de TI moderna, especialmente en el Cloud Computing.</p>"
             },
-            "subContentId": "d3c7d4e5-9012-4f6a-8b1c-2d3e4f5a6b7c",
+            "subContentId": "obj-video-start",
             "metadata": {
-              "contentType": "Single Choice Set",
+              "contentType": "Text",
               "license": "U",
-              "title": "Cuestionario: Hipervisor Tipo 1",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Hipervisor Tipo 1"
+              "title": "Objetivo del Vídeo"
             }
           },
           "pause": true,
@@ -136,7 +76,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Objetivo</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -144,8 +84,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 157,
-            "to": 167
+            "from": 12,
+            "to": 20
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -153,34 +93,21 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a4b3c2d1-4321-4a5b-8c6d-7e8f9a0b1c2d",
-                  "question": "<p><strong>¿Cuál es el escenario de uso más apropiado para un hipervisor Tipo 2 (Hosted) como VirtualBox?</strong></p>",
+                  "subContentId": "preg1-choice-1",
+                  "question": "<p><strong>Si un centro de datos utiliza un servidor físico muy potente para ejecutar una única aplicación, subutilizando el 85% del CPU, ¿a qué concepto de la virtualización busca dar solución esta situación?</strong></p>",
                   "answers": [
-                    "<p>Establecer ambientes de desarrollo y pruebas rápidamente en una estación de trabajo personal.</p>",
-                    "<p>Gestionar la infraestructura crítica de un centro de datos empresarial.</p>",
-                    "<p>Lograr el máximo rendimiento posible para aplicaciones de alta demanda.</p>",
-                    "<p>Reemplazar por completo el sistema operativo principal del hardware.</p>"
+                    "<p>La consolidación de servidores (reducir servidores físicos).</p>",
+                    "<p>El aislamiento de máquinas virtuales (evitar interferencia).</p>",
+                    "<p>La abstracción de redes (SDN).</p>",
+                    "<p>La alta disponibilidad (HA).</p>"
                   ]
-                },
-                {
-                  "subContentId": "b5c2d1e0-8765-4b6c-9d7e-8f9a0b1c2d3e"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 33,
-                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
-                },
-                {
-                  "from": 34,
-                  "to": 66,
-                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
-                },
-                {
-                  "from": 67,
                   "to": 100,
-                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
+                  "feedback": "Has conseguido :num de un total de :total puntos"
                 }
               ],
               "behaviour": {
@@ -210,15 +137,15 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c6d1e0f9-2109-4c7d-a8e9-9a0b1c2d3e4f",
+            "subContentId": "preg1-q-set",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Hipervisor Tipo 2",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Hipervisor Tipo 2"
-            }
+              "title": "Cuestionario P1"
+            },
+            "feedback_correct": "¡Correcto! La subutilización del hardware es el principal problema que resuelve la consolidación de servidores mediante virtualización.",
+            "feedback_incorrect": "Incorrecto. La solución directa a la subutilización del hardware es la consolidación de servidores.",
+            "rationale_ref": "La virtualización transforma la manera en que se utiliza el hardware para ser más eficientes, al evitar que un servidor potente esté subutilizado para una sola aplicación."
           },
           "pause": true,
           "displayType": "poster",
@@ -234,7 +161,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Pregunta 1</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -242,8 +169,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 204,
-            "to": 214
+            "from": 24,
+            "to": 32
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -251,34 +178,21 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "d7e6f5a4-1234-4b5c-8d9e-1f2a3b4c5d6e",
-                  "question": "<p><strong>¿Qué capacidad, descrita como una ventaja clave, permite a la virtualización responder rápidamente a las necesidades del negocio?</strong></p>",
+                  "subContentId": "preg2-choice-1",
+                  "question": "<p><strong>La principal diferencia en la arquitectura de un Hipervisor Tipo 1 (Bare Metal) en comparación con un Tipo 2 (Hosted) es que el Tipo 1:</strong></p>",
                   "answers": [
-                    "<p>La agilidad para crear, clonar o modificar recursos de BMs (CPU, memoria) en minutos.</p>",
-                    "<p>La habilidad de instalar el hipervisor directamente en el metal.</p>",
-                    "<p>La reducción garantizada del consumo de aire acondicionado.</p>",
-                    "<p>La capacidad de usar solo un sistema operativo por servidor físico.</p>"
+                    "<p>Tiene acceso directo al hardware, ofreciendo mejor rendimiento para cargas críticas.</p>",
+                    "<p>Se ejecuta como un programa más sobre un sistema operativo huésped (Windows, Mac, Linux).</p>",
+                    "<p>Es más sencillo de instalar para ambientes de desarrollo y pruebas.</p>",
+                    "<p>Utiliza una capa adicional de sistema operativo base que afecta el rendimiento.</p>"
                   ]
-                },
-                {
-                  "subContentId": "e8f7a4b3-5678-4c6d-9e0f-2a3b4c5d6e7f"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 33,
-                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
-                },
-                {
-                  "from": 34,
-                  "to": 66,
-                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
-                },
-                {
-                  "from": 67,
                   "to": 100,
-                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
+                  "feedback": "Has conseguido :num de un total de :total puntos"
                 }
               ],
               "behaviour": {
@@ -308,15 +222,15 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "f9a8b7c6-9012-4d7e-a1b2-3b4c5d6e7f8a",
+            "subContentId": "preg2-q-set",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Escalabilidad",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Escalabilidad"
-            }
+              "title": "Cuestionario P2"
+            },
+            "feedback_correct": "¡Correcto! Los hipervisores Tipo 1 (Bare Metal) se instalan directamente y por eso son más rápidos y seguros para cargas críticas.",
+            "feedback_incorrect": "Incorrecto. Los Tipo 1 acceden directamente al hardware; son los Tipo 2 los que se ejecutan sobre un SO base (Hosted).",
+            "rationale_ref": "El hipervisor Tipo 1 se instala directamente sobre el hardware físico, ofreciendo el mejor rendimiento ya que no tiene intermediarios."
           },
           "pause": true,
           "displayType": "poster",
@@ -332,7 +246,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Pregunta 2</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -340,8 +254,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 231,
-            "to": 241
+            "from": 37,
+            "to": 45
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -349,34 +263,21 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a1b2c3d4-4321-4e5f-8a9b-1c2d3e4f5a6b",
-                  "question": "<p><strong>¿Cómo contribuye la virtualización a la \"continuidad del negocio\" o \"alta disponibilidad\"?</strong></p>",
+                  "subContentId": "preg3-choice-1",
+                  "question": "<p><strong>La capacidad de crear, clonar, modificar recursos (CPU, memoria) y eliminar una Máquina Virtual en minutos y sin detener la operación es un ejemplo de la ventaja de la virtualización conocida como:</strong></p>",
                   "answers": [
-                    "<p>Permitiendo que las máquinas virtuales se reinicien automáticamente en otro hardware físico si el original falla.</p>",
-                    "<p>Asegurando que el hardware físico nunca falle.</p>",
-                    "<p>Usando hipervisores Tipo 2 para aislar los fallos.</p>",
-                    "<p>Reduciendo los costos de electricidad y enfriamiento.</p>"
+                    "<p>Flexibilidad y escalabilidad.</p>",
+                    "<p>Continuidad del negocio (HA).</p>",
+                    "<p>Consolidación de recursos.</p>",
+                    "<p>Abstracción de red (SDN).</p>"
                   ]
-                },
-                {
-                  "subContentId": "b2c3d4e5-8765-4f6a-9b0c-2d3e4f5a6b7c"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 33,
-                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
-                },
-                {
-                  "from": 34,
-                  "to": 66,
-                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
-                },
-                {
-                  "from": 67,
                   "to": 100,
-                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
+                  "feedback": "Has conseguido :num de un total de :total puntos"
                 }
               ],
               "behaviour": {
@@ -406,15 +307,15 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c3d4e5f6-2109-4a7b-8c1d-3e4f5a6b7c8d",
+            "subContentId": "preg3-q-set",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Alta Disponibilidad",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Alta Disponibilidad"
-            }
+              "title": "Cuestionario P3"
+            },
+            "feedback_correct": "¡Correcto! La capacidad de crear y ajustar recursos rápidamente es la definición de flexibilidad y escalabilidad.",
+            "feedback_incorrect": "Incorrecto. La creación y el ajuste rápido de VMs ilustra la flexibilidad y escalabilidad, no la continuidad del negocio.",
+            "rationale_ref": "La virtualización ofrece flexibilidad y escalabilidad, permitiendo crear, clonar o eliminar máquinas virtuales y ajustar sus recursos (memoria, CPU) al instante sin detener nada."
           },
           "pause": true,
           "displayType": "poster",
@@ -430,7 +331,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Pregunta 3</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -438,8 +339,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 289,
-            "to": 299
+            "from": 41,
+            "to": 49
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -447,34 +348,21 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "d4e5f6a7-1234-4b8c-9d0e-4f5a6b7c8d9e",
-                  "question": "<p><strong>¿Cuál es la relación fundamental entre la virtualización y el 'cloud computing' (computación en la nube)?</strong></p>",
+                  "subContentId": "preg4-choice-1",
+                  "question": "<p><strong>¿Cuál de las siguientes funcionalidades habilitadas por la virtualización permite que, si un servidor físico falla, las Máquinas Virtuales continúen ejecutándose automáticamente en otro hardware?</strong></p>",
                   "answers": [
-                    "<p>La virtualización es la tecnología base o el cimiento sobre el cual se construyen los servicios de la nube.</p>",
-                    "<p>El 'cloud computing' es un tipo de hipervisor Tipo 1.</p>",
-                    "<p>La virtualización es un concepto obsoleto reemplazado por la nube.</p>",
-                    "<p>La nube se utiliza únicamente para realizar copias de seguridad de las máquinas virtuales.</p>"
+                    "<p>Alta Disponibilidad (HA).</p>",
+                    "<p>Infraestructura como Código (IaC).</p>",
+                    "<p>Abstracción de almacenamiento (SDS).</p>",
+                    "<p>Consolidación de servidores.</p>"
                   ]
-                },
-                {
-                  "subContentId": "e5f6a7b8-5678-4c9d-a0e1-5a6b7c8d9e0f"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 33,
-                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
-                },
-                {
-                  "from": 34,
-                  "to": 66,
-                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
-                },
-                {
-                  "from": 67,
                   "to": 100,
-                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
+                  "feedback": "Has conseguido :num de un total de :total puntos"
                 }
               ],
               "behaviour": {
@@ -504,15 +392,15 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "f6a7b8c9-9012-4d0e-b1f2-6b7c8d9e0f1a",
+            "subContentId": "preg4-q-set",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Cloud Computing",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Cloud Computing"
-            }
+              "title": "Cuestionario P4"
+            },
+            "feedback_correct": "¡Correcto! La Alta Disponibilidad (HA) es el mecanismo clave para la continuidad del negocio y para minimizar las interrupciones ante fallos de hardware.",
+            "feedback_incorrect": "Incorrecto. La función que permite que las VMs se 'levanten' en otro servidor ante una falla es la Alta Disponibilidad (HA).",
+            "rationale_ref": "La virtualización habilita funcionalidades de continuidad del negocio, como la migración en vivo o la Alta Disponibilidad (HA), para que las máquinas virtuales se 'levanten' automáticamente en otro servidor si el físico falla."
           },
           "pause": true,
           "displayType": "poster",
@@ -528,7 +416,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Pregunta 4</p>"
         },
         {
           "x": 3.2760640929179137,
@@ -536,8 +424,8 @@
           "width": 37.12872638640303,
           "height": 17.035533283173155,
           "duration": {
-            "from": 349,
-            "to": 359
+            "from": 49,
+            "to": 57
           },
           "libraryTitle": "Single Choice Set",
           "action": {
@@ -545,34 +433,21 @@
             "params": {
               "choices": [
                 {
-                  "subContentId": "a7b8c9d0-4321-4e1f-8a2b-7c8d9e0f1a2b",
-                  "question": "<p><strong>El concepto de abstracción que define la virtualización de servidores se está expandiendo a otras áreas. ¿Cuáles son los dos ejemplos mencionados?</strong></p>",
+                  "subContentId": "preg5-choice-1",
+                  "question": "<p><strong>La virtualización es descrita como el &quot;cimiento&quot; o la base fundamental de:</strong></p>",
                   "answers": [
-                    "<p>Redes (SDN) y Almacenamiento (SDS).</p>",
-                    "<p>Sistemas operativos (Windows) y Aplicaciones (Office).</p>",
-                    "<p>Consolidación (Hardware) y Migración (En vivo).</p>",
-                    "<p>Hipervisores (Tipo 1) y Contenedores (Docker).</p>"
+                    "<p>El Cloud Computing (IaaS, PaaS).</p>",
+                    "<p>La red de seguridad (Backup &amp; Restore).</p>",
+                    "<p>El hardware muy potente (Servidores Blade).</p>",
+                    "<p>La infraestructura como código (Scripts de configuración).</p>"
                   ]
-                },
-                {
-                  "subContentId": "b8c9d0e1-8765-4f2a-9b3c-8d9e0f1a2b3c"
                 }
               ],
               "overallFeedback": [
                 {
                   "from": 0,
-                  "to": 33,
-                  "feedback": "Necesitas repasar los conceptos clave. Vuelve a ver el video y presta atención a las diferencias entre tipos de hipervisores y las ventajas."
-                },
-                {
-                  "from": 34,
-                  "to": 66,
-                  "feedback": "¡Buen trabajo! Has captado la mayoría de las ideas. Repasa los conceptos de Alta Disponibilidad (HA) y la relación con el Cloud Computing."
-                },
-                {
-                  "from": 67,
                   "to": 100,
-                  "feedback": "¡Excelente! Tienes un sólido entendimiento de la virtualización, sus ventajas y su impacto en la infraestructura moderna."
+                  "feedback": "Has conseguido :num de un total de :total puntos"
                 }
               ],
               "behaviour": {
@@ -602,15 +477,15 @@
                 "a11yRetry": "Vuelve a intentar la tarea. Borra todas tus respuestas y empieza de nuevo."
               }
             },
-            "subContentId": "c9d0e1f2-2109-4a3b-8c4d-9e0f1a2b3c4d",
+            "subContentId": "preg5-q-set",
             "metadata": {
               "contentType": "Single Choice Set",
               "license": "U",
-              "title": "Cuestionario: Expansión del Concepto",
-              "authors": [],
-              "changes": [],
-              "extraTitle": "Cuestionario: Expansión del Concepto"
-            }
+              "title": "Cuestionario P5"
+            },
+            "feedback_correct": "¡Correcto! Todos los proveedores de nube (Amazon, Google, Azure) utilizan hipervisores extensivamente para ofrecer sus servicios de Infraestructura como Servicio (IaaS).",
+            "feedback_incorrect": "Incorrecto. La virtualización es la base fundamental del Cloud Computing; sin ella, la nube no existiría como la conocemos.",
+            "rationale_ref": "La virtualización es literalmente el cimiento del Cloud Computing, ya que todos los proveedores de nube utilizan hipervisores de manera extensiva para ofrecer servicios como IaaS y PaaS."
           },
           "pause": true,
           "displayType": "poster",
@@ -626,7 +501,7 @@
             },
             "requireCompletion": false
           },
-          "label": "<p style=\"text-align:center\">Comprobar Conocimiento</p>"
+          "label": "<p style=\"text-align:center\">Pregunta 5</p>"
         }
       ],
       "bookmarks": [],
@@ -641,17 +516,23 @@
       "task": {
         "library": "H5P.Summary 1.10",
         "params": {
-          "intro": "Elige la oración correcta.",
+          "intro": "Elige la oración correcta que resume el rol de la Virtualización.",
           "summaries": [
             {
-              "subContentId": "6bff919c-c212-425e-b348-929b4f6d9a58",
-              "tip": ""
+              "statements": [
+                "La virtualización es una estrategia fundamental que permite optimizar recursos, ser más flexible, más resistente a fallos y la base del Cloud Computing.",
+                "La virtualización es solo una herramienta para hacer más sencillas las pruebas de desarrollo, pero no tiene impacto significativo en la continuidad del negocio.",
+                "La virtualización es una tecnología obsoleta que está siendo reemplazada por la Infraestructura como Código (IaC)."
+              ],
+              "tip": "",
+              "subContentId": "sum-final-statements"
             }
           ],
           "overallFeedback": [
             {
               "from": 0,
-              "to": 100
+              "to": 100,
+              "feedback": "Tu resultado: has conseguido :num de un total de :total puntos. ¡Revisa el vídeo si tienes dudas!"
             }
           ],
           "solvedLabel": "Progreso:",
@@ -660,7 +541,6 @@
           "labelCorrect": "Correcta.",
           "labelIncorrect": "¡Incorrecto! Por favor inténtalo otra vez.",
           "alternativeIncorrectLabel": "Incorrecto",
-          "labelCorrectAnswers": "Respuestas correctas.",
           "tipButtonLabel": "Mostrar pista",
           "scoreBarLabel": "Has conseguido :num de un total de :total puntos",
           "progressText": "Progreso :num de :total"
@@ -669,70 +549,67 @@
         "metadata": {
           "contentType": "Summary",
           "license": "U",
-          "title": "Sin título Summary",
-          "authors": [],
-          "changes": [],
-          "extraTitle": "Sin título Summary"
+          "title": "Resumen Final"
         }
       },
-      "displayAt": 3
+      "displayAt": 340
+    },
+    "override": {
+      "autoplay": true,
+      "loop": true,
+      "showBookmarksmenuOnLoad": false,
+      "showRewind10": false,
+      "preventSkippingMode": "none",
+      "deactivateSound": false
+    },
+    "l10n": {
+      "interaction": "Interacción",
+      "play": "Reproducir",
+      "pause": "Pausa",
+      "mute": "Enmudecer, actualmente sonoro",
+      "unmute": "Activar sonido, actualmente silenciado",
+      "quality": "Calidad del Vídeo",
+      "captions": "Leyendas",
+      "close": "Cerrar",
+      "fullscreen": "Pantalla Completa",
+      "exitFullscreen": "Salir de Pantalla Completa",
+      "summary": "Abrir diálogo de resumen",
+      "bookmarks": "Marcadores",
+      "endscreen": "Pantalla de Envío",
+      "defaultAdaptivitySeekLabel": "Continuar",
+      "continueWithVideo": "Continuar con el vídeo",
+      "more": "Más opciones de reproducción",
+      "playbackRate": "Velocidad de reproducción",
+      "rewind10": "Retroceder 10 segundos",
+      "navDisabled": "La navegación está deshabilitada",
+      "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
+      "sndDisabled": "El sonido está deshabilitado",
+      "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
+      "back": "Atrás",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos",
+      "currentTime": "Tiempo actual:",
+      "totalTime": "Tiempo total:",
+      "singleInteractionAnnouncement": "Interacción aparecida:",
+      "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
+      "videoPausedAnnouncement": "Vídeo en pausa",
+      "content": "Contenido",
+      "answered": "@answered contestadas",
+      "endcardTitle": "@answered pregunta(s) contestada(s)",
+      "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
+      "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
+      "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
+      "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
+      "endcardSubmitButton": "Enviar Respuestas",
+      "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
+      "endcardTableRowAnswered": "Preguntas respondidas",
+      "endcardTableRowScore": "Puntaje",
+      "endcardAnsweredScore": "respondidas",
+      "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
+      "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
+      "videoProgressBar": "Progreso del video",
+      "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
     }
-  },
-  "override": {
-    "autoplay": true,
-    "loop": true,
-    "showBookmarksmenuOnLoad": false,
-    "showRewind10": false,
-    "preventSkippingMode": "none",
-    "deactivateSound": false
-  },
-  "l10n": {
-    "interaction": "Interacción",
-    "play": "Reproducir",
-    "pause": "Pausa",
-    "mute": "Enmudecer, actualmente sonoro",
-    "unmute": "Activar sonido, actualmente silenciado",
-    "quality": "Calidad del Vídeo",
-    "captions": "Leyendas",
-    "close": "Cerrar",
-    "fullscreen": "Pantalla Completa",
-    "exitFullscreen": "Salir de Pantalla Completa",
-    "summary": "Abrir diálogo de resumen",
-    "bookmarks": "Marcadores",
-    "endscreen": "Pantalla de Envío",
-    "defaultAdaptivitySeekLabel": "Continuar",
-    "continueWithVideo": "Continuar con el vídeo",
-    "more": "Más opciones de reproducción",
-    "playbackRate": "Velocidad de reproducción",
-    "rewind10": "Retroceder 10 segundos",
-    "navDisabled": "La navegación está deshabilitada",
-    "navForwardDisabled": "La navegación hacia adelante está deshabilitada",
-    "sndDisabled": "El sonido está deshabilitado",
-    "requiresCompletionWarning": "Debes responder correctamente a todas las preguntas antes de continuar.",
-    "back": "Atrás",
-    "hours": "Horas",
-    "minutes": "Minutos",
-    "seconds": "Segundos",
-    "currentTime": "Tiempo actual:",
-    "totalTime": "Tiempo total:",
-    "singleInteractionAnnouncement": "Interacción aparecida:",
-    "multipleInteractionsAnnouncement": "Han aparecido múltiples interacciones.",
-    "videoPausedAnnouncement": "Vídeo en pausa",
-    "content": "Contenido",
-    "answered": "@answered contestadas",
-    "endcardTitle": "@answered pregunta(s) contestada(s)",
-    "endcardInformation": "Has contestado @answered preguntas, haz clic en la parte inferior para enviar tus respuestas.",
-    "endcardInformationOnSubmitButtonDisabled": "Has contestado @answered preguntas.",
-    "endcardInformationNoAnswers": "No has respondido ninguna pregunta.",
-    "endcardInformationMustHaveAnswer": "Debes responder al menos una pregunta antes de poder enviar tus respuestas.",
-    "endcardSubmitButton": "Enviar Respuestas",
-    "endcardSubmitMessage": "¡Se han enviado tus respuestas!",
-    "endcardTableRowAnswered": "Preguntas respondidas",
-    "endcardTableRowScore": "Puntaje",
-    "endcardAnsweredScore": "respondidas",
-    "endCardTableRowSummaryWithScore": "Has obtenido @score de un total de @total puntos para la @question que apareció después de @minutes minutos y @seconds segundos.",
-    "endCardTableRowSummaryWithoutScore": "Has contestado contestado la @question que apareció después de @minutes minutos y @seconds segundos.",
-    "videoProgressBar": "Progreso del video",
-    "howToCreateInteractions": "Reproducir el video para comenzar a crear interacciones"
   }
 }
