@@ -60,37 +60,166 @@
         }
 
         .question-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
         .question-card {
             background: white;
-            border-radius: 4px;
-            padding: 24px;
-            max-width: 520px;
-            width: 90%;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border: 1px solid #ddd;
-            animation: slideIn 0.3s ease-out;
+            border-radius: 16px;
+            padding: 32px;
+            width: 80%;
+            height: 80%;
+            max-width: 1000px;
+            max-height: 800px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: none;
+            animation: slideIn 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .feedback-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            backdrop-filter: blur(5px);
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 80%;
+            height: 80%;
+            max-width: 800px;
+            max-height: 600px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border: none;
+            animation: bounceIn 0.6s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .feedback-card.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 3px solid #28a745;
+        }
+
+        .feedback-card.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 3px solid #dc3545;
+        }
+
+        .feedback-icon {
+            font-size: 120px;
+            margin-bottom: 20px;
+            animation: iconPulse 0.8s ease-out;
+        }
+
+        .feedback-icon.correct {
+            color: #28a745;
+        }
+
+        .feedback-icon.incorrect {
+            color: #dc3545;
+        }
+
+        .feedback-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .feedback-message {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #4a5568;
+            max-width: 600px;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .question-icon {
+            font-size: 48px;
+            color: #1768ac;
+            margin-right: 16px;
+        }
+
+        .question-info {
+            flex: 1;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-30px) scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes iconPulse {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
             }
         }
 
@@ -118,135 +247,167 @@
 
         .question-image {
             width: 100%;
-            max-height: 200px;
+            max-height: 300px;
             object-fit: cover;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .question-title {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
+            color: #2d3748;
+            margin-bottom: 24px;
             line-height: 1.4;
         }
 
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex: 1;
         }
 
         .option-button {
             background: #ffffff;
-            border: 2px solid #c5c5c5;
-            border-radius: 4px;
-            padding: 12px 16px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
             text-align: left;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-            color: #333;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            color: #2d3748;
             position: relative;
             display: flex;
             align-items: center;
+            min-height: 60px;
         }
 
         .option-button:hover {
-            background: #f8f8f8;
-            border-color: #999;
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .option-button.selected {
-            background: #e8f4fd;
+            background: #ebf8ff;
             border-color: #1768ac;
             color: #1768ac;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23,104,172,0.2);
         }
 
         .option-button.correct {
-            background: #dff0d8;
-            border-color: #5cb85c;
-            color: #3c763d;
+            background: #f0fff4;
+            border-color: #28a745;
+            color: #22543d;
+            animation: correctAnswer 0.6s ease-out;
         }
 
         .option-button.correct::before {
             content: '✓';
-            color: #5cb85c;
+            color: #28a745;
             font-weight: bold;
-            margin-right: 8px;
+            font-size: 24px;
+            margin-right: 12px;
         }
 
         .option-button.incorrect {
-            background: #f2dede;
-            border-color: #d9534f;
-            color: #a94442;
+            background: #fff5f5;
+            border-color: #dc3545;
+            color: #742a2a;
+            animation: incorrectAnswer 0.6s ease-out;
         }
 
         .option-button.incorrect::before {
             content: '✗';
-            color: #d9534f;
+            color: #dc3545;
             font-weight: bold;
-            margin-right: 8px;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); background: #c6f6d5; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
         }
 
         .question-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-top: 16px;
+            border-top: 2px solid #e2e8f0;
         }
 
-        .submit-btn {
+        .submit-btn, .continue-btn {
             background: #1768ac;
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: normal;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 160px;
+            justify-content: center;
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover, .continue-btn:hover {
             background: #0f5c9c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23,104,172,0.3);
         }
 
         .submit-btn:disabled {
-            background: #ccc;
+            background: #cbd5e0;
             cursor: not-allowed;
-            color: #666;
+            color: #a0aec0;
+            transform: none;
+            box-shadow: none;
         }
 
         .continue-btn {
-            background: #5cb85c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: normal;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            background: #28a745;
+            font-size: 24px;
+            padding: 20px 40px;
+            border-radius: 16px;
         }
 
         .continue-btn:hover {
-            background: #449d44;
+            background: #218838;
+            box-shadow: 0 8px 25px rgba(40,167,69,0.3);
         }
 
         .question-counter {
-            color: #666;
-            font-size: 13px;
-            font-weight: normal;
-            background: #f5f5f5;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            color: #4a5568;
+            font-size: 16px;
+            font-weight: 600;
+            background: #f7fafc;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .progress-bar {
@@ -606,9 +767,10 @@
                 border-radius: 12px;
             }
             
-            .question-card {
+            .question-card, .feedback-card {
+                width: 95%;
+                height: 90%;
                 padding: 24px;
-                margin: 20px;
             }
             
             .header {
@@ -618,6 +780,23 @@
             .header h1 {
                 font-size: 24px;
             }
+
+            .question-title {
+                font-size: 20px;
+            }
+
+            .option-button {
+                font-size: 16px;
+                padding: 16px 20px;
+            }
+
+            .feedback-title {
+                font-size: 28px;
+            }
+
+            .feedback-message {
+                font-size: 18px;
+            }
         }
     </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -626,23 +805,45 @@
  </head>
  <body>
   <div class="container">
+   <div class="header" style="display: none;">
+    <p id="video-description">Responde las preguntas que aparecen durante el video</p>
+   </div>
    <div class="progress-bar">
     <div class="progress-fill" id="progress-fill"></div>
    </div>
-   <div class="video-container"><iframe id="video-player" class="video-player" src="https://www.youtube.com/embed/jCcZfY04at4?enablejsapi=1&amp;controls=0&amp;rel=0&amp;autoplay=0&amp;mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+   <div class="video-container"><iframe id="video-player" class="video-player" src="https://www.youtube.com/embed/jCcZfY04at4?enablejsapi=1&amp;controls=0&amp;rel=0&amp;autoplay=0&amp;mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe> <!-- Pantalla de Pregunta -->
     <div class="question-overlay" id="question-overlay">
-     <div class="question-card"><img id="question-image" class="question-image" style="display: none;" alt="Imagen de la pregunta">
+     <div class="question-card">
+      <div class="question-header">
+       <div class="question-icon"><span class="material-icons">quiz</span>
+       </div>
+       <div class="question-info">
+        <div class="question-counter" id="question-counter"><span class="material-icons">help_outline</span> Pregunta 1 de 5
+        </div>
+       </div>
+      </div><img id="question-image" class="question-image" style="display: none;" alt="Imagen de la pregunta">
       <div class="question-title" id="question-title"></div>
       <div class="options-container" id="options-container"></div>
       <div class="question-actions">
-       <div class="question-counter" id="question-counter"></div><button class="submit-btn" id="submit-btn" disabled>Responder</button>
+       <div></div><button class="submit-btn" id="submit-btn" disabled> <span class="material-icons">send</span> Responder </button>
       </div>
-      <div class="feedback" id="feedback" style="display: none;"></div>
+     </div>
+    </div><!-- Pantalla de Retroalimentación -->
+    <div class="feedback-overlay" id="feedback-overlay">
+     <div class="feedback-card" id="feedback-card">
+      <div class="feedback-icon" id="feedback-icon"><span class="material-icons">check_circle</span>
+      </div>
+      <div class="feedback-title" id="feedback-title">
+       ¡Correcto!
+      </div>
+      <div class="feedback-message" id="feedback-message">
+       ¡Excelente! Has respondido correctamente.
+      </div><button class="continue-btn" id="continue-btn"> <span class="material-icons">play_arrow</span> Continuar </button>
      </div>
     </div>
    </div>
    <div class="controls">
-    <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()"> <span class="material-icons">play_arrow</span> </button>
+    <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn"> <span class="material-icons">play_arrow</span> </button>
      <div class="time-display" id="time-display"><span id="current-time">0:00</span> / <span id="total-time">0:00</span>
      </div>
     </div>
@@ -655,18 +856,17 @@
       </div>
      </div>
     </div>
-    <div class="control-buttons"><button class="control-btn icon-only" onclick="toggleSpeedMenu()" title="Velocidad de reproducción"> <span class="material-icons">speed</span> </button> <button class="control-btn icon-only" onclick="toggleAudio()" title="Silenciar/Activar audio" id="audio-btn"> <span class="material-icons">volume_up</span> </button> <button class="control-btn icon-only" onclick="toggleQualityMenu()" title="Calidad de video"> <span class="material-icons">high_quality</span> </button> <button class="control-btn icon-only" onclick="toggleFullscreen()" title="Pantalla completa"> <span class="material-icons">fullscreen</span> </button> <!-- Menú de velocidad -->
-     <div class="dropdown-menu" id="speed-menu"><button class="dropdown-item" onclick="setSpeed(0.5)">0.5x</button> <button class="dropdown-item" onclick="setSpeed(0.75)">0.75x</button> <button class="dropdown-item active" onclick="setSpeed(1)">1x Normal</button> <button class="dropdown-item" onclick="setSpeed(1.25)">1.25x</button> <button class="dropdown-item" onclick="setSpeed(1.5)">1.5x</button> <button class="dropdown-item" onclick="setSpeed(2)">2x</button>
+    <div class="control-buttons"><button class="control-btn icon-only" id="speed-btn" title="Velocidad de reproducción"> <span class="material-icons">speed</span> </button> <button class="control-btn icon-only" id="audio-btn" title="Silenciar/Activar audio"> <span class="material-icons">volume_up</span> </button> <button class="control-btn icon-only" id="quality-btn" title="Calidad de video"> <span class="material-icons">high_quality</span> </button> <button class="control-btn icon-only" id="fullscreen-btn" title="Pantalla completa"> <span class="material-icons">fullscreen</span> </button> <!-- Menú de velocidad -->
+     <div class="dropdown-menu" id="speed-menu"><button class="dropdown-item" data-speed="0.5">0.5x</button> <button class="dropdown-item" data-speed="0.75">0.75x</button> <button class="dropdown-item active" data-speed="1">1x Normal</button> <button class="dropdown-item" data-speed="1.25">1.25x</button> <button class="dropdown-item" data-speed="1.5">1.5x</button> <button class="dropdown-item" data-speed="2">2x</button>
      </div><!-- Menú de calidad -->
-     <div class="dropdown-menu" id="quality-menu"><button class="dropdown-item" onclick="setQuality('144p')">144p</button> <button class="dropdown-item" onclick="setQuality('240p')">240p</button> <button class="dropdown-item" onclick="setQuality('360p')">360p</button> <button class="dropdown-item active" onclick="setQuality('480p')">480p</button> <button class="dropdown-item" onclick="setQuality('720p')">720p HD</button> <button class="dropdown-item" onclick="setQuality('1080p')">1080p Full HD</button>
-     </div><button class="control-btn icon-only" onclick="restartVideo()" title="Reiniciar video"> <span class="material-icons">replay</span> </button> <button class="control-btn icon-only" onclick="showResults()" title="Ver resultados"> <span class="material-icons">assessment</span> </button>
+     <div class="dropdown-menu" id="quality-menu"><button class="dropdown-item" data-quality="144p">144p</button> <button class="dropdown-item" data-quality="240p">240p</button> <button class="dropdown-item" data-quality="360p">360p</button> <button class="dropdown-item active" data-quality="480p">480p</button> <button class="dropdown-item" data-quality="720p">720p HD</button> <button class="dropdown-item" data-quality="1080p">1080p Full HD</button>
+     </div><button class="control-btn icon-only" id="restart-btn" title="Reiniciar video"> <span class="material-icons">replay</span> </button> <button class="control-btn icon-only" id="results-btn" title="Ver resultados"> <span class="material-icons">assessment</span> </button>
     </div>
    </div>
   </div>
   <script>
         // Configuración por defecto
         const defaultConfig = {
-            video_title: "Video Interactivo H5P",
             video_description: "Responde las preguntas que aparecen durante el video"
         };
 
@@ -778,10 +978,56 @@
         let isMuted = false;
         let player = null;
         let playerReady = false;
+        let isDragging = false;
         
         // Configuración del video desde URL
         let videoId = 'jCcZfY04at4'; // Por defecto
         let jsonFile = null; // Se cargará desde URL o por defecto
+
+        // Función para crear sonidos de retroalimentación
+        function createAudioFeedback(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (type === 'correct') {
+                // Sonido de éxito - acordes ascendentes
+                const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+                frequencies.forEach((freq, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1 + (index * 0.1));
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5 + (index * 0.1));
+                    
+                    oscillator.start(audioContext.currentTime + (index * 0.1));
+                    oscillator.stop(audioContext.currentTime + 0.5 + (index * 0.1));
+                });
+            } else if (type === 'incorrect') {
+                // Sonido de error - tono descendente
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
+                oscillator.type = 'sawtooth';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+        }
 
         // Función para obtener parámetros de URL
         function getUrlParams() {
@@ -824,6 +1070,7 @@
             videoDuration = player.getDuration();
             console.log('Player ready, duration:', videoDuration);
             updateTimeDisplay();
+            setupEventListeners();
         }
 
         function onPlayerStateChange(event) {
@@ -846,6 +1093,47 @@
                     videoTimer = null;
                 }
             }
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Botón play/pause
+            document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
+            
+            // Botones de control
+            document.getElementById('speed-btn').addEventListener('click', toggleSpeedMenu);
+            document.getElementById('audio-btn').addEventListener('click', toggleAudio);
+            document.getElementById('quality-btn').addEventListener('click', toggleQualityMenu);
+            document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+            document.getElementById('restart-btn').addEventListener('click', restartVideo);
+            document.getElementById('results-btn').addEventListener('click', showResults);
+            
+            // Menús desplegables
+            document.querySelectorAll('#speed-menu .dropdown-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const speed = parseFloat(e.target.dataset.speed);
+                    setSpeed(speed, e.target);
+                });
+            });
+            
+            document.querySelectorAll('#quality-menu .dropdown-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const quality = e.target.dataset.quality;
+                    setQuality(quality, e.target);
+                });
+            });
+            
+            // Botones de pregunta y retroalimentación
+            document.getElementById('submit-btn').addEventListener('click', submitAnswer);
+            document.getElementById('continue-btn').addEventListener('click', continueVideo);
+            
+            // Cerrar menús al hacer clic fuera
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.control-btn')) {
+                    document.getElementById('speed-menu').style.display = 'none';
+                    document.getElementById('quality-menu').style.display = 'none';
+                }
+            });
         }
 
         // Inicialización
@@ -894,7 +1182,7 @@
                 marker.style.left = `${(question.time / duration) * 100}%`;
                 marker.dataset.questionIndex = index;
                 marker.dataset.time = question.time;
-                marker.onclick = () => jumpToQuestion(index);
+                marker.addEventListener('click', () => jumpToQuestion(index));
                 
                 // Crear tooltip para el marcador
                 const tooltip = document.createElement('div');
@@ -913,7 +1201,6 @@
             const markersContainer = document.getElementById('markers-container');
             const timelineHandle = document.getElementById('timeline-handle');
             const timelineTooltip = document.getElementById('timeline-tooltip');
-            let isDragging = false;
             let wasPlaying = false;
 
             // Eventos del handle
@@ -1193,7 +1480,10 @@
             
             // Actualizar contenido de la pregunta
             document.getElementById('question-title').textContent = question.question;
-            document.getElementById('question-counter').textContent = `Pregunta ${questionIndex + 1} de ${questionsData.questions.length}`;
+            document.getElementById('question-counter').innerHTML = `
+                <span class="material-icons">help_outline</span>
+                Pregunta ${questionIndex + 1} de ${questionsData.questions.length}
+            `;
             
             // Mostrar imagen si existe
             const questionImage = document.getElementById('question-image');
@@ -1212,15 +1502,14 @@
                 const button = document.createElement('button');
                 button.className = 'option-button';
                 button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
-                button.onclick = () => selectOption(index, button);
+                button.addEventListener('click', () => selectOption(index, button));
                 optionsContainer.appendChild(button);
             });
             
-            // Resetear botones y feedback
-            document.getElementById('submit-btn').disabled = true;
-            document.getElementById('submit-btn').textContent = 'Responder';
-            document.getElementById('submit-btn').onclick = submitAnswer;
-            document.getElementById('feedback').style.display = 'none';
+            // Resetear botón
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons">send</span> Responder';
             
             // Mostrar overlay
             document.getElementById('question-overlay').style.display = 'flex';
@@ -1244,6 +1533,13 @@
             const question = questionsData.questions[currentQuestionIndex];
             const isCorrect = selectedAnswer === question.correct_answer;
             
+            // Reproducir sonido de retroalimentación
+            try {
+                createAudioFeedback(isCorrect ? 'correct' : 'incorrect');
+            } catch (error) {
+                console.log('Audio feedback not available:', error);
+            }
+            
             // Marcar respuestas
             document.querySelectorAll('.option-button').forEach((btn, index) => {
                 if (index === question.correct_answer) {
@@ -1254,12 +1550,6 @@
                 btn.onclick = null; // Deshabilitar clics
             });
             
-            // Mostrar feedback
-            const feedback = document.getElementById('feedback');
-            feedback.textContent = isCorrect ? question.feedback.correct : question.feedback.incorrect;
-            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
-            feedback.style.display = 'block';
-            
             // Marcar pregunta como respondida
             question.answered = true;
             question.correct = isCorrect;
@@ -1268,17 +1558,45 @@
             questionsAnswered++;
             if (isCorrect) correctAnswers++;
             
-            // Cambiar botón a continuar
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.textContent = 'Continuar';
-            submitBtn.onclick = continueVideo;
-            submitBtn.disabled = false;
+            // Mostrar pantalla de retroalimentación después de un momento
+            setTimeout(() => {
+                showFeedback(isCorrect, question.feedback);
+            }, 1500);
             
             updateProgress();
         }
 
-        function continueVideo() {
+        function showFeedback(isCorrect, feedback) {
+            // Ocultar pantalla de pregunta
             document.getElementById('question-overlay').style.display = 'none';
+            
+            // Configurar pantalla de retroalimentación
+            const feedbackCard = document.getElementById('feedback-card');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackMessage = document.getElementById('feedback-message');
+            
+            if (isCorrect) {
+                feedbackCard.className = 'feedback-card correct';
+                feedbackIcon.innerHTML = '<span class="material-icons">check_circle</span>';
+                feedbackIcon.className = 'feedback-icon correct';
+                feedbackTitle.textContent = '¡Correcto!';
+                feedbackMessage.textContent = feedback.correct;
+            } else {
+                feedbackCard.className = 'feedback-card incorrect';
+                feedbackIcon.innerHTML = '<span class="material-icons">cancel</span>';
+                feedbackIcon.className = 'feedback-icon incorrect';
+                feedbackTitle.textContent = 'Incorrecto';
+                feedbackMessage.textContent = feedback.incorrect;
+            }
+            
+            // Mostrar pantalla de retroalimentación
+            document.getElementById('feedback-overlay').style.display = 'flex';
+        }
+
+        function continueVideo() {
+            // Ocultar pantalla de retroalimentación
+            document.getElementById('feedback-overlay').style.display = 'none';
             
             // Marcar el marcador como completado
             const markers = document.querySelectorAll('.marker');
@@ -1288,7 +1606,6 @@
             
             // Reanudar el video automáticamente
             playVideo();
-            document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
         }
 
         function updateProgress() {
@@ -1317,8 +1634,9 @@
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                 
-                // Ocultar overlay
+                // Ocultar overlays
                 document.getElementById('question-overlay').style.display = 'none';
+                document.getElementById('feedback-overlay').style.display = 'none';
                 
                 // Resetear marcadores - remover todas las clases de estado
                 document.querySelectorAll('.marker').forEach(marker => {
@@ -1344,8 +1662,6 @@
             }
         }
 
-
-
         function toggleSpeedMenu() {
             const menu = document.getElementById('speed-menu');
             const isVisible = menu.style.display === 'block';
@@ -1366,7 +1682,7 @@
             menu.style.display = isVisible ? 'none' : 'block';
         }
 
-        function setSpeed(speed) {
+        function setSpeed(speed, element) {
             if (!playerReady || !player) return;
             
             currentSpeed = speed;
@@ -1376,7 +1692,7 @@
             document.querySelectorAll('#speed-menu .dropdown-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
+            element.classList.add('active');
             
             // Cerrar menú
             document.getElementById('speed-menu').style.display = 'none';
@@ -1385,14 +1701,14 @@
             showNotification(`Velocidad: ${speed}x`);
         }
 
-        function setQuality(quality) {
+        function setQuality(quality, element) {
             currentQuality = quality;
             
             // Actualizar indicador visual
             document.querySelectorAll('#quality-menu .dropdown-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
+            element.classList.add('active');
             
             // Cerrar menú
             document.getElementById('quality-menu').style.display = 'none';
@@ -1460,19 +1776,9 @@
             }, 2000);
         }
 
-        // Cerrar menús al hacer clic fuera
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.control-btn')) {
-                document.getElementById('speed-menu').style.display = 'none';
-                document.getElementById('quality-menu').style.display = 'none';
-            }
-        });
-
         function showResults() {
             const totalQuestions = questionsData.questions.length;
             const percentage = Math.round((correctAnswers / Math.max(questionsAnswered, 1)) * 100);
-            
-            const resultText = `Resultados:\n\nPreguntas respondidas: ${questionsAnswered}/${totalQuestions}\nRespuestas correctas: ${correctAnswers}\nPorcentaje de aciertos: ${percentage}%`;
             
             // Crear modal personalizado en lugar de alert
             const modal = document.createElement('div');
@@ -1505,7 +1811,7 @@
                 <p style="margin: 10px 0; color: #4a5568;"><strong>Respuestas correctas:</strong> ${correctAnswers}</p>
                 <p style="margin: 10px 0; color: #4a5568;"><strong>Porcentaje de aciertos:</strong> ${percentage}%</p>
                 <button onclick="this.closest('div').parentElement.remove()" style="
-                    background: #4facfe;
+                    background: #1768ac;
                     color: white;
                     border: none;
                     padding: 12px 24px;
@@ -1522,12 +1828,8 @@
 
         // SDK de elementos
         async function onConfigChange(config) {
-            const titleElement = document.getElementById('video-title');
             const descriptionElement = document.getElementById('video-description');
             
-            if (titleElement) {
-                titleElement.textContent = config.video_title || defaultConfig.video_title;
-            }
             if (descriptionElement) {
                 descriptionElement.textContent = config.video_description || defaultConfig.video_description;
             }
@@ -1544,7 +1846,6 @@
 
         function mapToEditPanelValues(config) {
             return new Map([
-                ["video_title", config.video_title || defaultConfig.video_title],
                 ["video_description", config.video_description || defaultConfig.video_description]
             ]);
         }
@@ -1559,5 +1860,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f325dfb3d257bd',t:'MTc2MzI1NTgzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f33dcef07f2b3d',t:'MTc2MzI1NjgxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
