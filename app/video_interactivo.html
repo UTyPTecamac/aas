@@ -132,27 +132,81 @@
         }
 
         .feedback-icon {
-            font-size: 120px;
-            margin-bottom: 20px;
+            font-size: 0;
+            margin-bottom: 30px;
             animation: iconPulse 0.8s ease-out;
-            text-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .feedback-icon .material-icons {
+            font-size: 150px;
+            line-height: 1;
         }
 
         .feedback-icon.correct {
-            color: #28a745;
+            color: #ffffff;
             background: linear-gradient(135deg, #28a745, #20c997);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .feedback-icon.incorrect {
-            color: #dc3545;
+            color: #ffffff;
             background: linear-gradient(135deg, #dc3545, #e74c3c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .loading-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #e2e8f0;
+            border-top: 6px solid #1768ac;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .loading-subtext {
+            font-size: 14px;
+            color: #4a5568;
         }
 
         .feedback-title {
@@ -486,6 +540,16 @@
 
         .play-pause-btn:hover {
             background: #0f5c9c;
+        }
+        
+        .play-pause-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .play-pause-btn:disabled:hover {
+            background: #cbd5e0;
         }
 
         .time-display {
@@ -886,6 +950,14 @@
     </div>
    </div>
   </div>
+  <!-- Overlay de carga -->
+  <div class="loading-overlay" id="loading-overlay">
+   <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loading-text">Cargando contenido...</div>
+    <div class="loading-subtext" id="loading-subtext">Por favor espera</div>
+   </div>
+  </div>
   <script>
         // Configuración por defecto
         const defaultConfig = {
@@ -1090,7 +1162,6 @@
                 const extractedId = extractYouTubeId(videoParam);
                 if (extractedId) {
                     videoId = extractedId;
-                    console.log('Video ID extraído de URL:', videoId);
                 } else {
                     console.warn('No se pudo extraer el ID del video de:', videoParam);
                 }
@@ -1098,7 +1169,6 @@
             
             if (jsonParam) {
                 jsonFile = decodeURIComponent(jsonParam);
-                console.log('URL JSON configurada:', jsonFile);
             }
         }
 
@@ -1111,7 +1181,6 @@
         // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
-            console.log('✅ YouTube API está lista');
             // NO inicializar aquí, esperar a que el JSON se cargue primero
             tryInitializePlayer();
         }
@@ -1125,24 +1194,21 @@
             
             // PASO 1: Verificar que el JSON esté cargado (si hay uno especificado)
             if (jsonFile && !jsonDataLoaded) {
-                console.log('⏳ Esperando carga de JSON antes de inicializar el video...');
                 return;
             }
             
             // PASO 2: Verificar que la API de YouTube esté lista
             if (!youtubeAPIReady) {
-                console.log('⏳ Esperando YouTube API antes de inicializar el video...');
                 return;
             }
             
             // PASO 3: Verificar que tengamos un videoId
             if (!videoId) {
-                console.warn('⚠️ No hay videoId disponible');
+                console.warn('No hay videoId disponible');
                 return;
             }
             
             // PASO 4: Inicializar el player
-            console.log('🚀 Inicializando player con videoId:', videoId);
             initializationInProgress = true;
             
             try {
@@ -1165,44 +1231,34 @@
                 
                 playerInitialized = true;
                 initializationInProgress = false;
-                console.log('✅ Player inicializado correctamente');
             } catch (error) {
-                console.error('❌ Error al inicializar el player:', error);
+                console.error('Error al inicializar el player:', error);
                 initializationInProgress = false;
             }
         }
 
         function onPlayerReady(event) {
             playerReady = true;
-            console.log('✅ PASO 2 COMPLETADO: Player ready - videoId:', videoId);
             
             // Obtener duración del video
             setTimeout(() => {
                 try {
                     videoDuration = player.getDuration();
-                    console.log('⏱️ Video duration:', videoDuration, 'segundos');
                     updateTimeDisplay();
-                    
-                    // PASO 3: Crear marcadores de interactividad ahora que el video está listo
-                    console.log('📥 PASO 3: Creando marcadores de interactividad...');
                     createInteractiveMarkers();
-                    console.log('✅ PASO 3 COMPLETADO: Marcadores creados');
                 } catch (error) {
-                    console.log('⚠️ Duration not available yet, will retry');
                     videoDuration = 180; // Duración por defecto
-                    // Crear marcadores con duración por defecto
-                    console.log('📥 PASO 3: Creando marcadores con duración estimada...');
                     createInteractiveMarkers();
-                    console.log('✅ PASO 3 COMPLETADO: Marcadores creados (duración estimada)');
                 }
+                
+                // Ocultar loading cuando todo esté listo
+                hideLoading();
             }, 1000);
             
             setupEventListeners();
         }
 
         function onPlayerStateChange(event) {
-            console.log('Player state changed:', event.data);
-            
             if (event.data == YT.PlayerState.PLAYING) {
                 isPlaying = true;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
@@ -1248,20 +1304,18 @@
             if (continueBtn) {
                 continueBtn.addEventListener('click', continueVideo);
             }
-            
-            console.log('Event listeners configurados correctamente');
         }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 ===== INICIANDO APLICACIÓN =====');
-            console.log('📋 DOM cargado');
+            // Deshabilitar botón play al inicio
+            const playBtn = document.getElementById('play-pause-btn');
+            if (playBtn) {
+                playBtn.disabled = true;
+            }
             
             // PASO 0: Obtener parámetros de URL primero
             getUrlParams();
-            console.log('📋 Parámetros de URL procesados:');
-            console.log('   - videoId:', videoId);
-            console.log('   - jsonFile:', jsonFile || 'ninguno (usando datos por defecto)');
             
             // PASO 1: Cargar datos de preguntas PRIMERO (esto es crítico)
             // Esta función marcará jsonDataLoaded como true y luego llamará a tryInitializePlayer()
@@ -1276,8 +1330,6 @@
             
             // Configurar eventos básicos que no dependen del player
             setupBasicEventListeners();
-            
-            console.log('⏳ Esperando inicialización del video...');
         });
         
         // Event listeners básicos que no dependen del reproductor
@@ -1295,60 +1347,122 @@
                 resultsBtn.addEventListener('click', showResults);
                 resultsBtn.setAttribute('data-listener', 'true');
             }
-            
-            console.log('Event listeners básicos configurados');
         }
 
-        // Función para cargar datos de preguntas
+        // Funciones para mostrar/ocultar loading
+        function showLoading(text, subtext) {
+            const overlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const loadingSubtext = document.getElementById('loading-subtext');
+            
+            if (overlay) {
+                if (text) loadingText.textContent = text;
+                if (subtext) loadingSubtext.textContent = subtext;
+                overlay.style.display = 'flex';
+            }
+            
+            // Deshabilitar botón play
+            const playBtn = document.getElementById('play-pause-btn');
+            if (playBtn) {
+                playBtn.disabled = true;
+                playBtn.style.opacity = '0.5';
+                playBtn.style.cursor = 'not-allowed';
+            }
+        }
+        
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+            
+            // Habilitar botón play
+            const playBtn = document.getElementById('play-pause-btn');
+            if (playBtn) {
+                playBtn.disabled = false;
+                playBtn.style.opacity = '1';
+                playBtn.style.cursor = 'pointer';
+            }
+        }
+
+        // Función para cargar datos de preguntas con reintentos
         async function loadQuestionsData() {
-            console.log('📥 PASO 1: Cargando datos de preguntas...');
+            showLoading('Cargando preguntas...', 'Conectando con el servidor');
             
             if (jsonFile) {
-                try {
-                    console.log('📡 Cargando JSON desde:', jsonFile);
-                    const response = await fetch(jsonFile);
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('✅ JSON recibido:', data);
+                const maxRetries = 3;
+                let retryCount = 0;
+                let success = false;
+                
+                while (retryCount < maxRetries && !success) {
+                    try {
+                        showLoading('Cargando preguntas...', retryCount > 0 ? `Reintento ${retryCount + 1} de ${maxRetries}` : 'Conectando con el servidor');
                         
-                        // Actualizar video_id si viene en el JSON (tiene prioridad sobre parámetro URL)
-                        if (data.video_id) {
-                            const extractedId = extractYouTubeId(data.video_id);
-                            if (extractedId) {
-                                videoId = extractedId;
-                                console.log('🎬 Video ID actualizado desde JSON:', videoId);
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout de 10 segundos
+                        
+                        const response = await fetch(jsonFile, {
+                            signal: controller.signal,
+                            cache: 'no-cache'
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            
+                            // Validar que el JSON tenga la estructura correcta
+                            if (!data || (!data.questions && !data.video_id)) {
+                                throw new Error('JSON inválido: estructura incorrecta');
                             }
-                        }
-                        
-                        // Actualizar preguntas
-                        if (data.questions && Array.isArray(data.questions)) {
-                            questionsData.questions = data.questions;
-                            questionsData.video_id = videoId;
-                            console.log(`✅ ${data.questions.length} preguntas cargadas desde JSON`);
+                            
+                            // Actualizar video_id si viene en el JSON (tiene prioridad sobre parámetro URL)
+                            if (data.video_id) {
+                                const extractedId = extractYouTubeId(data.video_id);
+                                if (extractedId) {
+                                    videoId = extractedId;
+                                }
+                            }
+                            
+                            // Actualizar preguntas
+                            if (data.questions && Array.isArray(data.questions)) {
+                                if (data.questions.length === 0) {
+                                    throw new Error('JSON no contiene preguntas');
+                                }
+                                questionsData.questions = data.questions;
+                                questionsData.video_id = videoId;
+                            } else {
+                                Object.assign(questionsData, data);
+                            }
+                            
+                            success = true;
+                            showLoading('Preguntas cargadas', 'Inicializando video...');
                         } else {
-                            Object.assign(questionsData, data);
-                            console.log('✅ Datos del JSON asignados');
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                         }
+                    } catch (error) {
+                        retryCount++;
+                        console.error(`Error cargando JSON (intento ${retryCount}/${maxRetries}):`, error);
                         
-                        console.log('✅ JSON cargado exitosamente desde:', jsonFile);
-                    } else {
-                        console.warn('⚠️ No se pudo cargar el JSON (status:', response.status, '), usando datos por defecto');
+                        if (retryCount >= maxRetries) {
+                            console.warn('No se pudo cargar el JSON después de', maxRetries, 'intentos. Usando datos por defecto');
+                            showLoading('Usando datos por defecto', 'No se pudo cargar el JSON remoto');
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        } else {
+                            // Esperar antes de reintentar (backoff exponencial)
+                            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                        }
                     }
-                } catch (error) {
-                    console.error('❌ Error cargando JSON:', error);
-                    console.warn('⚠️ Usando datos por defecto');
                 }
             } else {
-                console.log('ℹ️ No hay URL JSON especificada, usando datos por defecto');
+                showLoading('Cargando datos por defecto...', 'Preparando contenido');
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
             // Marcar JSON como cargado (incluso si no había JSON, usamos datos por defecto)
             jsonDataLoaded = true;
-            console.log('✅ PASO 1 COMPLETADO: Questions data loaded. Total preguntas:', questionsData.questions.length);
-            console.log('📊 Datos cargados:', questionsData);
             
             // PASO 2: Ahora que el JSON está cargado, intentar inicializar el video
-            console.log('📥 PASO 2: Intentando inicializar el video...');
             tryInitializePlayer();
         }
 
@@ -1356,26 +1470,22 @@
             const markersContainer = document.getElementById('markers-container');
             
             if (!markersContainer) {
-                console.error('❌ No se encontró el contenedor de marcadores');
+                console.error('No se encontró el contenedor de marcadores');
                 return;
             }
             
             // Verificar que tenemos preguntas
             if (!questionsData.questions || questionsData.questions.length === 0) {
-                console.warn('⚠️ No hay preguntas disponibles para crear marcadores');
+                console.warn('No hay preguntas disponibles para crear marcadores');
                 return;
             }
-            
-            console.log(`📍 Creando ${questionsData.questions.length} marcadores de interactividad...`);
             
             // Limpiar solo los marcadores, mantener timeline-progress, handle y tooltip
             const existingMarkers = markersContainer.querySelectorAll('.marker');
             existingMarkers.forEach(marker => marker.remove());
-            console.log(`🧹 ${existingMarkers.length} marcadores anteriores eliminados`);
             
             // Usar duración real del video si está disponible, sino estimar
             const duration = videoDuration || 180;
-            console.log(`⏱️ Duración del video: ${duration} segundos`);
             
             questionsData.questions.forEach((question, index) => {
                 const marker = document.createElement('div');
@@ -1393,10 +1503,7 @@
                 marker.appendChild(tooltip);
                 
                 markersContainer.appendChild(marker);
-                console.log(`   ✓ Marcador ${index + 1} creado en ${formatTime(question.time)} (${positionPercent.toFixed(1)}%)`);
             });
-            
-            console.log(`✅ ${questionsData.questions.length} marcadores creados exitosamente`);
             
             // Configurar eventos del slider (solo una vez)
             setupTimelineSlider();
@@ -1556,14 +1663,17 @@
         }
 
         function togglePlayPause() {
+            const playBtn = document.getElementById('play-pause-btn');
+            if (playBtn && playBtn.disabled) {
+                return; // No hacer nada si el botón está deshabilitado
+            }
+            
             if (!playerReady || !player) {
-                console.log('Player not ready');
                 return;
             }
             
             try {
                 const playerState = player.getPlayerState();
-                console.log('Current player state:', playerState);
                 
                 if (playerState === YT.PlayerState.PLAYING) {
                     player.pauseVideo();
