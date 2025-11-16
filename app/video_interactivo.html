@@ -67,6 +67,12 @@
             border: none;
         }
 
+        /* Div transparente para bloquear clics a YouTube */
+        .video-overlay-blocker {
+            z-index: 5;
+            cursor: pointer;
+        }
+
         /* MODIFICADO: Overlay de estado rediseñado como "Splash Screen" */
         /* AHORA ESTÁ OCULTO POR DEFECTO */
         .video-state-overlay {
@@ -1427,6 +1433,8 @@
         let jsonDataLoaded = false;
         let playerInitialized = false;
         let initializationInProgress = false;
+        // NUEVO: "Watchdog" (vigilante) para la inicialización del player
+        let playerInitializationWatchdog = null; 
 
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
@@ -1464,6 +1472,14 @@
             // MODIFICACIÓN: Avisar al usuario que el reproductor se está preparando
             showLoading('Preparando reproductor...', 'Casi listo');
             
+            // NUEVO: Iniciar el "watchdog" del player. Si onReady no se dispara en 15s, mostrar error.
+            playerInitializationWatchdog = setTimeout(() => {
+                if (!playerReady) { // playerReady solo se vuelve true en onPlayerReady
+                    console.error('Timeout: El reproductor de video no respondió (onReady no se disparó).');
+                    showError('Error de Video', 'El video no respondió. Intenta recargar la página.');
+                }
+            }, 15000); // 15 segundos de espera para que el video se inicialice
+
             try {
                 player = new YT.Player('video-player', {
                     height: '100%',
@@ -1490,30 +1506,47 @@
                 console.error('Error al inicializar el player:', error);
                 showError('Error de Player', 'No se pudo iniciar el reproductor de YouTube.');
                 initializationInProgress = false;
+                // Limpiar watchdog si la creación del player falla instantáneamente
+                if (playerInitializationWatchdog) clearTimeout(playerInitializationWatchdog);
             }
         }
 
         function onPlayerReady(event) {
+            // ¡ÉXITO! El player está listo.
+            
+            // NUEVO: Detener el "watchdog"
+            if (playerInitializationWatchdog) {
+                clearTimeout(playerInitializationWatchdog);
+                playerInitializationWatchdog = null;
+            }
+            
             playerReady = true;
-            setTimeout(() => {
-                try {
-                    videoDuration = player.getDuration();
-                    updateTimeDisplay();
-                    createInteractiveMarkers();
-                } catch (error) {
-                    console.warn('No se pudo obtener la duración, usando 180s por defecto.', error);
-                    videoDuration = 180;
-                    createInteractiveMarkers();
-                }
-                // MODIFICACIÓN: Ocultar la pantalla de "Cargando..."
-                // El onPlayerStateChange se encargará de mostrar el overlay de "Play"
-                hideLoading();
-            }, 1000);
+
+            // MODIFICACIÓN: La configuración ahora se hace aquí
+            hideLoading();
+            document.getElementById('video-state-overlay').classList.add('visible');
             setupEventListeners();
+            
+            try {
+                videoDuration = player.getDuration();
+                updateTimeDisplay();
+                createInteractiveMarkers();
+            } catch (error) {
+                console.warn('No se pudo obtener la duración, usando 180s por defecto.', error);
+                videoDuration = 180;
+                createInteractiveMarkers();
+            }
         }
 
         function onPlayerError(event) {
             console.error('Error del reproductor de YouTube:', event.data);
+            
+            // NUEVO: Detener el "watchdog" si el player reporta un error
+            if (playerInitializationWatchdog) {
+                clearTimeout(playerInitializationWatchdog);
+                playerInitializationWatchdog = null;
+            }
+            
             let subtext = 'No se pudo cargar el video.';
             if (event.data === 150 || event.data === 101) {
                 subtext = 'El propietario de este video no permite su reproducción en este sitio.';
@@ -1524,13 +1557,13 @@
         }
 
         function onPlayerStateChange(event) {
-            const stateOverlay = document.getElementById('video-state-overlay'); // Obtener el nuevo overlay
+            const stateOverlay = document.getElementById('video-state-overlay'); 
 
             if (event.data == YT.PlayerState.PLAYING) {
                 isPlaying = true;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
                 startVideoTimer();
-                stateOverlay.classList.remove('visible'); // MODIFICADO: Usar clase .visible
+                stateOverlay.classList.remove('visible'); 
             } else if (event.data == YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
@@ -1538,7 +1571,7 @@
                 videoTimer = null;
                 
                 if (!isInteractionActive) {
-                    stateOverlay.classList.add('visible'); // MODIFICADO: Usar clase .visible
+                    stateOverlay.classList.add('visible'); 
                 }
             } else if (event.data == YT.PlayerState.ENDED) {
                 isPlaying = false;
@@ -1546,15 +1579,16 @@
                 if (videoTimer) clearInterval(videoTimer);
                 videoTimer = null;
                 
-                stateOverlay.classList.remove('visible'); // MODIFICADO: Usar clase .visible
+                stateOverlay.classList.remove('visible'); 
                 
                 showResults();
             } else if (event.data == YT.PlayerState.CUED || event.data == -1) { 
+                // Esto se dispara DESPUÉS de onReady, asegurando que la pantalla de play se muestre
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                 
                 if (!isInteractionActive) {
-                    stateOverlay.classList.add('visible'); // MODIFICADO: Usar clase .visible
+                    stateOverlay.classList.add('visible'); 
                 }
             }
         }
