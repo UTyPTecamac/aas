@@ -1049,6 +1049,7 @@
         // Configuración del video desde URL
         let videoId = 'jCcZfY04at4'; // Por defecto
         let jsonFile = null; // Se cargará desde URL
+        let videoParamProvided = false; // <-- NUEVA VARIABLE: Para dar prioridad al parámetro de URL
 
         // Función para crear sonidos de retroalimentación
         function createAudioFeedback(type) {
@@ -1131,6 +1132,7 @@
                 const extractedId = extractYouTubeId(videoParam);
                 if (extractedId) {
                     videoId = extractedId;
+                    videoParamProvided = true; // <-- MODIFICACIÓN: Marcar que el video vino de la URL
                 } else {
                     console.warn('No se pudo extraer el ID del video de:', videoParam);
                 }
@@ -1395,7 +1397,9 @@
                                 throw new Error('JSON inválido: estructura incorrecta');
                             }
                             
-                            if (data.video_id) {
+                            // MODIFICACIÓN: El video de la URL tiene prioridad.
+                            // Solo usar el video_id del JSON si NO se proveyó un parámetro 'video' en la URL.
+                            if (data.video_id && !videoParamProvided) {
                                 const extractedId = extractYouTubeId(data.video_id);
                                 if (extractedId) videoId = extractedId;
                             }
