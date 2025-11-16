@@ -7,23 +7,30 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
+        /* MODIFICADO: Fondo transparente y altura completa */
         body {
             box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 0; /* Sin padding */
             font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #f5f5f5;
-            min-height: 100%;
+            background: transparent; /* Fondo transparente */
+            min-height: 100vh; /* Ocupar altura del viewport */
         }
 
+        /* MODIFICADO: Contenedor fluido y transparente */
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background: transparent; /* Sin fondo */
+            border-radius: 0;
+            box-shadow: none;
             overflow: hidden;
-            border: 1px solid #ddd;
+            border: none;
+            /* Se añade flex para que los controles se peguen abajo */
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Ocupar 100% de la altura del iframe/viewport */
         }
 
         .header {
@@ -50,6 +57,10 @@
             position: relative;
             background: #000;
             aspect-ratio: 16/9;
+            width: 100%;
+            /* MODIFICADO: flex-grow para ocupar el espacio disponible */
+            flex: 1;
+            min-height: 0; /* Importante para flexbox en contenedores con aspect-ratio */
         }
 
         .video-player {
@@ -58,8 +69,20 @@
             border: none;
         }
 
+        /* NUEVO: Estilo para el overlay bloqueador */
+        .video-overlay-blocker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5; /* Asegura que esté sobre el iframe pero debajo de los overlays de preguntas */
+            background: transparent;
+        }
+
         /* --- Estilos de Overlays --- */
 
+        /* MODIFICADO: Se quitó backdrop-filter */
         .question-overlay, .info-overlay, .feedback-overlay, .results-overlay {
             position: fixed;
             top: 0;
@@ -71,7 +94,6 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(5px);
         }
         
         /* Z-index para apilar overlays */
@@ -163,7 +185,7 @@
             background: linear-gradient(135deg, #dc3545, #e74c3c);
         }
         
-        /* --- NUEVO: Estilos de Resultados --- */
+        /* --- Estilos de Resultados --- */
         
         .results-icon {
             font-size: 60px; /* Icono más pequeño que el de feedback */
@@ -264,7 +286,6 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            backdrop-filter: blur(5px);
         }
         
         .loading-content {
@@ -1006,9 +1027,9 @@
         }
 
         @media (max-width: 768px) {
+            /* MODIFICADO: Se quitó el margen del contenedor */
             .container {
-                margin: 10px;
-                border-radius: 12px;
+                border-radius: 0;
             }
             
             .question-card, .feedback-card, .info-card, .results-card {
@@ -1087,6 +1108,9 @@
    </div>
    <div class="video-container">
     <div id="video-player" class="video-player"></div>
+    
+    <!-- NUEVO: Overlay para bloquear clics en el iframe de YouTube -->
+    <div class="video-overlay-blocker"></div>
     
     <!-- Overlay para Textos e Imágenes -->
     <div class="info-overlay" id="info-overlay">
@@ -1407,7 +1431,12 @@
                     width: '100%',
                     videoId: videoId,
                     playerVars: {
-                        'controls': 0, 'rel': 0, 'autoplay': 0, 'mute': 0, 'enablejsapi': 1
+                        'controls': 0, 
+                        'rel': 0, 
+                        'autoplay': 0, 
+                        'mute': 0, 
+                        'enablejsapi': 1,
+                        'modestbranding': 1 /* MODIFICACIÓN: Oculta el logo de YouTube */
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -1850,6 +1879,7 @@
             document.getElementById('info-overlay').style.display = 'none';
             document.getElementById('question-overlay').style.display = 'none';
             document.getElementById('feedback-overlay').style.display = 'none';
+            document.getElementById('results-overlay').style.display = 'none';
 
             switch (interaction.type) {
                 case 'text_media':
@@ -2152,7 +2182,7 @@
             
             return {
                 correctPairs: correctPairs,
-                allCorrect: correctPairs === correctMatches.length
+                allCorrect: correctPairs === correctMatches.length && userMatches.length === correctMatches.length
             };
         }
         
