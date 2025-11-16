@@ -71,27 +71,28 @@
         .video-overlay-blocker {
             z-index: 5;
             cursor: pointer;
+            display: none; /* MODIFICADO: Oculto hasta que el video esté listo */
         }
 
         /* MODIFICADO: Overlay de estado rediseñado como "Splash Screen" */
-        /* AHORA ESTÁ OCULTO POR DEFECTO */
+        /* AHORA ES VISIBLE POR DEFECTO */
         .video-state-overlay {
             z-index: 6; 
             background: #000; 
-            display: none; /* <-- MODIFICADO: oculto por defecto */
+            display: flex; /* <-- MODIFICADO: visible por defecto */
             flex-direction: column; 
             align-items: center;
             justify-content: center;
             color: white;
-            opacity: 0; /* <-- MODIFICADO: oculto por defecto */
+            opacity: 1; /* <-- MODIFICADO: visible por defecto */
             transition: opacity 0.2s ease;
             cursor: pointer;
         }
         
-        /* MODIFICADO: Esta clase ahora MUESTRA el overlay */
-        .video-state-overlay.visible {
-            display: flex;
-            opacity: 1;
+        /* MODIFICADO: Esta clase ahora OCULTA el overlay */
+        .video-state-overlay.hidden {
+            display: none;
+            opacity: 0;
         }
 
         /* NUEVO: Título de la pantalla de inicio */
@@ -121,6 +122,15 @@
             border: 2px solid white;
             transition: all 0.2s ease;
             font-size: 50px; /* Tamaño del icono */
+        }
+        
+        /* NUEVO: Ocultar el botón de play si hay un error */
+        .video-state-overlay.error .splash-play-button {
+            display: none;
+        }
+        
+        .video-state-overlay.error .splash-title {
+            color: #dc3545; /* Rojo de error */
         }
 
         .splash-play-button:hover {
@@ -321,69 +331,9 @@
         }
         
         /* --- Estilos de Carga --- */
-        /* MODIFICADO: Ahora visible por defecto */
+        /* MODIFICADO: ELIMINADO. Ya no se usa. */
         .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-        
-        .loading-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #e2e8f0;
-            border-top: 6px solid #1768ac;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        .loading-spinner.error {
-            border-top-color: #dc3545;
-            animation: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #dc3545;
-            font-size: 40px;
-            font-weight: bold;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .loading-text {
-            font-size: 18px;
-            color: #2d3748;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .loading-text.error {
-            color: #dc3545;
-        }
-        
-        .loading-subtext {
-            font-size: 14px;
-            color: #4a5568;
+            display: none !important;
         }
         
         /* --- Estilos de Tarjetas (Pregunta e Info) --- */
@@ -1151,7 +1101,7 @@
        <div class="video-aspect-wrapper">
             <div id="video-player" class="video-player"></div>
             
-            <div class="video-overlay-blocker"></div>
+            <div class="video-overlay-blocker" id="video-overlay-blocker"></div>
 
             <!-- MODIFICADO: Overlay de Estado con nuevo contenido (Splash Screen) -->
             <div class="video-state-overlay" id="video-state-overlay">
@@ -1262,14 +1212,9 @@
     </div>
    </div>
   </div>
-  <!-- Overlay de carga -->
-  <div class="loading-overlay" id="loading-overlay">
-   <div class="loading-content">
-    <div class="loading-spinner" id="loading-spinner"></div>
-    <div class="loading-text" id="loading-text">Cargando contenido...</div>
-    <div class="loading-subtext" id="loading-subtext">Por favor espera</div>
-   </div>
-  </div>
+  
+  <!-- MODIFICADO: Overlay de carga ELIMINADO -->
+  <!-- <div class="loading-overlay" id="loading-overlay"> ... </div> -->
   
   <script>
         // Configuración por defecto
@@ -1438,6 +1383,7 @@
 
         // MODIFICADO: onYouTubeIframeAPIReady AHORA INICIA la carga del JSON
         function onYouTubeIframeAPIReady() {
+            console.log('PASO 1: API de YouTube está lista.');
             youtubeAPIReady = true;
             if (window.youtubeApiTimeout) {
                 clearTimeout(window.youtubeApiTimeout);
@@ -1458,19 +1404,19 @@
             
             if (!videoId) {
                 console.warn('No hay videoId disponible');
-                showError('Error Crítico', 'No se ha especificado un ID de video válido.');
+                showSplashError('Error Crítico', 'No se ha especificado un ID de video válido.');
                 return;
             }
             
             initializationInProgress = true;
             
-            showLoading('Preparando reproductor...', 'Casi listo');
+            console.log('PASO 3: Inicializando el reproductor de video...');
             
             // NUEVO: Iniciar el "watchdog" del player. Si onReady no se dispara en 15s, mostrar error.
             playerInitializationWatchdog = setTimeout(() => {
                 if (!playerReady) { // playerReady solo se vuelve true en onPlayerReady
                     console.error('Timeout: El reproductor de video no respondió (onReady no se disparó).');
-                    showError('Error de Video', 'El video no respondió. Intenta recargar la página.');
+                    showSplashError('Error de Video', 'El video no respondió. Intenta recargar la página.');
                 }
             }, 15000); // 15 segundos de espera para que el video se inicialice
 
@@ -1498,7 +1444,7 @@
                 initializationInProgress = false;
             } catch (error) {
                 console.error('Error al inicializar el player:', error);
-                showError('Error de Player', 'No se pudo iniciar el reproductor de YouTube.');
+                showSplashError('Error de Player', 'No se pudo iniciar el reproductor de YouTube.');
                 initializationInProgress = false;
                 // Limpiar watchdog si la creación del player falla instantáneamente
                 if (playerInitializationWatchdog) clearTimeout(playerInitializationWatchdog);
@@ -1507,6 +1453,7 @@
 
         function onPlayerReady(event) {
             // ¡ÉXITO! El player está listo.
+            console.log('PASO 4: El reproductor de video está listo (onReady).');
             
             // NUEVO: Detener el "watchdog"
             if (playerInitializationWatchdog) {
@@ -1517,8 +1464,9 @@
             playerReady = true;
 
             // MODIFICACIÓN: La configuración ahora se hace aquí
-            hideLoading();
-            document.getElementById('video-state-overlay').classList.add('visible');
+            // hideLoading(); // Ya no se usa
+            document.getElementById('video-overlay-blocker').style.display = 'block'; // Mostrar el blocker
+            document.getElementById('play-pause-btn').disabled = false; // Habilitar controles
             setupEventListeners();
             
             try {
@@ -1547,7 +1495,7 @@
             } else if (event.data === 2) {
                 subtext = 'El ID del video no es válido.';
             }
-            showError('Error del Video', subtext);
+            showSplashError('Error del Video', subtext);
         }
 
         function onPlayerStateChange(event) {
@@ -1558,6 +1506,7 @@
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
                 startVideoTimer();
                 stateOverlay.classList.remove('visible'); 
+                stateOverlay.style.display = 'none'; // Asegurar que esté oculto
             } else if (event.data == YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
@@ -1591,7 +1540,7 @@
             document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
             
             // NUEVO: Hacer que el blocker también active play/pause
-            const blocker = document.querySelector('.video-overlay-blocker');
+            const blocker = document.getElementById('video-overlay-blocker');
             if (blocker) {
                 blocker.addEventListener('click', togglePlayPause);
             }
@@ -1625,7 +1574,8 @@
             document.getElementById('play-pause-btn').disabled = true;
             
             // MODIFICACIÓN: Mostrar "Cargando..." como primer paso
-            showLoading('Iniciando...', 'Cargando API de Video...');
+            // showLoading('Iniciando...', 'Cargando API de Video...'); // ELIMINADO
+            console.log('DOM Listo. Esperando API de YouTube...');
             
             getUrlParams();
             
@@ -1634,7 +1584,7 @@
                 window.youtubeApiTimeout = setTimeout(() => {
                     if (!youtubeAPIReady) {
                          console.error('Timeout: La API de YouTube no respondió en 30 segundos.');
-                         showError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
+                         showSplashError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
                     }
                 }, 30000); // MODIFICADO: 30s de espera, más generoso
             }
@@ -1644,47 +1594,30 @@
             updateProgress();
         });
         
-        function showLoading(text, subtext) {
-            const overlay = document.getElementById('loading-overlay');
-            const loadingText = document.getElementById('loading-text');
-            const loadingSubtext = document.getElementById('loading-subtext');
-            const loadingSpinner = document.getElementById('loading-spinner');
-            if (overlay) {
-                loadingText.textContent = text || 'Cargando contenido...';
-                loadingSubtext.textContent = subtext || 'Por favor espera';
-                loadingText.classList.remove('error');
-                loadingSpinner.classList.remove('error');
-                loadingSpinner.innerHTML = '';
-                overlay.style.display = 'flex';
-            }
-            document.getElementById('play-pause-btn').disabled = true;
+        // MODIFICADO: Ya no se usa showLoading/hideLoading, ahora se usa showSplashError
+        function showSplashError(title, message) {
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const titleEl = stateOverlay.querySelector('.splash-title');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+            
+            titleEl.textContent = title;
+            titleEl.style.color = '#dc3545'; // Red
+            subtitleEl.textContent = message;
+            
+            playButton.style.display = 'none'; // Ocultar botón de play
+            
+            stateOverlay.classList.add('visible', 'error'); // Mostrar overlay en modo error
+            stateOverlay.style.cursor = 'default'; // No es clickeable
+            
+            // Deshabilitar otros blockers
+            const blocker = document.getElementById('video-overlay-blocker');
+            if (blocker) blocker.style.display = 'none';
         }
         
-        function showError(text, subtext) {
-            const overlay = document.getElementById('loading-overlay');
-            const loadingText = document.getElementById('loading-text');
-            const loadingSubtext = document.getElementById('loading-subtext');
-            const loadingSpinner = document.getElementById('loading-spinner');
-            if (overlay) {
-                loadingText.textContent = text || 'Error';
-                loadingSubtext.textContent = subtext || 'No se pudo cargar el contenido';
-                loadingText.classList.add('error');
-                loadingSpinner.classList.add('error');
-                loadingSpinner.innerHTML = 'X';
-                overlay.style.display = 'flex';
-            }
-            document.getElementById('play-pause-btn').disabled = true;
-        }
-        
-        function hideLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.style.display = 'none';
-            document.getElementById('play-pause-btn').disabled = false;
-        }
-
         // MODIFICADO: loadQuestionsData ahora es el PASO 2
         async function loadQuestionsData() {
-            showLoading('Cargando preguntas...', 'Conectando con el servidor');
+            console.log('PASO 2: Cargando archivo JSON...');
             
             if (jsonFile) {
                 const maxRetries = 3;
@@ -1694,7 +1627,7 @@
                 
                 while (retryCount < maxRetries && !success) {
                     try {
-                        showLoading('Cargando preguntas...', retryCount > 0 ? `Reintento ${retryCount + 1}/${maxRetries}` : 'Conectando');
+                        // showLoading('Cargando preguntas...', retryCount > 0 ? `Reintento ${retryCount + 1}/${maxRetries}` : 'Conectando'); // ELIMINADO
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), 10000); 
                         const response = await fetch(jsonFile, { signal: controller.signal, cache: 'no-cache' });
@@ -1711,8 +1644,7 @@
                             
                             interactionsData = data; 
                             success = true;
-                            // MODIFICACIÓN: No ocultar "cargando", solo cambiar texto
-                            showLoading('Preguntas cargadas', 'Iniciando video...');
+                            console.log('PASO 2.1: JSON cargado y procesado.');
                         } else {
                             throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
                         }
@@ -1725,13 +1657,12 @@
                 }
                 if (!success) {
                     console.error('FALLO DEFINITIVO: No se pudo cargar el JSON.');
-                    showError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise URL/CORS)');
+                    showSplashError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise URL/CORS)');
                     console.error('Último error:', lastError);
                     return; 
                 }
             } else {
                 console.warn('No se proveyó ?json=... Usando datos de ejemplo internos.');
-                showLoading('Cargando datos de ejemplo...', 'Preparando contenido');
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
@@ -2429,7 +2360,18 @@
                 document.getElementById('results-overlay').style.display = 'none';
                 
                 // MODIFICACIÓN: Mostrar el overlay de estado al reiniciar
-                document.getElementById('video-state-overlay').classList.add('visible');
+                const stateOverlay = document.getElementById('video-state-overlay');
+                const titleEl = stateOverlay.querySelector('.splash-title');
+                const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+                const playButton = stateOverlay.querySelector('.splash-play-button');
+                
+                titleEl.textContent = 'Video Interactivo';
+                titleEl.style.color = 'white';
+                subtitleEl.textContent = 'Presiona para iniciar';
+                playButton.style.display = 'flex';
+                stateOverlay.classList.remove('error');
+                
+                stateOverlay.classList.add('visible');
                 
                 document.querySelectorAll('.marker').forEach(marker => {
                     marker.classList.remove('completed', 'approaching', 'active');
@@ -2569,6 +2511,27 @@
             resultsScoreRing.style.setProperty('--ring-percentage', `${percentage * 3.6}deg`); // Convertir % a grados
             resultsScoreRing.style.setProperty('--ring-color', ringColor);
             resultsScoreRing.classList.add('animate');
+        }
+        
+        // MODIFICADO: NUEVA función para mostrar errores en el Splash Screen
+        function showSplashError(title, message) {
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const titleEl = stateOverlay.querySelector('.splash-title');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+            
+            titleEl.textContent = title;
+            titleEl.style.color = '#dc3545'; // Red
+            subtitleEl.textContent = message;
+            
+            playButton.style.display = 'none'; // Ocultar botón de play
+            
+            stateOverlay.classList.add('visible', 'error'); // Mostrar overlay en modo error
+            stateOverlay.style.cursor = 'default'; // No es clickeable
+            
+            // Deshabilitar otros blockers
+            const blocker = document.getElementById('video-overlay-blocker');
+            if (blocker) blocker.style.display = 'none';
         }
 
         // --- SDK de Elementos (sin cambios) ---
