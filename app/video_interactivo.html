@@ -1107,6 +1107,34 @@
                 flex-direction: column;
             }
         }
+
+        /* --- NUEVO: REGLAS DE CSS PARA PANTALLAS ESTRECHAS --- */
+        @media (max-width: 400px) {
+            .controls {
+                padding: 12px 8px; /* Reducir padding horizontal */
+                gap: 8px; /* Reducir espacio entre grupos */
+            }
+            .interactive-markers {
+                margin: 0 8px; /* Reducir márgenes */
+            }
+            .markers-label {
+                display: none; /* Ocultar "Actividades:" */
+            }
+            .time-display {
+                min-width: 80px; /* Ajustar ancho mínimo para "0:00/0:00" */
+                margin-left: 4px; /* Reducir margen */
+            }
+            .video-controls {
+                gap: 8px; /* Reducir espacio entre play y tiempo */
+            }
+            .control-buttons {
+                gap: 4px; /* Reducir espacio entre botones de control */
+            }
+            .control-btn.icon-only {
+                padding: 6px;
+                min-width: 30px;
+            }
+        }
     </style>
   <style>@view-transition { navigation: auto; }</style>
  </head>
@@ -1176,7 +1204,7 @@
       <div class="card-content" id="interaction-content">
           <!-- El contenido (opciones, columnas, etc.) se insertará aquí -->
       </div>
-      <div class="card-actions">
+      <div classs="card-actions">
           <button class="submit-btn" id="submit-btn" disabled>
             <span class="material-icons">send</span> Responder
           </button>
@@ -1610,6 +1638,7 @@
                          throw new Error('JSON descargado no es un objeto válido (no es un objeto o está vacío).');
                     }
                     if (!loadedData.questions) {
+                        // COMPATIBILIDAD CON JSON: Verifica "questions"
                         throw new Error('JSON inválido: Falta la propiedad "questions" de nivel superior.');
                     }
                     
@@ -1638,13 +1667,13 @@
             
             // 2. Determinar la URL del video: 
             //    Prioridad 1: Parámetro URL (?video=...) -> ya está en videoUrl y videoUrlParamProvided = true.
-            //    Prioridad 2: URL dentro del JSON/Fallback (solo si no se usó el parámetro URL)
-            //    CORRECCIÓN: La URL del JSON de fallback no debe usarse si se especifica un ?video=
+            //    Prioridad 2: URL dentro del JSON (video_id o video_url)
             
-            // Esta lógica es: si SÍ se proveyó un ?video=, ya tenemos el videoUrl.
-            // Si NO se proveyó, entonces usamos el video_url del JSON (cargado o de fallback).
-            if (interactionsData.video_url && !videoUrlParamProvided) {
-                videoUrl = interactionsData.video_url;
+            // COMPATIBILIDAD CON JSON: Busca "video_id" (del JSON de ejemplo) o "video_url"
+            const jsonVideoUrl = interactionsData.video_url || interactionsData.video_id;
+
+            if (jsonVideoUrl && !videoUrlParamProvided) {
+                videoUrl = jsonVideoUrl;
             }
 
             questions = interactionsData.questions || [];
@@ -1666,6 +1695,7 @@
             
             questions.forEach(interaction => {
                 const type = interaction.type;
+                // COMPATIBILIDAD CON JSON: Verifica los types
                 if (type === 'true_false' || type === 'multiple_choice') {
                     totalPossiblePoints += 1;
                 } else if (type === 'matching' && interaction.content.correct_matches) {
@@ -1894,6 +1924,7 @@
             document.getElementById('question-overlay').style.display = 'none';
             document.getElementById('feedback-overlay').style.display = 'none';
 
+            // COMPATIBILIDAD CON JSON: Lee "type"
             switch (interaction.type) {
                 case 'text_media':
                     showTextMedia(interaction);
@@ -1915,6 +1946,7 @@
         
         // 2. Mostrar "Texto Libre" o "Imagen con Texto"
         function showTextMedia(interaction) {
+            // COMPATIBILIDAD CON JSON: Lee "title", "text", "image"
             const content = interaction.content;
             document.getElementById('info-title').textContent = content.title || '';
             const infoContent = document.getElementById('info-content');
@@ -1938,6 +1970,7 @@
         
         // 3. Mostrar Pregunta de Verdadero/Falso
         function showTrueFalse(interaction) {
+            // COMPATIBILIDAD CON JSON: Lee "question"
             const content = interaction.content;
             const interactionContent = document.getElementById('interaction-content');
             interactionContent.innerHTML = ''; // Limpiar
@@ -1978,6 +2011,7 @@
         
         // 4. Mostrar Pregunta de Opción Múltiple
         function showMultipleChoice(interaction) {
+            // COMPATIBILIDAD CON JSON: Lee "question" y "options"
             const content = interaction.content;
             const interactionContent = document.getElementById('interaction-content');
             interactionContent.innerHTML = ''; // Limpiar
@@ -2008,6 +2042,7 @@
         
         // 5. Mostrar Pregunta de Relación de Columnas
         function showMatching(interaction) {
+            // COMPATIBILIDAD CON JSON: Lee "question", "column_a", "column_b"
             const content = interaction.content;
             userMatches = []; // Resetear
             selectedColumnA = null; // Resetear
@@ -2133,6 +2168,7 @@
             
             let isCorrect = false;
             
+            // COMPATIBILIDAD CON JSON: Lee "type" y "correct_answer" / "correct_matches"
             switch (interaction.type) {
                 case 'true_false':
                 case 'multiple_choice':
@@ -2141,7 +2177,6 @@
                     highlightChoiceAnswers(isCorrect, interaction.content.correct_answer);
                     break;
                 case 'matching':
-                    // MODIFICADO: checkMatchingAnswers ahora devuelve el número de aciertos
                     const correctPairs = checkMatchingAnswers(interaction.content.correct_matches);
                     userScore += correctPairs; // Sumar puntos parciales
                     isCorrect = (correctPairs === interaction.content.correct_matches.length); // Es 100% correcta?
@@ -2157,6 +2192,7 @@
             
             // Mostrar retroalimentación
             setTimeout(() => {
+                // COMPATIBILIDAD CON JSON: Lee "feedback"
                 showFeedback(isCorrect, interaction.content.feedback);
             }, 1500); // Esperar 1.5s para que el usuario vea la corrección
             
@@ -2176,7 +2212,7 @@
             });
         }
         
-        // MODIFICADO: Devuelve el NÚMERO de pares correctos
+        // COMPATIBILIDAD CON JSON: Lee "correct_matches"
         function checkMatchingAnswers(correctMatches) {
             let correctCount = 0;
             userMatches.forEach(userMatch => {
@@ -2230,6 +2266,7 @@
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackMessage = document.getElementById('feedback-message');
             
+            // COMPATIBILIDAD CON JSON: Lee "feedback.correct" y "feedback.incorrect"
             if (isCorrect) {
                 feedbackCard.className = 'feedback-card correct';
                 feedbackIcon.innerHTML = '<span class="material-icons">check_circle</span>';
