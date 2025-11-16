@@ -9,12 +9,12 @@
   <style>
         /* MODIFICADO: Fondo transparente y altura completa */
         html, body {
-            height: 100%; /* Usar 100% en lugar de vh para iframes */
+            height: 100%; 
             margin: 0;
             padding: 0;
             font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: transparent; /* Fondo transparente */
-            overflow: hidden; /* Evitar scroll en el iframe */
+            background: transparent; 
+            overflow: hidden; 
         }
 
         /* MODIFICADO: Contenedor principal ahora usa flex para llenar el body */
@@ -29,38 +29,55 @@
             border-radius: 0;
         }
 
-        /* MODIFICADO: .video-container ya no tiene flex: 1. Ahora solo define el aspect-ratio */
+        /* MODIFICADO: .video-container ahora es flexible y centra su contenido */
         .video-container {
             width: 100%;
-            aspect-ratio: 16 / 9;
+            flex: 1; /* Ocupa el espacio disponible */
+            min-height: 0; /* Permite que el contenedor se encoja */
             position: relative;
             background: #000;
+            /* NUEVO: Centra el .video-aspect-wrapper */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Oculta cualquier desbordamiento */
         }
-
-        .video-player {
+        
+        /* NUEVO: Contenedor de proporción 16:9 */
+        /* Este div mantiene la proporción y se centra */
+        .video-aspect-wrapper {
             width: 100%;
-            height: 100%;
-            border: none;
+            max-width: 100%;
+            height: auto; /* Se ajusta automáticamente */
+            max-height: 100%;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            margin: auto; /* Centrado */
         }
 
-        /* MODIFICADO: De "video-pause-overlay" a "video-state-overlay" */
-        /* Ahora es negro opaco y tiene un icono de play más grande */
+        /* MODIFICADO: El player y overlays ahora son absolutos DENTRO del wrapper */
+        .video-player,
+        .video-overlay-blocker,
         .video-state-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 6; /* Encima del blocker, debajo de las preguntas */
-            background: #000; /* Fondo negro opaco */
-            display: none; /* Oculto por defecto */
+            border: none;
+        }
+
+        /* MODIFICADO: Overlay de estado rediseñado como "Splash Screen" */
+        .video-state-overlay {
+            z-index: 6; 
+            background: #000; 
+            display: none; 
+            flex-direction: column; /* Para apilar el texto y el botón */
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 100px; /* Icono grande */
             opacity: 0;
             transition: opacity 0.2s ease;
-            /* MODIFICACIÓN: Quitado pointer-events: none y añadido cursor: pointer */
             cursor: pointer;
         }
         
@@ -69,11 +86,43 @@
             opacity: 1;
         }
 
-        /* --- Estilos de Overlays --- */
+        /* NUEVO: Título de la pantalla de inicio */
+        .splash-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+        }
 
-        /* MODIFICADO: Se quitó backdrop-filter */
+        /* NUEVO: Subtítulo de la pantalla de inicio */
+        .splash-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 20px;
+        }
+
+        /* NUEVO: Botón de Play circular y estético */
+        .splash-play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            transition: all 0.2s ease;
+            font-size: 50px; /* Tamaño del icono */
+        }
+
+        .splash-play-button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* --- Estilos de Overlays --- */
         .question-overlay, .info-overlay, .feedback-overlay, .results-overlay {
-            position: fixed;
+            position: fixed; /* Usar fixed para cubrir toda la ventana, no solo el video */
             top: 0;
             left: 0;
             right: 0;
@@ -83,6 +132,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            /* MODIFICADO: Quitado el backdrop-filter para compatibilidad */
         }
         
         /* Z-index para apilar overlays */
@@ -174,7 +224,7 @@
             background: linear-gradient(135deg, #dc3545, #e74c3c);
         }
         
-        /* --- Estilos de Resultados --- */
+        /* --- NUEVO: Estilos de Resultados --- */
         
         .results-icon {
             font-size: 60px; /* Icono más pequeño que el de feedback */
@@ -572,19 +622,10 @@
         .continue-btn {
             background: #28a745;
         }
-        
-        #results-continue-btn {
-            background: #1768ac; /* Botón de resultados azul */
-        }
 
         .continue-btn:hover {
             background: #218838;
             box-shadow: 0 8px 25px rgba(40,167,69,0.3);
-        }
-        
-        #results-continue-btn:hover {
-             background: #0f5c9c;
-             box-shadow: 0 6px 20px rgba(23,104,172,0.3);
         }
         
         /* --- Estilos para Relación de Columnas --- */
@@ -1095,18 +1136,28 @@
    <div class="progress-bar">
     <div class="progress-fill" id="progress-fill"></div>
    </div>
-   <div class="video-container">
-    <div id="video-player" class="video-player"></div>
-    
-    <!-- NUEVO: Overlay para bloquear clics en el iframe de YouTube -->
-    <div class="video-overlay-blocker"></div>
 
-    <!-- MODIFICADO: Overlay de Pausa ahora es un Overlay de Estado con icono de PLAY -->
-    <div class="video-state-overlay" id="video-state-overlay">
-        <span class="material-icons">play_arrow</span>
-    </div>
+   <!-- MODIFICADO: Contenedor flexible que centra el wrapper 16:9 -->
+   <div class="video-container">
+       <!-- NUEVO: Wrapper que mantiene la proporción 16:9 -->
+       <div class="video-aspect-wrapper">
+            <div id="video-player" class="video-player"></div>
+            
+            <div class="video-overlay-blocker"></div>
+
+            <!-- MODIFICADO: Overlay de Estado con nuevo contenido (Splash Screen) -->
+            <div class="video-state-overlay" id="video-state-overlay">
+                <span class="splash-title">Video Interactivo</span>
+                <div class="splash-play-button">
+                    <!-- NUEVO: Icono de Material Icons en lugar de CSS -->
+                    <span class="material-icons" style="font-size: 50px; color: white;">play_arrow</span>
+                </div>
+                <span class="splash-subtitle">Presiona para iniciar</span>
+            </div>
+       </div>
+   </div>
     
-    <!-- Overlay para Textos e Imágenes -->
+    <!-- Overlays (ahora fuera del .video-container para cubrir la pantalla completa) -->
     <div class="info-overlay" id="info-overlay">
      <div class="info-card">
         <div class="card-header">
@@ -1126,7 +1177,6 @@
      </div>
     </div>
     
-    <!-- Overlay para Preguntas (genérico) -->
     <div class="question-overlay" id="question-overlay">
      <div class="question-card">
       <div class="card-header">
@@ -1146,7 +1196,6 @@
      </div>
     </div>
     
-    <!-- Overlay de Retroalimentación -->
     <div class="feedback-overlay" id="feedback-overlay">
      <div class="feedback-card" id="feedback-card">
       <div class="feedback-icon" id="feedback-icon"><span class="material-icons">check_circle</span>
@@ -1160,7 +1209,6 @@
      </div>
     </div>
     
-    <!-- NUEVO: Overlay de Resultados -->
     <div class="results-overlay" id="results-overlay">
      <div class="results-card" id="results-card">
         <div class="results-icon" id="results-icon">
@@ -1187,7 +1235,7 @@
      </div>
     </div>
 
-   </div>
+   <!-- MODIFICADO: Barra de controles (sin cambios, pero ahora se posiciona correctamente) -->
    <div class="controls">
     <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn"> <span class="material-icons">play_arrow</span> </button>
      <div class="time-display" id="time-display"><span id="current-time">0:00</span> / <span id="total-time">0:00</span>
@@ -1272,7 +1320,9 @@
         let player = null;
         let playerReady = false;
         let isDragging = false;
-        let isInteractionActive = false; // NUEVO FLAG para controlar overlays
+        
+        // MODIFICADO: Flag global para saber si una interacción (pregunta, info, resultados) está activa
+        let isInteractionActive = false; 
         
         // Configuración del video desde URL
         let videoId = 'jCcZfY04at4';
@@ -1282,8 +1332,6 @@
         // --- Funciones de Audio ---
         function createAudioFeedback(type) {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            if (!audioContext) return; // No se soporta AudioContext
-            
             let frequencies = [];
             let baseDelay = 0.1;
             let duration = 0.4;
@@ -1318,27 +1366,23 @@
                     return;
             }
 
-            try {
-                frequencies.forEach((freq, index) => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-                    oscillator.type = waveType;
-                    
-                    const startTime = audioContext.currentTime + (index * baseDelay);
-                    gainNode.gain.setValueAtTime(0, startTime);
-                    gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.1);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-                    
-                    oscillator.start(startTime);
-                    oscillator.stop(startTime + duration + 0.1);
-                });
-            } catch (e) {
-                console.warn("No se pudo reproducir el sonido de feedback:", e);
-            }
+            frequencies.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                oscillator.type = waveType;
+                
+                const startTime = audioContext.currentTime + (index * baseDelay);
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+                
+                oscillator.start(startTime);
+                oscillator.stop(startTime + duration + 0.1);
+            });
         }
 
         // --- Funciones de Utilidad (sin cambios) ---
@@ -1431,7 +1475,8 @@
                         'autoplay': 0, 
                         'mute': 0, 
                         'enablejsapi': 1,
-                        'modestbranding': 1 /* MODIFICACIÓN: Oculta el logo de YouTube */
+                        'modestbranding': 1, // Oculta el logo de YouTube
+                        'iv_load_policy': 3 // Oculta anotaciones
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -1830,8 +1875,7 @@
                     if (isPlaying) {
                         if (questions && questions.length > 0) {
                             questions.forEach((interaction, index) => {
-                                // Se activa 1 segundo *antes* del tiempo
-                                if (currentTimeSeconds >= (interaction.time - 1) && !interaction.shown) {
+                                if (currentTimeSeconds >= interaction.time && currentTimeSeconds <= interaction.time + 1 && !interaction.shown) {
                                     interaction.shown = true;
                                     showInteraction(index);
                                 }
@@ -1912,7 +1956,6 @@
             document.getElementById('info-overlay').style.display = 'none';
             document.getElementById('question-overlay').style.display = 'none';
             document.getElementById('feedback-overlay').style.display = 'none';
-            document.getElementById('results-overlay').style.display = 'none';
 
             switch (interaction.type) {
                 case 'text_media':
@@ -2147,34 +2190,30 @@
             // Deshabilitar botón
             document.getElementById('submit-btn').disabled = true;
             
-            // Contar como respondida solo si es de tipo pregunta
-            if(interaction.type !== 'text_media') {
-                 interaction.answered = true;
-                 questionsAnswered++;
-            }
+            // Contar como respondida
+            interaction.answered = true;
+            questionsAnswered++;
             
             let isCorrect = false;
-            let earnedPoints = 0;
             
             switch (interaction.type) {
                 case 'true_false':
                 case 'multiple_choice':
                     isCorrect = (selectedAnswer === interaction.content.correct_answer);
-                    if (isCorrect) earnedPoints = 1;
+                    if (isCorrect) userScore += 1; // Sumar 1 punto
                     highlightChoiceAnswers(isCorrect, interaction.content.correct_answer);
                     break;
                 case 'matching':
-                    const matchResult = checkMatchingAnswers(interaction.content.correct_matches);
-                    earnedPoints = matchResult.correctPairs;
-                    isCorrect = matchResult.allCorrect; // 'isCorrect' es true solo si TODO es perfecto
+                    // MODIFICADO: checkMatchingAnswers ahora devuelve el número de aciertos
+                    const correctPairs = checkMatchingAnswers(interaction.content.correct_matches);
+                    userScore += correctPairs; // Sumar puntos parciales
+                    isCorrect = (correctPairs === interaction.content.correct_matches.length); // Es 100% correcta?
                     highlightMatchingAnswers(isCorrect, interaction.content.correct_matches);
                     break;
             }
             
             // Actualizar estadísticas
             interaction.correct = isCorrect;
-            interaction.earnedPoints = earnedPoints; // Guardar puntos ganados
-            userScore += earnedPoints; // Sumar al puntaje total
             
             // Reproducir sonido
             try { createAudioFeedback(isCorrect ? 'correct' : 'incorrect'); } catch (e) {}
@@ -2200,36 +2239,31 @@
             });
         }
         
-        // MODIFICACIÓN: Retorna puntos parciales y si todo está correcto
+        // MODIFICADO: Devuelve el NÚMERO de pares correctos
         function checkMatchingAnswers(correctMatches) {
-            let correctPairs = 0;
-            
+            let correctCount = 0;
             userMatches.forEach(userMatch => {
                 const isPairCorrect = correctMatches.some(cm => 
                     cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
                 );
                 if (isPairCorrect) {
-                    correctPairs++;
+                    correctCount++;
                 }
             });
-            
-            return {
-                correctPairs: correctPairs,
-                allCorrect: correctPairs === correctMatches.length && userMatches.length === correctMatches.length
-            };
+            return correctCount;
         }
         
         function highlightMatchingAnswers(isCorrect, correctMatches) {
             // Deshabilitar clics
             document.querySelectorAll('.column-item').forEach(el => el.onclick = null);
 
-            // Si es correcto, todo está bien
+            // Si es 100% correcto, marcar todo verde
             if (isCorrect) {
                  document.querySelectorAll('.column-item').forEach(el => el.classList.add('correct'));
                  return;
             }
             
-            // Si es incorrecto, marcar pares
+            // Si es incorrecto, marcar pares individuales
             userMatches.forEach(userMatch => {
                 const isPairCorrect = correctMatches.some(cm => 
                     cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
@@ -2238,14 +2272,12 @@
                 const elA = document.querySelector(`#column-a .column-item[data-index="${userMatch.a_index}"]`);
                 const elB = document.querySelector(`#column-b .column-item[data-index="${userMatch.b_index}"]`);
                 
-                if (elA && elB) { // Asegurarse de que ambos existen
-                    if (isPairCorrect) {
-                        elA.classList.add('correct');
-                        elB.classList.add('correct');
-                    } else {
-                        elA.classList.add('incorrect');
-                        elB.classList.add('incorrect');
-                    }
+                if (isPairCorrect) {
+                    elA.classList.add('correct');
+                    elB.classList.add('correct');
+                } else {
+                    elA.classList.add('incorrect');
+                    elB.classList.add('incorrect');
                 }
             });
         }
@@ -2296,28 +2328,21 @@
 
         function updateProgress() {
             if (!questions || questions.length === 0) return;
-            // Contar solo las preguntas, no los text_media
-            const questionInteractions = questions.filter(q => q.type !== 'text_media').length;
-            if (questionInteractions === 0) return;
             
-            const progress = (questionsAnswered / questionInteractions) * 100;
+            // Contar solo las preguntas "respondibles"
+            const respondibleQuestions = questions.filter(q => q.type !== 'text_media').length;
+            const answeredRespondible = questions.filter(q => q.answered && q.type !== 'text_media').length;
+            
+            const progress = (answeredRespondible / respondibleQuestions) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
         }
         
         function updateQuestionCounter() {
-             // Contar solo las preguntas
-            const questionInteractions = questions.filter(q => q.type !== 'text_media');
-            const currentQuestion = questions[currentInteractionIndex];
-            
-            // Encontrar el índice de esta pregunta dentro de las preguntas (ignorando text_media)
-            const currentQuestionIndexInQuestions = questionInteractions.findIndex(q => q.id === currentQuestion.id);
-            
-            const num = currentQuestionIndexInQuestions + 1;
-            const total = questionInteractions.length;
-
+            const num = currentInteractionIndex + 1;
+            const total = questions.length;
             document.getElementById('question-counter').innerHTML = `
                 <span class="material-icons">help_outline</span>
-                Pregunta ${num} de ${total}
+                Actividad ${num} de ${total}
             `;
         }
         
@@ -2339,13 +2364,13 @@
                         q.shown = false;
                         q.answered = false;
                         q.correct = false;
-                        q.earnedPoints = 0;
                     });
                 }
                 questionsAnswered = 0;
-                userScore = 0; // REINICIAR PUNTAJE
+                userScore = 0; // MODIFICADO: Resetear puntaje
                 currentInteractionIndex = 0;
                 currentVideoTime = 0;
+                isInteractionActive = false;
                 
                 player.seekTo(0, true);
                 player.pauseVideo();
@@ -2420,79 +2445,84 @@
             }, 2000);
         }
 
-        // MODIFICACIÓN: Pantalla de Resultados Rediseñada
+        // MODIFICADO: showResults ahora es una pantalla modal avanzada
         function showResults() {
             if (!questions || totalPossiblePoints === 0) {
-                showNotification("No hay preguntas calificables en este video.");
+                showNotification("No hay actividades puntuables en este video.");
                 return;
             }
             
             // Pausar video si está reproduciéndose
             pauseVideo();
-            isInteractionActive = true; // <-- AÑADIDO
+            isInteractionActive = true; 
 
             // NUEVO: Ocultar el overlay de estado si se muestran los resultados
             document.getElementById('video-state-overlay').classList.remove('visible');
 
             const percentage = Math.round((userScore / totalPossiblePoints) * 100);
             
+            const resultsOverlay = document.getElementById('results-overlay');
             const resultsIcon = document.getElementById('results-icon');
             const resultsTitle = document.getElementById('results-title');
             const resultsMessage = document.getElementById('results-message');
+            const resultsDetails = document.getElementById('results-details');
+            const resultsPercentage = document.getElementById('results-percentage');
             const resultsScoreRing = document.getElementById('results-score-ring');
             
-            let title = "";
-            let message = "";
-            let icon = "";
-            let ringColor = "";
-            let sound = "";
+            // Actualizar contenido
+            resultsDetails.textContent = `Puntos: ${userScore} / ${totalPossiblePoints}`;
+            resultsPercentage.textContent = `${percentage}%`;
 
-            resultsIcon.className = "results-icon"; // Reset class
+            // Resetear clases y animación
+            resultsIcon.className = 'results-icon';
+            resultsScoreRing.classList.remove('animate');
             
+            let message = '';
+            let title = '';
+            let icon = '';
+            let sound = '';
+            let ringColor = '#ff9500'; // Naranja (default)
+
             if (percentage >= 90) {
-                title = "¡Excelente!";
-                message = "Has dominado el contenido de este video. ¡Felicidades por tu excelente desempeño!";
-                icon = "emoji_events"; // Trofeo
-                ringColor = "#28a745"; // Verde
-                sound = "results_excellent";
-                resultsIcon.classList.add("excellent");
+                title = '¡Excelente!';
+                message = '¡Felicidades! Has dominado este contenido.';
+                icon = 'emoji_events';
+                resultsIcon.classList.add('excellent');
+                sound = 'results_excellent';
+                ringColor = '#28a745'; // Verde
             } else if (percentage >= 85) {
-                title = "¡Buen Trabajo!";
-                message = "Tu puntuación es muy buena. Sigue así y repasa los detalles.";
-                icon = "thumb_up"; // Pulgar arriba
-                ringColor = "#1768ac"; // Azul
-                sound = "results_good";
-                resultsIcon.classList.add("good");
+                title = '¡Buen Trabajo!';
+                message = 'Has entendido la mayor parte del material. ¡Sigue así!';
+                icon = 'thumb_up';
+                resultsIcon.classList.add('good');
+                sound = 'results_good';
+                ringColor = '#1768ac'; // Azul
             } else {
-                title = "¡Puedes Mejorar!";
-                message = "Obtuviste un buen resultado, pero hay espacio para mejorar. ¡Te recomendamos repasar el video!";
-                icon = "school"; // Birrete (estudio)
-                ringColor = "#ff9500"; // Naranja
-                sound = "results_bad";
-                resultsIcon.classList.add("improve");
+                title = '¡Puedes Mejorar!';
+                message = 'No te preocupes. Revisa el video e inténtalo de nuevo.';
+                icon = 'replay';
+                resultsIcon.classList.add('improve');
+                sound = 'results_bad';
+                ringColor = '#ff9500'; // Naranja
             }
             
-            // Actualizar contenido del DOM
             resultsTitle.textContent = title;
             resultsMessage.textContent = message;
-            resultsIcon.innerHTML = `<span class="material-icons">${icon}</span>`;
-            document.getElementById('results-percentage').textContent = `${percentage}%`;
-            document.getElementById('results-details').textContent = `Puntos: ${userScore} / ${totalPossiblePoints}`;
-
-            // Configurar y activar animación del anillo
-            const percentageInDegrees = (percentage / 100) * 360;
-            resultsScoreRing.classList.remove("animate"); // Quitar para reiniciar animación
-            resultsScoreRing.style.setProperty('--ring-percentage', `${percentageInDegrees}deg`);
-            resultsScoreRing.style.setProperty('--ring-color', ringColor);
-            // Forzar reflow para reiniciar la animación
-            void resultsScoreRing.offsetWidth; 
-            resultsScoreRing.classList.add("animate");
+            resultsIcon.querySelector('.material-icons').textContent = icon;
             
-            // Reproducir sonido de resultado
-            try { createAudioFeedback(sound); } catch (e) {}
+            // Reproducir sonido
+            try { createAudioFeedback(sound); } catch(e) {}
 
-            // Mostrar overlay de resultados
-            document.getElementById('results-overlay').style.display = 'flex';
+            // Mostrar overlay
+            resultsOverlay.style.display = 'flex';
+            
+            // Forzar reflow para reiniciar la animación CSS
+            void resultsScoreRing.offsetWidth; 
+            
+            // Aplicar variables CSS y clase de animación
+            resultsScoreRing.style.setProperty('--ring-percentage', `${percentage * 3.6}deg`); // Convertir % a grados
+            resultsScoreRing.style.setProperty('--ring-color', ringColor);
+            resultsScoreRing.classList.add('animate');
         }
 
         // --- SDK de Elementos (sin cambios) ---
