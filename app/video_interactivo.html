@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Interactivo H5P</title>
+  <title>Video Interactivo Avanzado</title>
   <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
@@ -58,7 +58,9 @@
             border: none;
         }
 
-        .question-overlay {
+        /* --- Estilos de Overlays --- */
+
+        .question-overlay, .info-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -72,7 +74,7 @@
             backdrop-filter: blur(5px);
         }
 
-        .question-card {
+        .question-card, .info-card {
             background: white;
             border-radius: 16px;
             padding: 32px;
@@ -86,6 +88,12 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+        }
+        
+        .info-card {
+            max-width: 800px;
+            height: auto;
+            max-height: 80%;
         }
 
         .feedback-overlay {
@@ -159,6 +167,8 @@
             background: linear-gradient(135deg, #dc3545, #e74c3c);
         }
         
+        /* --- Estilos de Carga --- */
+
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -192,10 +202,9 @@
             margin: 0 auto 20px;
         }
 
-        /* Estilo para spinner de error */
         .loading-spinner.error {
             border-top-color: #dc3545;
-            animation: none; /* Detener giro */
+            animation: none;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -216,7 +225,6 @@
             margin-bottom: 10px;
         }
 
-        /* Estilo para texto de error */
         .loading-text.error {
             color: #dc3545;
         }
@@ -225,6 +233,8 @@
             font-size: 14px;
             color: #4a5568;
         }
+        
+        /* --- Estilos de Tarjetas (Pregunta e Info) --- */
 
         .feedback-title {
             font-size: 28px;
@@ -241,7 +251,7 @@
             max-width: 400px;
         }
 
-        .question-header {
+        .card-header {
             display: flex;
             align-items: center;
             margin-bottom: 24px;
@@ -249,14 +259,41 @@
             border-bottom: 2px solid #e2e8f0;
         }
 
-        .question-icon {
+        .card-icon {
             font-size: 48px;
             color: #1768ac;
             margin-right: 16px;
         }
 
-        .question-info {
+        .card-info {
             flex: 1;
+        }
+        
+        .card-counter {
+            color: #4a5568;
+            font-size: 16px;
+            font-weight: 600;
+            background: #f7fafc;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 16px; /* Espacio para scrollbar */
+        }
+        
+        .card-actions {
+            display: flex;
+            justify-content: flex-end; /* Alineado a la derecha */
+            align-items: center;
+            padding-top: 16px;
+            border-top: 2px solid #e2e8f0;
         }
 
         @keyframes slideIn {
@@ -271,69 +308,33 @@
         }
 
         @keyframes bounceIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            70% {
-                transform: scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         @keyframes iconPulse {
-            0% {
-                transform: scale(0) rotate(-180deg);
-                opacity: 0;
-            }
-            30% {
-                transform: scale(1.3) rotate(-90deg);
-                opacity: 0.7;
-            }
-            60% {
-                transform: scale(0.9) rotate(0deg);
-                opacity: 0.9;
-            }
-            80% {
-                transform: scale(1.1) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            30% { transform: scale(1.3) rotate(-90deg); opacity: 0.7; }
+            60% { transform: scale(0.9) rotate(0deg); opacity: 0.9; }
+            80% { transform: scale(1.1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
 
         @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
         }
 
-        .question-image {
+        /* --- Estilos de Contenido de Interacción --- */
+
+        .interaction-image {
             width: 100%;
             max-height: 300px;
             object-fit: cover;
@@ -342,12 +343,19 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .question-title {
+        .interaction-title {
             font-size: 24px;
             font-weight: 600;
             color: #2d3748;
             margin-bottom: 24px;
             line-height: 1.4;
+        }
+        
+        .interaction-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 24px;
         }
 
         .options-container {
@@ -431,14 +439,8 @@
             75% { transform: translateX(5px); }
             100% { transform: translateX(0); }
         }
-
-        .question-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 2px solid #e2e8f0;
-        }
+        
+        /* --- Botones --- */
 
         .submit-btn, .continue-btn {
             background: #1768ac;
@@ -475,28 +477,77 @@
 
         .continue-btn {
             background: #28a745;
-            font-size: 18px;
-            padding: 16px 32px;
-            border-radius: 12px;
         }
 
         .continue-btn:hover {
             background: #218838;
             box-shadow: 0 8px 25px rgba(40,167,69,0.3);
         }
-
-        .question-counter {
-            color: #4a5568;
-            font-size: 16px;
-            font-weight: 600;
-            background: #f7fafc;
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 2px solid #e2e8f0;
+        
+        /* --- NUEVO: Estilos para Relación de Columnas --- */
+        
+        .matching-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            gap: 20px;
+            flex: 1;
         }
+        
+        .matching-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .column-item {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 16px;
+            color: #2d3748;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .column-item:hover {
+            border-color: #cbd5e0;
+            background: #fff;
+        }
+        
+        .column-item.selected {
+            border-color: #1768ac;
+            background: #ebf8ff;
+            box-shadow: 0 4px 12px rgba(23,104,172,0.2);
+            transform: scale(1.03);
+        }
+        
+        .column-item.paired-a {
+            background: #ebf8ff;
+            border-color: #1768ac;
+            color: #1768ac;
+        }
+        
+        .column-item.paired-b {
+            background: #ebf8ff;
+            border-color: #1768ac;
+            color: #1768ac;
+        }
+
+        .column-item.correct {
+            background: #f0fff4;
+            border-color: #28a745;
+            color: #22543d;
+        }
+        
+        .column-item.incorrect {
+            background: #fff5f5;
+            border-color: #dc3545;
+            color: #742a2a;
+        }
+        
+        /* --- Barra de Progreso --- */
 
         .progress-bar {
             background: #e6e6e6;
@@ -523,6 +574,8 @@
             height: 100%;
             background: #0f5c9c;
         }
+        
+        /* --- Controles de Video (Inferior) --- */
 
         .controls {
             padding: 16px 24px;
@@ -865,7 +918,7 @@
                 border-radius: 12px;
             }
             
-            .question-card, .feedback-card {
+            .question-card, .feedback-card, .info-card {
                 width: 95%;
                 height: 90%;
                 padding: 24px;
@@ -879,7 +932,7 @@
                 font-size: 24px;
             }
 
-            .question-title {
+            .interaction-title {
                 font-size: 20px;
             }
 
@@ -905,6 +958,10 @@
                 padding: 24px;
                 max-height: 80%;
             }
+            
+            .matching-container {
+                flex-direction: column;
+            }
         }
     </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -918,29 +975,50 @@
     <div class="progress-fill" id="progress-fill"></div>
    </div>
    <div class="video-container">
-    <!-- CORRECCIÓN: Se reemplazó el <iframe> con un <div>. -->
-    <!-- El script de la API de YouTube reemplazará este div con el <iframe> del video correcto. -->
     <div id="video-player" class="video-player"></div>
     
-    <!-- Pantalla de Pregunta -->
+    <!-- NUEVO: Overlay para Textos e Imágenes -->
+    <div class="info-overlay" id="info-overlay">
+     <div class="info-card">
+        <div class="card-header">
+           <div class="card-icon"><span class="material-icons">info</span></div>
+           <div class="card-info">
+                <div class="interaction-title" id="info-title"></div>
+           </div>
+        </div>
+        <div class="card-content" id="info-content">
+            <!-- El contenido (imagen, texto) se insertará aquí -->
+        </div>
+        <div class="card-actions">
+            <button class="continue-btn" id="info-continue-btn">
+                <span class="material-icons">play_arrow</span> Continuar
+            </button>
+        </div>
+     </div>
+    </div>
+    
+    <!-- Overlay para Preguntas (ahora genérico) -->
     <div class="question-overlay" id="question-overlay">
      <div class="question-card">
-      <div class="question-header">
-       <div class="question-icon"><span class="material-icons">quiz</span>
+      <div class="card-header">
+       <div class="card-icon"><span class="material-icons">quiz</span></div>
+       <div class="card-info">
+        <div class="card-counter" id="question-counter">Pregunta 1 de 5</div>
        </div>
-       <div class="question-info">
-        <div class="question-counter" id="question-counter"><span class="material-icons">help_outline</span> Pregunta 1 de 5
-        </div>
-       </div><button class="submit-btn" id="submit-btn" disabled> <span class="material-icons">send</span> Responder </button>
-      </div><img id="question-image" class="question-image" style="display: none;" alt="Imagen de la pregunta">
-      <div class="question-title" id="question-title"></div>
-      <div class="options-container" id="options-container"></div>
-      <div class="question-actions">
-       <div></div>
-       <div></div>
+      </div>
+      <!-- Contenedor genérico para todos los tipos de preguntas -->
+      <div class="card-content" id="interaction-content">
+          <!-- El contenido (opciones, columnas, etc.) se insertará aquí -->
+      </div>
+      <div class="card-actions">
+          <button class="submit-btn" id="submit-btn" disabled>
+            <span class="material-icons">send</span> Responder
+          </button>
       </div>
      </div>
-    </div><!-- Pantalla de Retroalimentación -->
+    </div>
+    
+    <!-- Overlay de Retroalimentación (sin cambios) -->
     <div class="feedback-overlay" id="feedback-overlay">
      <div class="feedback-card" id="feedback-card">
       <div class="feedback-icon" id="feedback-icon"><span class="material-icons">check_circle</span>
@@ -950,7 +1028,7 @@
       </div>
       <div class="feedback-message" id="feedback-message">
        ¡Excelente! Has respondido correctamente.
-      </div><button class="continue-btn" id="continue-btn"> <span class="material-icons">play_arrow</span> Continuar </button>
+      </div><button class="continue-btn" id="feedback-continue-btn"> <span class="material-icons">play_arrow</span> Continuar </button>
      </div>
     </div>
    </div>
@@ -980,150 +1058,117 @@
     <div class="loading-subtext" id="loading-subtext">Por favor espera</div>
    </div>
   </div>
+  
   <script>
         // Configuración por defecto
         const defaultConfig = {
             video_description: "Responde las preguntas que aparecen durante el video"
         };
 
-        // MODIFICACIÓN: Se restauran los datos de ejemplo (fallback).
-        let questionsData = {
+        // Datos de ejemplo (fallback)
+        let interactionsData = {
             "video_id": "jCcZfY04at4",
             "questions": [
                 {
                     "id": 1,
-                    "time": 15,
-                    "question": "(EJEMPLO) ¿Cuál es el tema principal que se presenta al inicio del video?",
-                    "image": null,
-                    "options": [
-                        "Introducción a la programación",
-                        "Historia de la computación",
-                        "Conceptos básicos de algoritmos",
-                        "Desarrollo web moderno"
-                    ],
-                    "correct_answer": 0,
-                    "feedback": {
-                        "correct": "¡Correcto! El video comienza con una introducción a los conceptos de programación.",
-                        "incorrect": "Incorrecto. El video se enfoca en introducir conceptos básicos de programación."
+                    "time": 5,
+                    "type": "text_media",
+                    "content": {
+                        "title": "(EJEMPLO) ¡Bienvenido!",
+                        "text": "Este es un texto de ejemplo. El video se pausará para mostrarte información o preguntas.",
+                        "image": null
                     }
                 },
                 {
                     "id": 2,
-                    "time": 45,
-                    "question": "(EJEMPLO) Según el video, ¿qué es lo más importante al aprender a programar?",
-                    "image": null,
-                    "options": [
-                        "Memorizar sintaxis",
-                        "Entender la lógica",
-                        "Usar las herramientas más nuevas",
-                        "Programar rápidamente"
-                    ],
-                    "correct_answer": 1,
-                    "feedback": {
-                        "correct": "¡Excelente! La lógica es fundamental en la programación.",
-                        "incorrect": "No es correcto. Lo más importante es desarrollar el pensamiento lógico."
+                    "time": 15,
+                    "type": "multiple_choice",
+                    "content": {
+                        "question": "(EJEMPLO) ¿Cuál es el tema principal?",
+                        "options": ["Programación", "Historia", "Algoritmos"],
+                        "correct_answer": 0,
+                        "feedback": {
+                            "correct": "¡Correcto!",
+                            "incorrect": "Incorrecto."
+                        }
                     }
                 }
             ]
         };
 
-
         // Variables globales
-        let currentQuestionIndex = 0;
+        let questions = []; // Array de todas las interacciones
+        let currentInteractionIndex = 0;
         let selectedAnswer = null;
+        let userMatches = []; // Para relación de columnas
+        let selectedColumnA = null; // Para relación de columnas
+        
         let questionsAnswered = 0;
         let correctAnswers = 0;
-        let questionsEnabled = true;
-        let videoStartTime = 0;
+        
         let isPlaying = false;
         let videoTimer = null;
         let currentVideoTime = 0;
         let videoDuration = 0;
-        let currentSpeed = 1;
-        let currentQuality = '480p';
         let isMuted = false;
         let player = null;
         let playerReady = false;
         let isDragging = false;
         
         // Configuración del video desde URL
-        // MODIFICACIÓN: Se restaura el videoId por defecto.
         let videoId = 'jCcZfY04at4';
-        let jsonFile = null; // Se cargará desde URL
-        let videoParamProvided = false; // <-- VARIABLE: Para dar prioridad al parámetro de URL
+        let jsonFile = null; 
+        let videoParamProvided = false; 
 
-        // Función para crear sonidos de retroalimentación
+        // --- Funciones de Audio (sin cambios) ---
         function createAudioFeedback(type) {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
             if (type === 'correct') {
-                // Sonido de éxito - acordes ascendentes
-                const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+                const frequencies = [523.25, 659.25, 783.99];
                 frequencies.forEach((freq, index) => {
                     const oscillator = audioContext.createOscillator();
                     const gainNode = audioContext.createGain();
-                    
                     oscillator.connect(gainNode);
                     gainNode.connect(audioContext.destination);
-                    
                     oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
                     oscillator.type = 'sine';
-                    
                     gainNode.gain.setValueAtTime(0, audioContext.currentTime);
                     gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1 + (index * 0.1));
                     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5 + (index * 0.1));
-                    
                     oscillator.start(audioContext.currentTime + (index * 0.1));
                     oscillator.stop(audioContext.currentTime + 0.5 + (index * 0.1));
                 });
             } else if (type === 'incorrect') {
-                // Sonido de error - tono descendente
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
                 oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
                 oscillator.type = 'sawtooth';
-                
                 gainNode.gain.setValueAtTime(0, audioContext.currentTime);
                 gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
             }
         }
 
-        // Función para extraer ID de YouTube desde URL o ID
+        // --- Funciones de Utilidad (sin cambios) ---
         function extractYouTubeId(urlOrId) {
             if (!urlOrId) return null;
-            
-            // Si ya es un ID (solo letras, números, guiones y guiones bajos)
-            if (/^[a-zA-Z0-9_-]{11}$/.test(urlOrId)) {
-                return urlOrId;
-            }
-            
-            // Intentar extraer de diferentes formatos de URL de YouTube
+            if (/^[a-zA-Z0-9_-]{11}$/.test(urlOrId)) return urlOrId;
             const patterns = [
                 /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
                 /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/
             ];
-            
             for (const pattern of patterns) {
                 const match = urlOrId.match(pattern);
-                if (match && match[1]) {
-                    return match[1];
-                }
+                if (match && match[1]) return match[1];
             }
-            
             return null;
         }
 
-        // Función para obtener parámetros de URL
-        // Uso: video_interactivo.html?video=VIDEO_ID_OR_URL&json=URL_JSON
         function getUrlParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const videoParam = urlParams.get('video');
@@ -1133,27 +1178,25 @@
                 const extractedId = extractYouTubeId(videoParam);
                 if (extractedId) {
                     videoId = extractedId;
-                    videoParamProvided = true; // <-- MODIFICACIÓN: Marcar que el video vino de la URL
+                    videoParamProvided = true; 
                 } else {
                     console.warn('No se pudo extraer el ID del video de:', videoParam);
                 }
             }
-            
             if (jsonParam) {
                 jsonFile = decodeURIComponent(jsonParam);
             }
         }
+        
+        // --- Lógica de Carga e Inicialización ---
 
-        // Variables de control del flujo de inicialización
         let youtubeAPIReady = false;
         let jsonDataLoaded = false;
         let playerInitialized = false;
         let initializationInProgress = false;
 
-        // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
-            // MODIFICACIÓN: Si el timeout se estaba ejecutando, limpiarlo.
             if (window.youtubeApiTimeout) {
                 clearTimeout(window.youtubeApiTimeout);
                 window.youtubeApiTimeout = null;
@@ -1161,71 +1204,49 @@
             tryInitializePlayer();
         }
         
-        // Función para intentar inicializar el player
         function tryInitializePlayer() {
-            if (initializationInProgress || playerInitialized) {
-                return;
-            }
-            
-            // PASO 1: Verificar que el JSON/Datos estén listos
-            if (!jsonDataLoaded) {
-                 // console.log('Esperando JSON...');
-                return;
-            }
-            
-            // PASO 2: Verificar que la API de YouTube esté lista
+            if (initializationInProgress || playerInitialized) return;
+            if (!jsonDataLoaded) return;
+
             if (!youtubeAPIReady) {
-                // MODIFICACIÓN: Si el JSON está listo, pero la API no, es la API la que está
-                // atascada. Establecer un temporizador para re-verificar.
                 console.log('JSON listo, esperando API de YouTube...');
-                
-                // Iniciar un temporizador de 10s para la API
-                if (!window.youtubeApiTimeout) { // Evitar múltiples timeouts
+                if (!window.youtubeApiTimeout) {
                     window.youtubeApiTimeout = setTimeout(() => {
                         if (!youtubeAPIReady) {
                              console.error('Timeout: La API de YouTube no respondió.');
                              showError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
                         }
-                    }, 10000); // 10s de espera
+                    }, 10000); 
                 }
                 return;
             }
 
-            // MODIFICACIÓN: Si la API está lista, limpiar cualquier timeout
             if (window.youtubeApiTimeout) {
                 clearTimeout(window.youtubeApiTimeout);
                 window.youtubeApiTimeout = null;
             }
             
-            // PASO 3: Verificar que tengamos un videoId
             if (!videoId) {
                 console.warn('No hay videoId disponible');
                 showError('Error Crítico', 'No se ha especificado un ID de video válido.');
                 return;
             }
             
-            // PASO 4: Inicializar el player
             initializationInProgress = true;
-            
             try {
                 player = new YT.Player('video-player', {
                     height: '100%',
                     width: '100%',
                     videoId: videoId,
                     playerVars: {
-                        'controls': 0,
-                        'rel': 0,
-                        'autoplay': 0,
-                        'mute': 0,
-                        'enablejsapi': 1
+                        'controls': 0, 'rel': 0, 'autoplay': 0, 'mute': 0, 'enablejsapi': 1
                     },
                     events: {
                         'onReady': onPlayerReady,
                         'onStateChange': onPlayerStateChange,
-                        'onError': onPlayerError // <-- MODIFICACIÓN: Añadir manejador de errores
+                        'onError': onPlayerError
                     }
                 });
-                
                 playerInitialized = true;
                 initializationInProgress = false;
             } catch (error) {
@@ -1237,7 +1258,6 @@
 
         function onPlayerReady(event) {
             playerReady = true;
-            
             setTimeout(() => {
                 try {
                     videoDuration = player.getDuration();
@@ -1245,22 +1265,16 @@
                     createInteractiveMarkers();
                 } catch (error) {
                     console.warn('No se pudo obtener la duración, usando 180s por defecto.', error);
-                    videoDuration = 180; // Duración por defecto
+                    videoDuration = 180;
                     createInteractiveMarkers();
                 }
-                
-                // Ocultar loading cuando todo esté listo
                 hideLoading();
             }, 1000);
-            
             setupEventListeners();
         }
 
-        // NUEVA FUNCIÓN: Manejador de errores del reproductor
         function onPlayerError(event) {
             console.error('Error del reproductor de YouTube:', event.data);
-            // El error '150' y '101' a menudo significa que el propietario del video no permite la reproducción en embeds.
-            // El error '2' significa ID de video inválido.
             let subtext = 'No se pudo cargar el video.';
             if (event.data === 150 || event.data === 101) {
                 subtext = 'El propietario de este video no permite su reproducción en este sitio.';
@@ -1278,24 +1292,19 @@
             } else if (event.data == YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
-                if (videoTimer) {
-                    clearInterval(videoTimer);
-                    videoTimer = null;
-                }
+                if (videoTimer) clearInterval(videoTimer);
+                videoTimer = null;
             } else if (event.data == YT.PlayerState.ENDED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">replay</span>';
-                if (videoTimer) {
-                    clearInterval(videoTimer);
-                    videoTimer = null;
-                }
+                if (videoTimer) clearInterval(videoTimer);
+                videoTimer = null;
             } else if (event.data == YT.PlayerState.CUED || event.data == -1) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
             }
         }
 
-        // Configurar event listeners
         function setupEventListeners() {
             document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
             document.getElementById('audio-btn').addEventListener('click', toggleAudio);
@@ -1303,113 +1312,62 @@
             document.getElementById('restart-btn').addEventListener('click', restartVideo);
             document.getElementById('results-btn').addEventListener('click', showResults);
             
-            const submitBtn = document.getElementById('submit-btn');
-            const continueBtn = document.getElementById('continue-btn');
-            
-            if (submitBtn) submitBtn.addEventListener('click', submitAnswer);
-            if (continueBtn) continueBtn.addEventListener('click', continueVideo);
+            // Botones de overlays
+            document.getElementById('submit-btn').addEventListener('click', submitAnswer);
+            document.getElementById('feedback-continue-btn').addEventListener('click', continueVideo);
+            document.getElementById('info-continue-btn').addEventListener('click', continueVideo);
         }
 
-        // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
-            const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn) playBtn.disabled = true;
-            
+            document.getElementById('play-pause-btn').disabled = true;
             getUrlParams();
-            
-            // Cargar datos (externos o por defecto)
             await loadQuestionsData();
-            
-            // tryInitializePlayer() es llamado desde loadQuestionsData() y onYouTubeIframeAPIReady()
-            
             updateProgress();
-            setupBasicEventListeners();
+            // setupBasicEventListeners(); // Ya no es necesario, se hace en onPlayerReady
         });
         
-        // Event listeners básicos que no dependen del reproductor
-        function setupBasicEventListeners() {
-            const restartBtn = document.getElementById('restart-btn');
-            const resultsBtn = document.getElementById('results-btn');
-            
-            if (restartBtn && !restartBtn.hasAttribute('data-listener')) {
-                restartBtn.addEventListener('click', restartVideo);
-                restartBtn.setAttribute('data-listener', 'true');
-            }
-            
-            if (resultsBtn && !resultsBtn.hasAttribute('data-listener')) {
-                resultsBtn.addEventListener('click', showResults);
-                resultsBtn.setAttribute('data-listener', 'true');
-            }
-        }
-
-        // Funciones para mostrar/ocultar loading
         function showLoading(text, subtext) {
             const overlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
             const loadingSubtext = document.getElementById('loading-subtext');
             const loadingSpinner = document.getElementById('loading-spinner');
-            
             if (overlay) {
                 loadingText.textContent = text || 'Cargando contenido...';
                 loadingSubtext.textContent = subtext || 'Por favor espera';
                 loadingText.classList.remove('error');
                 loadingSpinner.classList.remove('error');
-                loadingSpinner.innerHTML = ''; // Limpiar ícono de error
+                loadingSpinner.innerHTML = '';
                 overlay.style.display = 'flex';
             }
-            
-            const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn) {
-                playBtn.disabled = true;
-                playBtn.style.opacity = '0.5';
-                playBtn.style.cursor = 'not-allowed';
-            }
+            document.getElementById('play-pause-btn').disabled = true;
         }
         
-        // NUEVA: Función para mostrar error en pantalla de carga
         function showError(text, subtext) {
             const overlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
             const loadingSubtext = document.getElementById('loading-subtext');
             const loadingSpinner = document.getElementById('loading-spinner');
-            
             if (overlay) {
                 loadingText.textContent = text || 'Error';
                 loadingSubtext.textContent = subtext || 'No se pudo cargar el contenido';
                 loadingText.classList.add('error');
                 loadingSpinner.classList.add('error');
-                loadingSpinner.innerHTML = 'X'; // Ícono de error
+                loadingSpinner.innerHTML = 'X';
                 overlay.style.display = 'flex';
             }
-            
-            const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn) {
-                playBtn.disabled = true;
-                playBtn.style.opacity = '0.5';
-                playBtn.style.cursor = 'not-allowed';
-            }
+            document.getElementById('play-pause-btn').disabled = true;
         }
         
         function hideLoading() {
             const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
-            
-            const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn) {
-                playBtn.disabled = false;
-                playBtn.style.opacity = '1';
-                playBtn.style.cursor = 'pointer';
-            }
+            if (overlay) overlay.style.display = 'none';
+            document.getElementById('play-pause-btn').disabled = false;
         }
 
-        // Función para cargar datos de preguntas con reintentos
         async function loadQuestionsData() {
             showLoading('Cargando preguntas...', 'Conectando con el servidor');
             
             if (jsonFile) {
-                // Hay un JSON externo especificado
                 const maxRetries = 3;
                 let retryCount = 0;
                 let success = false;
@@ -1417,43 +1375,23 @@
                 
                 while (retryCount < maxRetries && !success) {
                     try {
-                        showLoading('Cargando preguntas...', retryCount > 0 ? `Reintento ${retryCount + 1} de ${maxRetries}` : 'Conectando con el servidor');
-                        
+                        showLoading('Cargando preguntas...', retryCount > 0 ? `Reintento ${retryCount + 1}/${maxRetries}` : 'Conectando');
                         const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout de 10 segundos
-                        
-                        const response = await fetch(jsonFile, {
-                            signal: controller.signal,
-                            cache: 'no-cache'
-                        });
-                        
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); 
+                        const response = await fetch(jsonFile, { signal: controller.signal, cache: 'no-cache' });
                         clearTimeout(timeoutId);
                         
                         if (response.ok) {
                             const data = await response.json();
+                            if (!data || !data.questions) throw new Error('JSON inválido o falta el array "questions"');
                             
-                            if (!data || (!data.questions && !data.video_id)) {
-                                throw new Error('JSON inválido: estructura incorrecta');
-                            }
-                            
-                            // MODIFICACIÓN: El video de la URL tiene prioridad.
-                            // Solo usar el video_id del JSON si NO se proveyó un parámetro 'video' en la URL.
+                            // Lógica de prioridad de Video ID
                             if (data.video_id && !videoParamProvided) {
                                 const extractedId = extractYouTubeId(data.video_id);
                                 if (extractedId) videoId = extractedId;
                             }
                             
-                            if (data.questions && Array.isArray(data.questions)) {
-                                if (data.questions.length === 0) {
-                                    throw new Error('JSON no contiene preguntas');
-                                }
-                                // REEMPLAZAR los datos de ejemplo por los del JSON
-                                questionsData = data;
-                                if (!questionsData.video_id) questionsData.video_id = videoId;
-                            } else {
-                                throw new Error('JSON no contiene un array de "questions"');
-                            }
-                            
+                            interactionsData = data; // Reemplazar los datos de ejemplo
                             success = true;
                             showLoading('Preguntas cargadas', 'Inicializando video...');
                         } else {
@@ -1463,273 +1401,193 @@
                         retryCount++;
                         lastError = error;
                         console.error(`Error cargando JSON (intento ${retryCount}/${maxRetries}):`, error);
-                        
-                        if (retryCount < maxRetries) {
-                            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
-                        }
+                        if (retryCount < maxRetries) await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
                     }
                 }
-
-                // FIN DEL BUCLE DE REINTENTOS
                 if (!success) {
-                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON después de', maxRetries, 'intentos.');
-                    // MODIFICACIÓN: Mostrar error al usuario
-                    showError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise la URL y la configuración CORS)');
+                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON.');
+                    showError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise URL/CORS)');
                     console.error('Último error:', lastError);
                     return; 
                 }
-
             } else {
-                // MODIFICACIÓN: No hay JSON externo, usar datos de ejemplo (fallback).
                 console.warn('No se proveyó ?json=... Usando datos de ejemplo internos.');
                 showLoading('Cargando datos de ejemplo...', 'Preparando contenido');
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            // Si llegamos aquí, o el JSON cargó bien, o estamos usando los datos de ejemplo
+            questions = interactionsData.questions || []; // Asignar a la variable global
             jsonDataLoaded = true;
-            
-            // Intentar inicializar el video
             tryInitializePlayer();
         }
+        
+        // --- Lógica de la Línea de Tiempo ---
 
         function createInteractiveMarkers() {
             const markersContainer = document.getElementById('markers-container');
             if (!markersContainer) return;
+            if (!questions || questions.length === 0) return;
             
-            if (!questionsData || !questionsData.questions || questionsData.questions.length === 0) {
-                console.warn('No hay preguntas disponibles para crear marcadores');
-                return;
-            }
-            
-            // Limpiar marcadores existentes
             const existingMarkers = markersContainer.querySelectorAll('.marker');
             existingMarkers.forEach(marker => marker.remove());
-
-            // Usar duración real del video si está disponible, sino estimar
             const duration = videoDuration || 180;
 
-            questionsData.questions.forEach((question, index) => {
+            questions.forEach((question, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'marker';
                 const positionPercent = (question.time / duration) * 100;
                 marker.style.left = `${positionPercent}%`;
-                marker.dataset.questionIndex = index;
+                marker.dataset.interactionIndex = index;
                 marker.dataset.time = question.time;
-                marker.addEventListener('click', () => jumpToQuestion(index));
+                marker.addEventListener('click', () => jumpToInteraction(index));
                 
-                // Crear tooltip para el marcador
                 const tooltip = document.createElement('div');
                 tooltip.className = 'marker-tooltip';
                 tooltip.textContent = `Actividad ${index + 1} - ${formatTime(question.time)}`;
                 marker.appendChild(tooltip);
-                
                 markersContainer.appendChild(marker);
             });
-
             setupTimelineSlider();
         }
 
         let timelineSliderSetup = false;
-        
         function setupTimelineSlider() {
             if (timelineSliderSetup) return;
-            
             const markersContainer = document.getElementById('markers-container');
             const timelineHandle = document.getElementById('timeline-handle');
             const timelineTooltip = document.getElementById('timeline-tooltip');
-            
             if (!markersContainer || !timelineHandle || !timelineTooltip) return;
             
             let wasPlaying = false;
-
             timelineHandle.addEventListener('mousedown', startDrag);
             markersContainer.addEventListener('click', handleTimelineClick);
             markersContainer.addEventListener('mousemove', showTimelineTooltip);
             markersContainer.addEventListener('mouseleave', hideTimelineTooltip);
-            
             timelineSliderSetup = true;
 
             function startDrag(e) {
                 isDragging = true;
                 wasPlaying = isPlaying;
                 if (isPlaying) pauseVideo();
-                
                 document.addEventListener('mousemove', drag);
                 document.addEventListener('mouseup', stopDrag);
                 e.preventDefault();
             }
-
             function drag(e) {
                 if (!isDragging || !playerReady) return;
-                
                 const rect = markersContainer.getBoundingClientRect();
                 const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
                 const percentage = x / rect.width;
                 const duration = player.getDuration();
                 const newTime = percentage * duration;
-                
                 updateTimelineHandle(percentage);
                 player.seekTo(newTime, true);
-                
                 timelineTooltip.textContent = formatTime(newTime);
                 timelineTooltip.style.left = `${x}px`;
                 timelineTooltip.style.opacity = '1';
             }
-
             function stopDrag() {
                 if (!isDragging) return;
-                
                 isDragging = false;
                 document.removeEventListener('mousemove', drag);
                 document.removeEventListener('mouseup', stopDrag);
-                
-                if (wasPlaying) {
-                    setTimeout(() => playVideo(), 100);
-                }
-                
+                if (wasPlaying) setTimeout(() => playVideo(), 100);
                 hideTimelineTooltip();
             }
-
             function handleTimelineClick(e) {
                 if (isDragging || !playerReady) return;
                 if (e.target.classList.contains('marker') || e.target.closest('.marker')) return;
-                
                 const rect = markersContainer.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const percentage = x / rect.width;
                 const duration = player.getDuration();
                 const newTime = percentage * duration;
-                
                 const wasPlayingBefore = isPlaying;
                 if (isPlaying) pauseVideo();
-                
                 player.seekTo(newTime, true);
-                
-                if (wasPlayingBefore) {
-                    setTimeout(() => playVideo(), 200);
-                }
+                if (wasPlayingBefore) setTimeout(() => playVideo(), 200);
             }
-
             function showTimelineTooltip(e) {
                 if (isDragging) return;
-                
                 const rect = markersContainer.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const percentage = x / rect.width;
                 const duration = videoDuration || 180;
                 const time = percentage * duration;
-                
                 timelineTooltip.textContent = formatTime(time);
                 timelineTooltip.style.left = `${x}px`;
                 timelineTooltip.style.opacity = '1';
             }
-
             function hideTimelineTooltip() {
-                if (!isDragging) {
-                    timelineTooltip.style.opacity = '0';
-                }
+                if (!isDragging) timelineTooltip.style.opacity = '0';
             }
         }
 
         function updateTimelineHandle(percentage) {
             const timelineHandle = document.getElementById('timeline-handle');
-            if (timelineHandle) {
-                timelineHandle.style.left = `${Math.min(Math.max(percentage * 100, 0), 100)}%`;
-            }
+            if (timelineHandle) timelineHandle.style.left = `${Math.min(Math.max(percentage * 100, 0), 100)}%`;
         }
 
-        function jumpToQuestion(questionIndex) {
+        function jumpToInteraction(index) {
             if (!playerReady || !player) return;
+            const interaction = questions[index];
+            console.log(`Saltando a interacción ${index + 1} en tiempo ${interaction.time}s`);
             
-            const question = questionsData.questions[questionIndex];
-            console.log(`Saltando a pregunta ${questionIndex + 1} en tiempo ${question.time}s`);
-            
-            if (question.answered) {
-                player.seekTo(question.time, true);
+            if (interaction.answered) {
+                player.seekTo(interaction.time, true);
                 return;
             }
-            
-            const seekTime = Math.max(0, question.time - 3);
+            const seekTime = Math.max(0, interaction.time - 3);
             player.seekTo(seekTime, true);
-            question.shown = false;
-            
-            setTimeout(() => {
-                playVideo();
-            }, 500);
+            interaction.shown = false;
+            setTimeout(() => playVideo(), 500);
         }
+        
+        // --- Controles de Video (Play, Pausa, Tiempo) ---
 
         function togglePlayPause() {
-            const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn && playBtn.disabled) return;
+            if (document.getElementById('play-pause-btn').disabled) return;
             if (!playerReady || !player) return;
-            
             try {
                 const playerState = player.getPlayerState();
-                
-                if (playerState === YT.PlayerState.PLAYING) {
-                    player.pauseVideo();
-                } else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.CUED || playerState === -1) {
-                    player.playVideo();
-                } else if (playerState === YT.PlayerState.ENDED) {
+                if (playerState === YT.PlayerState.PLAYING) player.pauseVideo();
+                else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.CUED || playerState === -1) player.playVideo();
+                else if (playerState === YT.PlayerState.ENDED) {
                     player.seekTo(0);
                     player.playVideo();
                 }
-            } catch (error) {
-                console.error('Error toggling play/pause:', error);
-            }
+            } catch (error) { console.error('Error toggling play/pause:', error); }
         }
 
         function playVideo() {
-            if (playerReady && player) {
-                try {
-                    player.playVideo();
-                } catch (error) {
-                    console.error('Error playing video:', error);
-                }
-            }
+            if (playerReady && player) try { player.playVideo(); } catch (e) {}
         }
 
         function pauseVideo() {
-            if (playerReady && player) {
-                try {
-                    player.pauseVideo();
-                } catch (error) {
-                    console.error('Error pausing video:', error);
-                }
-            }
+            if (playerReady && player) try { player.pauseVideo(); } catch (e) {}
         }
 
         function startVideoTimer() {
             if (videoTimer) clearInterval(videoTimer);
-            
             videoTimer = setInterval(() => {
                 if (!playerReady || !player) return;
-                
                 try {
                     currentVideoTime = player.getCurrentTime();
                     const currentTimeSeconds = Math.floor(currentVideoTime);
-                    
                     updateTimelineProgress();
                     updateTimeDisplay();
                     
-                    if (isPlaying && questionsEnabled) {
-                        // MODIFICACIÓN: Comprobar que questionsData exista
-                        if (questionsData && questionsData.questions) {
-                            questionsData.questions.forEach((question, index) => {
-                                if (currentTimeSeconds >= question.time && currentTimeSeconds <= question.time + 1 && !question.shown) {
-                                    console.log(`🎯 ACTIVANDO pregunta ${index + 1} en tiempo ${currentTimeSeconds}s (objetivo: ${question.time}s)`);
-                                    question.shown = true;
-                                    pauseVideo();
-                                    showQuestion(index);
+                    if (isPlaying) {
+                        if (questions && questions.length > 0) {
+                            questions.forEach((interaction, index) => {
+                                if (currentTimeSeconds >= interaction.time && currentTimeSeconds <= interaction.time + 1 && !interaction.shown) {
+                                    interaction.shown = true;
+                                    showInteraction(index);
                                 }
                             });
                         }
                     }
-                    
-                } catch (error) {
-                    // console.error('Error in video timer:', error);
-                }
+                } catch (error) {}
             }, 250); 
         }
 
@@ -1741,157 +1599,389 @@
 
         function updateTimeDisplay() {
             if (!playerReady || !player) return;
-            
             try {
                 const current = player.getCurrentTime();
                 const duration = player.getDuration();
-                
                 document.getElementById('current-time').textContent = formatTime(current);
                 document.getElementById('total-time').textContent = formatTime(duration);
-            } catch (error) {
-                // console.error('Error updating time display:', error);
-            }
+            } catch (error) {}
         }
 
         function updateTimelineProgress() {
             if (!playerReady || !player) return;
-            
             try {
                 const duration = player.getDuration();
                 const current = player.getCurrentTime();
-                
                 if (duration > 0) {
                     const progress = (current / duration) * 100;
                     const progressPercentage = Math.min(Math.max(progress, 0), 100);
-                    
                     const timelineProgress = document.getElementById('timeline-progress');
-                    if (timelineProgress) {
-                        timelineProgress.style.width = `${progressPercentage}%`;
-                    }
-                    
+                    if (timelineProgress) timelineProgress.style.width = `${progressPercentage}%`;
                     updateTimelineHandle(progressPercentage / 100);
                     updateMarkerStates(current);
-                    
                     if (!videoDuration) {
                         videoDuration = duration;
                         createInteractiveMarkers();
                     }
                 }
-            } catch (error) {
-                // console.error('Error updating timeline progress:', error);
-            }
+            } catch (error) {}
         }
 
         function updateMarkerStates(currentTime) {
             const markers = document.querySelectorAll('.marker');
-            
             markers.forEach((marker, index) => {
-                const questionTime = parseInt(marker.dataset.time);
-                const questionIndex = parseInt(marker.dataset.questionIndex);
-                
-                if (!questionsData || !questionsData.questions || !questionsData.questions[questionIndex]) return; // Guard
-                
-                const question = questionsData.questions[questionIndex];
-                
+                const interactionTime = parseInt(marker.dataset.time);
+                const interactionIndex = parseInt(marker.dataset.interactionIndex);
+                if (!questions || !questions[interactionIndex]) return; 
+                const interaction = questions[interactionIndex];
                 marker.classList.remove('approaching', 'active', 'completed');
-                
-                if (question && question.answered) {
-                    marker.classList.add('completed');
-                } else if (Math.abs(currentTime - questionTime) <= 1) {
-                    marker.classList.add('active');
-                } else if (currentTime >= questionTime - 10 && currentTime < questionTime) {
-                    marker.classList.add('approaching');
-                }
+                if (interaction && interaction.answered) marker.classList.add('completed');
+                else if (Math.abs(currentTime - interactionTime) <= 1) marker.classList.add('active');
+                else if (currentTime >= interactionTime - 10 && currentTime < interactionTime) marker.classList.add('approaching');
             });
         }
+        
+        // --- LÓGICA CENTRAL DE INTERACCIÓN ---
 
-        function showQuestion(questionIndex) {
-            const question = questionsData.questions[questionIndex];
-            currentQuestionIndex = questionIndex;
-            selectedAnswer = null;
+        // 1. Dispatcher Principal: Decide qué mostrar
+        function showInteraction(index) {
+            pauseVideo();
+            currentInteractionIndex = index;
+            const interaction = questions[index];
+            selectedAnswer = null; // Resetear selección
+            userMatches = []; // Resetear matches
+            selectedColumnA = null; // Resetear match
             
-            document.getElementById('question-title').textContent = question.question;
-            document.getElementById('question-counter').innerHTML = `
-                <span class="material-icons">help_outline</span>
-                Pregunta ${questionIndex + 1} de ${questionsData.questions.length}
-            `;
+            // Ocultar todos los overlays primero
+            document.getElementById('info-overlay').style.display = 'none';
+            document.getElementById('question-overlay').style.display = 'none';
+            document.getElementById('feedback-overlay').style.display = 'none';
+
+            switch (interaction.type) {
+                case 'text_media':
+                    showTextMedia(interaction);
+                    break;
+                case 'true_false':
+                    showTrueFalse(interaction);
+                    break;
+                case 'multiple_choice':
+                    showMultipleChoice(interaction);
+                    break;
+                case 'matching':
+                    showMatching(interaction);
+                    break;
+                default:
+                    console.warn('Tipo de interacción desconocido:', interaction.type);
+                    continueVideo(); // No se reconoce, continuar video
+            }
+        }
+        
+        // 2. Mostrar "Texto Libre" o "Imagen con Texto"
+        function showTextMedia(interaction) {
+            const content = interaction.content;
+            document.getElementById('info-title').textContent = content.title || '';
+            const infoContent = document.getElementById('info-content');
+            infoContent.innerHTML = ''; // Limpiar
             
-            const questionImage = document.getElementById('question-image');
-            if (question.image) {
-                questionImage.src = question.image;
-                questionImage.style.display = 'block';
-            } else {
-                questionImage.style.display = 'none';
+            if (content.image) {
+                const img = document.createElement('img');
+                img.src = content.image;
+                img.className = 'interaction-image';
+                infoContent.appendChild(img);
+            }
+            if (content.text) {
+                const p = document.createElement('p');
+                p.className = 'interaction-text';
+                p.innerHTML = content.text; // Usar innerHTML para permitir <br>, <b>, etc.
+                infoContent.appendChild(p);
             }
             
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
+            document.getElementById('info-overlay').style.display = 'flex';
+        }
+        
+        // 3. Mostrar Pregunta de Verdadero/Falso
+        function showTrueFalse(interaction) {
+            const content = interaction.content;
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
             
-            question.options.forEach((option, index) => {
+            // Actualizar contador
+            updateQuestionCounter();
+            
+            // Añadir título (pregunta)
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            // Añadir contenedor de opciones
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            // Crear botón Verdadero
+            const trueBtn = document.createElement('button');
+            trueBtn.className = 'option-button';
+            trueBtn.innerHTML = '<span class="material-icons">check_circle_outline</span> Verdadero';
+            trueBtn.addEventListener('click', () => selectOption(true, trueBtn));
+            optionsContainer.appendChild(trueBtn);
+            
+            // Crear botón Falso
+            const falseBtn = document.createElement('button');
+            falseBtn.className = 'option-button';
+            falseBtn.innerHTML = '<span class="material-icons">highlight_off</span> Falso';
+            falseBtn.addEventListener('click', () => selectOption(false, falseBtn));
+            optionsContainer.appendChild(falseBtn);
+            
+            interactionContent.appendChild(optionsContainer);
+            
+            // Resetear y mostrar overlay de pregunta
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // 4. Mostrar Pregunta de Opción Múltiple
+        function showMultipleChoice(interaction) {
+            const content = interaction.content;
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            updateQuestionCounter();
+            
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            content.options.forEach((optionText, index) => {
                 const button = document.createElement('button');
                 button.className = 'option-button';
-                button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                button.textContent = `${String.fromCharCode(65 + index)}. ${optionText}`;
                 button.addEventListener('click', () => selectOption(index, button));
                 optionsContainer.appendChild(button);
             });
             
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="material-icons">send</span> Responder';
+            interactionContent.appendChild(optionsContainer);
             
+            document.getElementById('submit-btn').disabled = true;
             document.getElementById('question-overlay').style.display = 'flex';
         }
+        
+        // 5. Mostrar Pregunta de Relación de Columnas
+        function showMatching(interaction) {
+            const content = interaction.content;
+            userMatches = []; // Resetear
+            selectedColumnA = null; // Resetear
+            
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            updateQuestionCounter();
+            
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            // Crear contenedor principal
+            const matchingContainer = document.createElement('div');
+            matchingContainer.className = 'matching-container';
+            
+            // Crear Columnas
+            const colA = document.createElement('div');
+            colA.className = 'matching-column';
+            colA.id = 'column-a';
+            
+            const colB = document.createElement('div');
+            colB.className = 'matching-column';
+            colB.id = 'column-b';
+            
+            // Llenar Columnas
+            // IMPORTANTE: Mezclar las columnas para que no sea obvio
+            const shuffledA = shuffleArray([...content.column_a]);
+            const shuffledB = shuffleArray([...content.column_b]);
 
-        function selectOption(index, button) {
-            document.querySelectorAll('.option-button').forEach(btn => {
-                btn.classList.remove('selected');
+            shuffledA.forEach((itemText, shuffledIndex) => {
+                const originalIndex = content.column_a.indexOf(itemText);
+                const item = document.createElement('div');
+                item.className = 'column-item';
+                item.textContent = itemText;
+                item.dataset.index = originalIndex; // Guardar el índice original
+                item.addEventListener('click', () => selectMatchingColumnA(item, originalIndex));
+                colA.appendChild(item);
             });
             
+            shuffledB.forEach((itemText, shuffledIndex) => {
+                const originalIndex = content.column_b.indexOf(itemText);
+                const item = document.createElement('div');
+                item.className = 'column-item';
+                item.textContent = itemText;
+                item.dataset.index = originalIndex; // Guardar el índice original
+                item.addEventListener('click', () => selectMatchingColumnB(item, originalIndex));
+                colB.appendChild(item);
+            });
+            
+            matchingContainer.appendChild(colA);
+            matchingContainer.appendChild(colB);
+            interactionContent.appendChild(matchingContainer);
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // --- Lógica de Selección y Envío ---
+
+        function selectOption(index, button) {
+            document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
             button.classList.add('selected');
             selectedAnswer = index;
             document.getElementById('submit-btn').disabled = false;
         }
+        
+        function selectMatchingColumnA(item, indexA) {
+            // Si se vuelve a hacer clic en el mismo, deseleccionar
+            if (selectedColumnA && selectedColumnA.index === indexA) {
+                selectedColumnA.element.classList.remove('selected');
+                selectedColumnA = null;
+            } else {
+                // Quitar selección anterior
+                document.querySelectorAll('#column-a .column-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedColumnA = { element: item, index: indexA };
+            }
+        }
+        
+        function selectMatchingColumnB(item, indexB) {
+            if (!selectedColumnA) return; // No hay nada seleccionado en A
+            
+            const indexA = selectedColumnA.index;
+            
+            // Quitar cualquier emparejamiento anterior para estos elementos
+            userMatches = userMatches.filter(match => match.a_index !== indexA && match.b_index !== indexB);
+            
+            // Quitar clases de emparejamiento visual
+            document.querySelectorAll(`.paired-a-${indexA}, .paired-b-${indexB}`).forEach(el => {
+                el.classList.remove('paired-a', 'paired-b', `paired-a-${indexA}`, `paired-b-${indexB}`);
+            });
+            
+            // Añadir nuevo emparejamiento
+            userMatches.push({ a_index: indexA, b_index: indexB });
+            
+            // Añadir clases visuales
+            selectedColumnA.element.classList.add('paired-a', `paired-a-${indexA}`);
+            item.classList.add('paired-b', `paired-b-${indexB}`);
+            
+            // Resetear selección
+            selectedColumnA.element.classList.remove('selected');
+            selectedColumnA = null;
+            
+            // Habilitar botón si todos están emparejados
+            if (userMatches.length === questions[currentInteractionIndex].content.column_a.length) {
+                document.getElementById('submit-btn').disabled = false;
+            }
+        }
 
+        // 6. Dispatcher de Envío
         function submitAnswer() {
-            if (selectedAnswer === null) return;
+            const interaction = questions[currentInteractionIndex];
             
-            const question = questionsData.questions[currentQuestionIndex];
-            const isCorrect = selectedAnswer === question.correct_answer;
+            // Deshabilitar botón
+            document.getElementById('submit-btn').disabled = true;
             
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Procesando...';
+            // Contar como respondida
+            interaction.answered = true;
+            questionsAnswered++;
             
-            try {
-                createAudioFeedback(isCorrect ? 'correct' : 'incorrect');
-            } catch (error) {
-                console.log('Audio feedback not available:', error);
+            let isCorrect = false;
+            
+            switch (interaction.type) {
+                case 'true_false':
+                case 'multiple_choice':
+                    isCorrect = (selectedAnswer === interaction.content.correct_answer);
+                    highlightChoiceAnswers(isCorrect, interaction.content.correct_answer);
+                    break;
+                case 'matching':
+                    isCorrect = checkMatchingAnswers(interaction.content.correct_matches);
+                    highlightMatchingAnswers(isCorrect, interaction.content.correct_matches);
+                    break;
             }
             
+            // Actualizar estadísticas
+            interaction.correct = isCorrect;
+            if (isCorrect) correctAnswers++;
+            
+            // Reproducir sonido
+            try { createAudioFeedback(isCorrect ? 'correct' : 'incorrect'); } catch (e) {}
+            
+            // Mostrar retroalimentación
+            setTimeout(() => {
+                showFeedback(isCorrect, interaction.content.feedback);
+            }, 1500); // Esperar 1.5s para que el usuario vea la corrección
+            
+            updateProgress();
+        }
+        
+        // 7. Funciones de Verificación y Resaltado
+        
+        function highlightChoiceAnswers(isCorrect, correctIndex) {
             document.querySelectorAll('.option-button').forEach((btn, index) => {
-                if (index === question.correct_answer) {
+                if (index === correctIndex) {
                     btn.classList.add('correct');
                 } else if (index === selectedAnswer && !isCorrect) {
                     btn.classList.add('incorrect');
                 }
-                btn.onclick = null; // Deshabilitar clics
+                btn.onclick = null; // Deshabilitar
             });
+        }
+        
+        function checkMatchingAnswers(correctMatches) {
+            if (userMatches.length !== correctMatches.length) return false;
             
-            question.answered = true;
-            question.correct = isCorrect;
+            for (const correctMatch of correctMatches) {
+                const found = userMatches.some(userMatch => 
+                    userMatch.a_index === correctMatch.a_index && userMatch.b_index === correctMatch.b_index
+                );
+                if (!found) return false;
+            }
+            return true;
+        }
+        
+        function highlightMatchingAnswers(isCorrect, correctMatches) {
+            // Deshabilitar clics
+            document.querySelectorAll('.column-item').forEach(el => el.onclick = null);
+
+            // Si es correcto, todo está bien
+            if (isCorrect) {
+                 document.querySelectorAll('.column-item').forEach(el => el.classList.add('correct'));
+                 return;
+            }
             
-            questionsAnswered++;
-            if (isCorrect) correctAnswers++;
-            
-            setTimeout(() => {
-                showFeedback(isCorrect, question.feedback);
-            }, 1500);
-            
-            updateProgress();
+            // Si es incorrecto, marcar pares
+            userMatches.forEach(userMatch => {
+                const isPairCorrect = correctMatches.some(cm => 
+                    cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
+                );
+                
+                const elA = document.querySelector(`#column-a .column-item[data-index="${userMatch.a_index}"]`);
+                const elB = document.querySelector(`#column-b .column-item[data-index="${userMatch.b_index}"]`);
+                
+                if (isPairCorrect) {
+                    elA.classList.add('correct');
+                    elB.classList.add('correct');
+                } else {
+                    elA.classList.add('incorrect');
+                    elB.classList.add('incorrect');
+                }
+            });
         }
 
+        // 8. Continuar Video y Feedback
+        
         function showFeedback(isCorrect, feedback) {
             document.getElementById('question-overlay').style.display = 'none';
+            document.getElementById('info-overlay').style.display = 'none';
             
             const feedbackCard = document.getElementById('feedback-card');
             const feedbackIcon = document.getElementById('feedback-icon');
@@ -1917,29 +2007,48 @@
 
         function continueVideo() {
             document.getElementById('feedback-overlay').style.display = 'none';
+            document.getElementById('info-overlay').style.display = 'none';
+            document.getElementById('question-overlay').style.display = 'none';
             
+            // Marcar el marcador como completado
             const markers = document.querySelectorAll('.marker');
-            if (markers[currentQuestionIndex]) {
-                markers[currentQuestionIndex].classList.add('completed');
+            if (markers[currentInteractionIndex]) {
+                markers[currentInteractionIndex].classList.add('completed');
             }
             
             playVideo();
         }
 
         function updateProgress() {
-            // MODIFICACIÓN: Añadir comprobación de que questionsData existe.
-            if (!questionsData || !questionsData.questions || questionsData.questions.length === 0) return;
-            const progress = (questionsAnswered / questionsData.questions.length) * 100;
+            if (!questions || questions.length === 0) return;
+            const progress = (questionsAnswered / questions.length) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
         }
+        
+        function updateQuestionCounter() {
+            const num = currentInteractionIndex + 1;
+            const total = questions.length;
+            document.getElementById('question-counter').innerHTML = `
+                <span class="material-icons">help_outline</span>
+                Actividad ${num} de ${total}
+            `;
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- Controles de Video Adicionales ---
 
         function restartVideo() {
             if (!playerReady || !player) return;
-            
             try {
-                // MODIFICACIÓN: Añadir comprobación
-                if (questionsData && questionsData.questions) {
-                    questionsData.questions.forEach(q => {
+                if (questions) {
+                    questions.forEach(q => {
                         q.shown = false;
                         q.answered = false;
                         q.correct = false;
@@ -1947,7 +2056,7 @@
                 }
                 questionsAnswered = 0;
                 correctAnswers = 0;
-                currentQuestionIndex = 0;
+                currentInteractionIndex = 0;
                 currentVideoTime = 0;
                 
                 player.seekTo(0, true);
@@ -1957,35 +2066,27 @@
                 
                 document.getElementById('question-overlay').style.display = 'none';
                 document.getElementById('feedback-overlay').style.display = 'none';
+                document.getElementById('info-overlay').style.display = 'none';
                 
                 document.querySelectorAll('.marker').forEach(marker => {
                     marker.classList.remove('completed', 'approaching', 'active');
                 });
                 
                 updateTimelineHandle(0);
-                
                 setTimeout(() => {
                     updateTimelineProgress();
                     updateTimeDisplay();
                 }, 200);
                 
                 updateProgress();
-                
                 showNotification('Video reiniciado');
-                console.log('Video reiniciado correctamente');
-            } catch (error) {
-                console.error('Error restarting video:', error);
-            }
+            } catch (error) { console.error('Error restarting video:', error); }
         }
-
-
 
         function toggleAudio() {
             if (!playerReady || !player) return;
-            
             isMuted = !isMuted;
             const audioBtn = document.getElementById('audio-btn');
-            
             if (isMuted) {
                 player.mute();
                 audioBtn.innerHTML = '<span class="material-icons">volume_off</span>';
@@ -2001,7 +2102,6 @@
 
         function toggleFullscreen() {
             const container = document.querySelector('.container');
-            
             if (!document.fullscreenElement) {
                 container.requestFullscreen().catch(() => {
                     showNotification('No se pudo activar pantalla completa');
@@ -2014,21 +2114,14 @@
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: rgba(0,0,0,0.8);
-                color: white;
-                padding: 12px 20px;
-                border-radius: 4px;
-                font-size: 14px;
-                z-index: 2000;
+                position: fixed; top: 20px; right: 20px;
+                background: rgba(0,0,0,0.8); color: white;
+                padding: 12px 20px; border-radius: 4px;
+                font-size: 14px; z-index: 2000;
                 animation: slideInRight 0.3s ease-out;
             `;
             notification.textContent = message;
-            
             document.body.appendChild(notification);
-            
             setTimeout(() => {
                 notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
                 setTimeout(() => notification.remove(), 300);
@@ -2036,91 +2129,54 @@
         }
 
         function showResults() {
-            // MODIFICACIÓN: Comprobación de que questionsData existe.
-            if (!questionsData || !questionsData.questions || questionsData.questions.length === 0) {
+            if (!questions || questions.length === 0) {
                 showNotification("Aún no hay preguntas cargadas.");
                 return;
             }
-
-            const totalQuestions = questionsData.questions.length;
+            const totalQuestions = questions.length;
             const percentage = Math.round((correctAnswers / Math.max(questionsAnswered, 1)) * 100);
             
             const modal = document.createElement('div');
             modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.8);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.8); display: flex;
+                align-items: center; justify-content: center; z-index: 1000;
             `;
-            
             const content = document.createElement('div');
             content.style.cssText = `
-                background: white;
-                padding: 32px;
-                border-radius: 16px;
-                max-width: 400px;
-                text-align: center;
+                background: white; padding: 32px; border-radius: 16px;
+                max-width: 400px; text-align: center;
                 box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             `;
-            
             content.innerHTML = `
                 <h3 style="margin: 0 0 20px 0; color: #2d3748;">📊 Resultados del Video</h3>
-                <p style="margin: 10px 0; color: #4a5568;"><strong>Preguntas respondidas:</strong> ${questionsAnswered}/${totalQuestions}</p>
+                <p style="margin: 10px 0; color: #4a5568;"><strong>Actividades respondidas:</strong> ${questionsAnswered}/${totalQuestions}</p>
                 <p style="margin: 10px 0; color: #4a5568;"><strong>Respuestas correctas:</strong> ${correctAnswers}</p>
                 <p style="margin: 10px 0; color: #4a5568;"><strong>Porcentaje de aciertos:</strong> ${percentage}%</p>
                 <button onclick="this.closest('div').parentElement.remove()" style="
-                    background: #1768ac;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    margin-top: 20px;
-                    font-weight: 600;
+                    background: #1768ac; color: white; border: none;
+                    padding: 12px 24px; border-radius: 8px; cursor: pointer;
+                    margin-top: 20px; font-weight: 600;
                 ">Cerrar</button>
             `;
-            
             modal.appendChild(content);
             document.body.appendChild(modal);
         }
 
-        // SDK de elementos
-        async function onConfigChange(config) {
-            const descriptionElement = document.getElementById('video-description');
-            
-            if (descriptionElement) {
-                descriptionElement.textContent = config.video_description || defaultConfig.video_description;
-            }
-        }
-
-        function mapToCapabilities(config) {
-            return {
-                recolorables: [],
-                borderables: [],
-                fontEditable: undefined,
-                fontSizeable: undefined
-            };
-        }
-
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["video_description", config.video_description || defaultConfig.video_description]
-            ]);
-        }
-
-        // Inicializar SDK (solo si está disponible)
+        // --- SDK de Elementos (sin cambios) ---
         if (window.elementSdk) {
             window.elementSdk.init({
                 defaultConfig,
-                onConfigChange,
-                mapToCapabilities,
-                mapToEditPanelValues
+                onConfigChange: async (config) => {
+                    const descEl = document.getElementById('video-description');
+                    if (descEl) descEl.textContent = config.video_description || defaultConfig.video_description;
+                },
+                mapToCapabilities: (config) => ({
+                    recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["video_description", config.video_description || defaultConfig.video_description]
+                ])
             });
         }
     </script>
