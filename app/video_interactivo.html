@@ -1430,6 +1430,7 @@
 
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
+            // MODIFICACIÓN: Limpiar el temporizador maestro
             if (window.youtubeApiTimeout) {
                 clearTimeout(window.youtubeApiTimeout);
                 window.youtubeApiTimeout = null;
@@ -1439,21 +1440,14 @@
         
         function tryInitializePlayer() {
             if (initializationInProgress || playerInitialized) return;
-            if (!jsonDataLoaded) return;
 
-            if (!youtubeAPIReady) {
-                console.log('JSON listo, esperando API de YouTube...');
-                if (!window.youtubeApiTimeout) {
-                    window.youtubeApiTimeout = setTimeout(() => {
-                        if (!youtubeAPIReady) {
-                             console.error('Timeout: La API de YouTube no respondió.');
-                             showError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
-                        }
-                    }, 10000); 
-                }
+            // MODIFICACIÓN: Esta es la nueva "puerta". Solo continúa si AMBOS están listos.
+            if (!jsonDataLoaded || !youtubeAPIReady) {
+                console.log('tryInitializePlayer: Aún no listo. JSON:', jsonDataLoaded, 'API:', youtubeAPIReady);
                 return;
             }
-
+            
+            // Si llegamos aquí, AMBOS están listos. Limpiamos cualquier timer restante.
             if (window.youtubeApiTimeout) {
                 clearTimeout(window.youtubeApiTimeout);
                 window.youtubeApiTimeout = null;
@@ -1595,6 +1589,18 @@
         document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('play-pause-btn').disabled = true;
             getUrlParams();
+            
+            // MODIFICACIÓN: Iniciar el temporizador maestro de la API aquí
+            if (!window.youtubeApiTimeout) { 
+                window.youtubeApiTimeout = setTimeout(() => {
+                    if (!youtubeAPIReady) {
+                         console.error('Timeout: La API de YouTube no respondió en 15 segundos.');
+                         showError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
+                    }
+                }, 15000); // 15s de espera, más generoso
+            }
+            
+            // Cargar el JSON (esto llamará a tryInitializePlayer cuando termine)
             await loadQuestionsData();
             updateProgress();
         });
