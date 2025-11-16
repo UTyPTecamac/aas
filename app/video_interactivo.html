@@ -133,17 +133,27 @@
         }
 
         .feedback-icon {
-            font-size: 120px;
-            margin-bottom: 20px;
+            font-size: 200px;
+            margin-bottom: 30px;
             animation: iconPulse 0.8s ease-out;
+            text-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
         }
 
         .feedback-icon.correct {
             color: #28a745;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .feedback-icon.incorrect {
             color: #dc3545;
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .feedback-title {
@@ -210,15 +220,23 @@
 
         @keyframes iconPulse {
             0% {
-                transform: scale(0);
+                transform: scale(0) rotate(-180deg);
                 opacity: 0;
             }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
+            30% {
+                transform: scale(1.3) rotate(-90deg);
+                opacity: 0.7;
+            }
+            60% {
+                transform: scale(0.9) rotate(0deg);
+                opacity: 0.9;
+            }
+            80% {
+                transform: scale(1.1) rotate(0deg);
+                opacity: 1;
             }
             100% {
-                transform: scale(1);
+                transform: scale(1) rotate(0deg);
                 opacity: 1;
             }
         }
@@ -824,8 +842,8 @@
       </div><img id="question-image" class="question-image" style="display: none;" alt="Imagen de la pregunta">
       <div class="question-title" id="question-title"></div>
       <div class="options-container" id="options-container"></div>
-      <div class="question-actions">
-       <div></div><button class="submit-btn" id="submit-btn" disabled> <span class="material-icons">send</span> Responder </button>
+      <div class="question-actions"><button class="submit-btn" id="submit-btn" disabled> <span class="material-icons">send</span> Responder </button>
+       <div></div>
       </div>
      </div>
     </div><!-- Pantalla de Retroalimentación -->
@@ -856,11 +874,7 @@
       </div>
      </div>
     </div>
-    <div class="control-buttons"><button class="control-btn icon-only" id="speed-btn" title="Velocidad de reproducción"> <span class="material-icons">speed</span> </button> <button class="control-btn icon-only" id="audio-btn" title="Silenciar/Activar audio"> <span class="material-icons">volume_up</span> </button> <button class="control-btn icon-only" id="quality-btn" title="Calidad de video"> <span class="material-icons">high_quality</span> </button> <button class="control-btn icon-only" id="fullscreen-btn" title="Pantalla completa"> <span class="material-icons">fullscreen</span> </button> <!-- Menú de velocidad -->
-     <div class="dropdown-menu" id="speed-menu"><button class="dropdown-item" data-speed="0.5">0.5x</button> <button class="dropdown-item" data-speed="0.75">0.75x</button> <button class="dropdown-item active" data-speed="1">1x Normal</button> <button class="dropdown-item" data-speed="1.25">1.25x</button> <button class="dropdown-item" data-speed="1.5">1.5x</button> <button class="dropdown-item" data-speed="2">2x</button>
-     </div><!-- Menú de calidad -->
-     <div class="dropdown-menu" id="quality-menu"><button class="dropdown-item" data-quality="144p">144p</button> <button class="dropdown-item" data-quality="240p">240p</button> <button class="dropdown-item" data-quality="360p">360p</button> <button class="dropdown-item active" data-quality="480p">480p</button> <button class="dropdown-item" data-quality="720p">720p HD</button> <button class="dropdown-item" data-quality="1080p">1080p Full HD</button>
-     </div><button class="control-btn icon-only" id="restart-btn" title="Reiniciar video"> <span class="material-icons">replay</span> </button> <button class="control-btn icon-only" id="results-btn" title="Ver resultados"> <span class="material-icons">assessment</span> </button>
+    <div class="control-buttons"><button class="control-btn icon-only" id="audio-btn" title="Silenciar/Activar audio"> <span class="material-icons">volume_up</span> </button> <button class="control-btn icon-only" id="fullscreen-btn" title="Pantalla completa"> <span class="material-icons">fullscreen</span> </button> <button class="control-btn icon-only" id="restart-btn" title="Reiniciar video"> <span class="material-icons">replay</span> </button> <button class="control-btn icon-only" id="results-btn" title="Ver resultados"> <span class="material-icons">assessment</span> </button>
     </div>
    </div>
   </div>
@@ -1118,39 +1132,16 @@
             document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
             
             // Botones de control
-            document.getElementById('speed-btn').addEventListener('click', toggleSpeedMenu);
             document.getElementById('audio-btn').addEventListener('click', toggleAudio);
-            document.getElementById('quality-btn').addEventListener('click', toggleQualityMenu);
             document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
             document.getElementById('restart-btn').addEventListener('click', restartVideo);
             document.getElementById('results-btn').addEventListener('click', showResults);
-            
-            // Menús desplegables
-            document.querySelectorAll('#speed-menu .dropdown-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const speed = parseFloat(e.target.dataset.speed);
-                    setSpeed(speed, e.target);
-                });
-            });
-            
-            document.querySelectorAll('#quality-menu .dropdown-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const quality = e.target.dataset.quality;
-                    setQuality(quality, e.target);
-                });
-            });
             
             // Botones de pregunta y retroalimentación
             document.getElementById('submit-btn').addEventListener('click', submitAnswer);
             document.getElementById('continue-btn').addEventListener('click', continueVideo);
             
-            // Cerrar menús al hacer clic fuera
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('.control-btn')) {
-                    document.getElementById('speed-menu').style.display = 'none';
-                    document.getElementById('quality-menu').style.display = 'none';
-                }
-            });
+
         }
 
         // Inicialización
@@ -1682,60 +1673,7 @@
             }
         }
 
-        function toggleSpeedMenu() {
-            const menu = document.getElementById('speed-menu');
-            const isVisible = menu.style.display === 'block';
-            
-            // Cerrar otros menús
-            document.getElementById('quality-menu').style.display = 'none';
-            
-            menu.style.display = isVisible ? 'none' : 'block';
-        }
 
-        function toggleQualityMenu() {
-            const menu = document.getElementById('quality-menu');
-            const isVisible = menu.style.display === 'block';
-            
-            // Cerrar otros menús
-            document.getElementById('speed-menu').style.display = 'none';
-            
-            menu.style.display = isVisible ? 'none' : 'block';
-        }
-
-        function setSpeed(speed, element) {
-            if (!playerReady || !player) return;
-            
-            currentSpeed = speed;
-            player.setPlaybackRate(speed);
-            
-            // Actualizar indicador visual
-            document.querySelectorAll('#speed-menu .dropdown-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            element.classList.add('active');
-            
-            // Cerrar menú
-            document.getElementById('speed-menu').style.display = 'none';
-            
-            // Mostrar notificación
-            showNotification(`Velocidad: ${speed}x`);
-        }
-
-        function setQuality(quality, element) {
-            currentQuality = quality;
-            
-            // Actualizar indicador visual
-            document.querySelectorAll('#quality-menu .dropdown-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            element.classList.add('active');
-            
-            // Cerrar menú
-            document.getElementById('quality-menu').style.display = 'none';
-            
-            // Mostrar notificación
-            showNotification(`Calidad: ${quality}`);
-        }
 
         function toggleAudio() {
             if (!playerReady || !player) return;
@@ -1880,5 +1818,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f344144422cc82',t:'MTc2MzI1NzA3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f34ed4a6397a65',t:'MTc2MzI1NzUxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
