@@ -106,11 +106,11 @@
         .feedback-card {
             background: white;
             border-radius: 20px;
-            padding: 40px;
-            width: 80%;
-            height: 80%;
-            max-width: 800px;
-            max-height: 600px;
+            padding: 32px;
+            width: 90%;
+            height: auto;
+            max-width: 500px;
+            max-height: 70%;
             box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             border: none;
             animation: bounceIn 0.6s ease-out;
@@ -133,8 +133,8 @@
         }
 
         .feedback-icon {
-            font-size: 300px;
-            margin-bottom: 30px;
+            font-size: 120px;
+            margin-bottom: 20px;
             animation: iconPulse 0.8s ease-out;
             text-shadow: 0 8px 16px rgba(0,0,0,0.2);
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
@@ -157,18 +157,18 @@
         }
 
         .feedback-title {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: #2d3748;
         }
 
         .feedback-message {
-            font-size: 20px;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 24px;
             color: #4a5568;
-            max-width: 600px;
+            max-width: 400px;
         }
 
         .question-header {
@@ -405,9 +405,9 @@
 
         .continue-btn {
             background: #28a745;
-            font-size: 24px;
-            padding: 20px 40px;
-            border-radius: 16px;
+            font-size: 18px;
+            padding: 16px 32px;
+            border-radius: 12px;
         }
 
         .continue-btn:hover {
@@ -809,11 +809,21 @@
             }
 
             .feedback-title {
-                font-size: 28px;
+                font-size: 24px;
             }
 
             .feedback-message {
-                font-size: 18px;
+                font-size: 16px;
+            }
+
+            .feedback-icon {
+                font-size: 80px;
+                margin-bottom: 16px;
+            }
+
+            .feedback-card {
+                padding: 24px;
+                max-height: 80%;
             }
         }
     </style>
@@ -838,12 +848,13 @@
        <div class="question-info">
         <div class="question-counter" id="question-counter"><span class="material-icons">help_outline</span> Pregunta 1 de 5
         </div>
-       </div>
+       </div><button class="submit-btn" id="submit-btn" disabled> <span class="material-icons">send</span> Responder </button>
       </div><img id="question-image" class="question-image" style="display: none;" alt="Imagen de la pregunta">
       <div class="question-title" id="question-title"></div>
       <div class="options-container" id="options-container"></div>
       <div class="question-actions">
-       <div></div><button class="submit-btn" id="submit-btn" disabled> <span class="material-icons">send</span> Responder </button>
+       <div></div>
+       <div></div>
       </div>
      </div>
     </div><!-- Pantalla de Retroalimentación -->
@@ -1832,5 +1843,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f35c71b3947a65',t:'MTc2MzI1ODA3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f362a440677a65',t:'MTc2MzI1ODMyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
