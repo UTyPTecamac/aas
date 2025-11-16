@@ -1148,17 +1148,49 @@
             document.getElementById('restart-btn').addEventListener('click', restartVideo);
             document.getElementById('results-btn').addEventListener('click', showResults);
             
-            // Botones de pregunta y retroalimentación
-            document.getElementById('submit-btn').addEventListener('click', submitAnswer);
-            document.getElementById('continue-btn').addEventListener('click', continueVideo);
+            // Botones de pregunta y retroalimentación - verificar que existan
+            const submitBtn = document.getElementById('submit-btn');
+            const continueBtn = document.getElementById('continue-btn');
+            
+            if (submitBtn) {
+                submitBtn.addEventListener('click', submitAnswer);
+            }
+            if (continueBtn) {
+                continueBtn.addEventListener('click', continueVideo);
+            }
+            
+            console.log('Event listeners configurados correctamente');
         }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, iniciando aplicación...');
             getUrlParams();
             loadQuestionsData();
             updateProgress();
+            
+            // Configurar eventos básicos que no dependen del player
+            setupBasicEventListeners();
         });
+        
+        // Event listeners básicos que no dependen del reproductor
+        function setupBasicEventListeners() {
+            // Estos eventos se configuran inmediatamente
+            const restartBtn = document.getElementById('restart-btn');
+            const resultsBtn = document.getElementById('results-btn');
+            
+            if (restartBtn && !restartBtn.hasAttribute('data-listener')) {
+                restartBtn.addEventListener('click', restartVideo);
+                restartBtn.setAttribute('data-listener', 'true');
+            }
+            
+            if (resultsBtn && !resultsBtn.hasAttribute('data-listener')) {
+                resultsBtn.addEventListener('click', showResults);
+                resultsBtn.setAttribute('data-listener', 'true');
+            }
+            
+            console.log('Event listeners básicos configurados');
+        }
 
         // Función para cargar datos de preguntas
         async function loadQuestionsData() {
@@ -1569,6 +1601,11 @@
             const question = questionsData.questions[currentQuestionIndex];
             const isCorrect = selectedAnswer === question.correct_answer;
             
+            // Deshabilitar botón inmediatamente
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Procesando...';
+            
             // Reproducir sonido de retroalimentación
             try {
                 createAudioFeedback(isCorrect ? 'correct' : 'incorrect');
@@ -1843,5 +1880,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f362a440677a65',t:'MTc2MzI1ODMyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f367f953787a65',t:'MTc2MzI1ODU0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
