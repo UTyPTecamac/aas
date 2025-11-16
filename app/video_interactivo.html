@@ -1397,7 +1397,7 @@
                 return;
             }
             
-            console.log('PASO 3: Inicializando el reproductor de video HTML5...');
+            console.log('PASO 3: Inicializando el reproductor de video HTML5 con URL:', url); // LOG MEJORADO
             updateSplashLoading(true, 'Preparando Video...');
             
             // Asignar listeners ANTES de setear SRC
@@ -1487,6 +1487,7 @@
             showResults();
         }
         
+        // NUEVO: Este handler reemplaza a startVideoTimer y setInterval
         function onVideoTimeUpdate(event) {
             if (!videoReady || !videoElement) return;
             
@@ -1572,7 +1573,7 @@
                     
                     const response = await fetch(url, { 
                         signal: controller.signal, 
-                        cache: 'no-cache' 
+                        cache: 'no-cache' // Asegura que no use una versión en caché
                     });
                     
                     clearTimeout(timeoutId);
@@ -1599,6 +1600,7 @@
             updateSplashLoading(true, 'Cargando Preguntas...'); 
             
             let loadedData = null; // Variable para almacenar los datos cargados exitosamente
+            let jsonLoadError = null;
 
             if (jsonFile) {
                 try {
@@ -1616,10 +1618,8 @@
                 } catch (error) {
                     // Si falla el fetch (red/404) o la estructura (contenido), mostramos el error 
                     // pero continuamos usando la URL del video del parámetro si existe.
-                    console.error('FALLO al cargar/validar el JSON:', error.message);
-                    
-                    // Mostrar un error de advertencia para el usuario.
-                    showSplashError('Advertencia de Interacciones', `No se pudo cargar o validar el archivo de preguntas desde ${jsonFile}. Razón: ${error.message}.`);
+                    jsonLoadError = error.message;
+                    console.error('FALLO al cargar/validar el JSON:', jsonLoadError);
                     loadedData = null; // Asegura que se use el fallback de interacciones.
                 }
             }
@@ -1628,13 +1628,21 @@
             if (loadedData) {
                 interactionsData = loadedData;
             } else {
-                 console.warn('Usando datos de ejemplo internos para las preguntas.');
-                 // interactionsData ya está inicializado con datos de ejemplo
+                 if (jsonLoadError) {
+                    // Muestra el error en el splash, pero NO detiene la ejecución
+                    showSplashError('Advertencia de Interacciones', `No se pudo cargar el JSON. Razón: ${jsonLoadError}. Se usarán las preguntas de ejemplo.`);
+                 } else {
+                     console.warn('Usando datos de ejemplo internos para las preguntas.');
+                 }
             }
             
             // 2. Determinar la URL del video: 
             //    Prioridad 1: Parámetro URL (?video=...) -> ya está en videoUrl y videoUrlParamProvided = true.
             //    Prioridad 2: URL dentro del JSON/Fallback (solo si no se usó el parámetro URL)
+            //    CORRECCIÓN: La URL del JSON de fallback no debe usarse si se especifica un ?video=
+            
+            // Esta lógica es: si SÍ se proveyó un ?video=, ya tenemos el videoUrl.
+            // Si NO se proveyó, entonces usamos el video_url del JSON (cargado o de fallback).
             if (interactionsData.video_url && !videoUrlParamProvided) {
                 videoUrl = interactionsData.video_url;
             }
@@ -1647,7 +1655,7 @@
                 initializeVideoPlayer(videoUrl);
             } else {
                 // Esto solo debería pasar si no hay ?video= Y el JSON/fallback no tiene video_url
-                showSplashError('Error Crítico', 'No se ha especificado una URL de video.');
+                showSplashError('Error Crítico', 'No se ha especificado una URL de video. Agrega ?video=URL_DEL_VIDEO.mp4');
             }
         }
         
@@ -1866,7 +1874,7 @@
             });
         }
         
-        // --- LÓGICA CENTRAL DE INTERACCIÓN (Sin cambios) ---
+        // --- LÓGICA CENTRAL DE INTERACCIÓN (Sin cambios en las funciones) ---
 
         // 1. Dispatcher Principal: Decide qué mostrar
         function showInteraction(index) {
@@ -2346,10 +2354,12 @@
             videoElement.muted = isMuted; // MODIFICADO
             const audioBtn = document.getElementById('audio-btn');
             if (isMuted) {
+                // player.mute(); // MODIFICADO
                 audioBtn.innerHTML = '<span class="material-icons">volume_off</span>';
                 audioBtn.title = 'Activar audio';
                 showNotification('Audio silenciado');
             } else {
+                // player.unMute(); // MODIFICADO
                 audioBtn.innerHTML = '<span class="material-icons">volume_up</span>';
                 audioBtn.title = 'Silenciar audio';
                 showNotification('Audio activado');
@@ -2384,6 +2394,7 @@
             }, 2000);
         }
 
+        // MODIFICADO: showResults (sin cambios en su lógica interna)
         function showResults() {
             if (!questions || totalPossiblePoints === 0) {
                 showNotification("No hay actividades puntuables en este video.");
