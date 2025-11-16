@@ -8,13 +8,39 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
         /* MODIFICADO: Fondo transparente y altura completa */
-        body {
-            box-sizing: border-box;
+        html, body {
+            height: 100%; /* Usar 100% en lugar de vh para iframes */
             margin: 0;
-            padding: 0; /* Sin padding */
+            padding: 0;
             font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background: transparent; /* Fondo transparente */
-            min-height: 100vh; /* Ocupar altura del viewport */
+            overflow: hidden; /* Evitar scroll en el iframe */
+        }
+
+        /* MODIFICADO: Contenedor principal ahora usa flex para llenar el body */
+        .container {
+            width: 100%; 
+            height: 100%;
+            display: flex; 
+            flex-direction: column; 
+            background: transparent; 
+            border: none; 
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        /* MODIFICADO: .video-container ya no tiene flex: 1. Ahora solo define el aspect-ratio */
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: #000;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
         /* MODIFICADO: De "video-pause-overlay" a "video-state-overlay" */
@@ -34,7 +60,8 @@
             font-size: 100px; /* Icono grande */
             opacity: 0;
             transition: opacity 0.2s ease;
-            pointer-events: none; /* No debe ser clickeable */
+            /* MODIFICACIÓN: Quitado pointer-events: none y añadido cursor: pointer */
+            cursor: pointer;
         }
         
         .video-state-overlay.visible {
@@ -1496,6 +1523,12 @@
             const blocker = document.querySelector('.video-overlay-blocker');
             if (blocker) {
                 blocker.addEventListener('click', togglePlayPause);
+            }
+            
+            // NUEVO: Hacer que el overlay de ESTADO (botón play grande) también active play/pause
+            const stateOverlay = document.getElementById('video-state-overlay');
+            if (stateOverlay) {
+                stateOverlay.addEventListener('click', togglePlayPause);
             }
             
             document.getElementById('audio-btn').addEventListener('click', toggleAudio);
