@@ -3,8 +3,8 @@
   "questions": [
     {
       "id": 1,
-      "time": 15,
-      "question": "¿Cuál es el tema principal que se presenta al inicio del video?",
+      "time": 30,
+      "question": "¿Cuál es el tema principal que se presenta al inicio del video? xxxx",
       "image": null,
       "options": [
         "Introducción a la programación",
