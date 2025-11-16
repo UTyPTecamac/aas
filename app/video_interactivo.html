@@ -708,9 +708,15 @@
             if (!playerReady || !player) return;
             
             const question = questionsData.questions[questionIndex];
-            player.seekTo(question.time, true);
-            pauseVideo();
-            showQuestion(questionIndex);
+            // Ir unos segundos antes para que la pregunta aparezca naturalmente
+            const seekTime = Math.max(0, question.time - 2);
+            player.seekTo(seekTime, true);
+            
+            // Resetear el estado de la pregunta para que pueda aparecer de nuevo
+            question.shown = false;
+            
+            // Reproducir el video para que llegue al momento de la pregunta
+            playVideo();
         }
 
         function togglePlayPause() {
@@ -743,21 +749,27 @@
             if (videoTimer) clearInterval(videoTimer);
             
             videoTimer = setInterval(() => {
-                if (!isPlaying || !questionsEnabled || !playerReady || !player) return;
+                if (!playerReady || !player) return;
                 
-                // Obtener tiempo actual del reproductor de YouTube
-                currentVideoTime = Math.floor(player.getCurrentTime());
-                updateTimelineProgress();
-                
-                // Buscar preguntas que deben mostrarse en este momento
-                questionsData.questions.forEach((question, index) => {
-                    if (question.time === currentVideoTime && !question.shown) {
-                        question.shown = true;
-                        pauseVideo(); // Pausar el video cuando aparece una pregunta
-                        showQuestion(index);
-                    }
-                });
-            }, 1000);
+                // Obtener tiempo actual del reproductor de YouTube SOLO si está reproduciendo
+                if (isPlaying) {
+                    currentVideoTime = Math.floor(player.getCurrentTime());
+                    updateTimelineProgress();
+                    
+                    // Buscar preguntas que deben mostrarse en este momento exacto
+                    questionsData.questions.forEach((question, index) => {
+                        if (Math.abs(question.time - currentVideoTime) <= 1 && !question.shown && isPlaying) {
+                            question.shown = true;
+                            pauseVideo(); // Pausar el video cuando aparece una pregunta
+                            showQuestion(index);
+                        }
+                    });
+                } else {
+                    // Si el video está pausado, solo actualizar la línea de tiempo sin avanzar preguntas
+                    currentVideoTime = Math.floor(player.getCurrentTime());
+                    updateTimelineProgress();
+                }
+            }, 500); // Verificar cada 500ms para mayor precisión
         }
 
         function updateTimelineProgress() {
@@ -881,7 +893,9 @@
             if (!playerReady || !player) return;
             
             // Resetear todas las preguntas
-            questionsData.questions.forEach(q => q.shown = false);
+            questionsData.questions.forEach(q => {
+                q.shown = false;
+            });
             questionsAnswered = 0;
             correctAnswers = 0;
             currentQuestionIndex = 0;
@@ -890,6 +904,8 @@
             // Pausar y reiniciar video
             player.seekTo(0, true);
             player.pauseVideo();
+            isPlaying = false;
+            document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
             
             // Ocultar overlay
             document.getElementById('question-overlay').style.display = 'none';
@@ -900,7 +916,9 @@
             });
             
             // Resetear línea de tiempo
-            updateTimelineProgress();
+            setTimeout(() => {
+                updateTimelineProgress();
+            }, 100);
             
             // Actualizar progreso
             updateProgress();
@@ -1123,5 +1141,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f3099041e62fde',t:'MTc2MzI1NDY3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f30fa682c42fde',t:'MTc2MzI1NDkyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
