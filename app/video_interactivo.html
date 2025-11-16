@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Interactivo H5P</title>
   <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
         body {
@@ -503,7 +504,7 @@
    <div class="progress-bar">
     <div class="progress-fill" id="progress-fill"></div>
    </div>
-   <div class="video-container"><iframe id="video-player" class="video-player" src="https://www.youtube.com/embed/jCcZfY04at4?enablejsapi=1&amp;controls=1&amp;rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+   <div class="video-container"><iframe id="video-player" class="video-player" src="https://www.youtube.com/embed/jCcZfY04at4?enablejsapi=1&amp;controls=0&amp;rel=0&amp;autoplay=0&amp;mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
     <div class="question-overlay" id="question-overlay">
      <div class="question-card"><img id="question-image" class="question-image" style="display: none;" alt="Imagen de la pregunta">
       <div class="question-title" id="question-title"></div>
@@ -643,14 +644,50 @@
         let currentSpeed = 1;
         let currentQuality = '480p';
         let isMuted = false;
+        let player = null;
+        let playerReady = false;
+
+        // Función requerida por YouTube API
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('video-player', {
+                height: '100%',
+                width: '100%',
+                videoId: 'jCcZfY04at4',
+                playerVars: {
+                    'controls': 0,
+                    'rel': 0,
+                    'autoplay': 0,
+                    'mute': 0,
+                    'enablejsapi': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            playerReady = true;
+            console.log('Player ready');
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
+                startVideoTimer();
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+                pauseVideo();
+            }
+        }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             updateProgress();
             createInteractiveMarkers();
-            
-            // Simular el tiempo del video para las preguntas
-            startVideoTimer();
         });
 
         function createInteractiveMarkers() {
@@ -668,32 +705,34 @@
         }
 
         function jumpToQuestion(questionIndex) {
+            if (!playerReady || !player) return;
+            
             const question = questionsData.questions[questionIndex];
-            currentVideoTime = question.time;
+            player.seekTo(question.time, true);
             pauseVideo();
             showQuestion(questionIndex);
         }
 
         function togglePlayPause() {
-            const btn = document.getElementById('play-pause-btn');
+            if (!playerReady || !player) return;
+            
             if (isPlaying) {
-                pauseVideo();
-                btn.innerHTML = '<span class="material-icons">play_arrow</span>';
+                player.pauseVideo();
             } else {
-                playVideo();
-                btn.innerHTML = '<span class="material-icons">pause</span>';
+                player.playVideo();
             }
         }
 
         function playVideo() {
-            isPlaying = true;
-            if (!videoTimer) {
-                startVideoTimer();
+            if (playerReady && player) {
+                player.playVideo();
             }
         }
 
         function pauseVideo() {
-            isPlaying = false;
+            if (playerReady && player) {
+                player.pauseVideo();
+            }
             if (videoTimer) {
                 clearInterval(videoTimer);
                 videoTimer = null;
@@ -704,9 +743,10 @@
             if (videoTimer) clearInterval(videoTimer);
             
             videoTimer = setInterval(() => {
-                if (!isPlaying || !questionsEnabled) return;
+                if (!isPlaying || !questionsEnabled || !playerReady || !player) return;
                 
-                currentVideoTime++;
+                // Obtener tiempo actual del reproductor de YouTube
+                currentVideoTime = Math.floor(player.getCurrentTime());
                 updateTimelineProgress();
                 
                 // Buscar preguntas que deben mostrarse en este momento
@@ -714,7 +754,6 @@
                     if (question.time === currentVideoTime && !question.shown) {
                         question.shown = true;
                         pauseVideo(); // Pausar el video cuando aparece una pregunta
-                        document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                         showQuestion(index);
                     }
                 });
@@ -722,7 +761,9 @@
         }
 
         function updateTimelineProgress() {
-            const videoDuration = 180; // Duración estimada del video en segundos
+            if (!playerReady || !player) return;
+            
+            const videoDuration = player.getDuration() || 180;
             const progress = (currentVideoTime / videoDuration) * 100;
             const timelineProgress = document.getElementById('timeline-progress');
             if (timelineProgress) {
@@ -837,6 +878,8 @@
         }
 
         function restartVideo() {
+            if (!playerReady || !player) return;
+            
             // Resetear todas las preguntas
             questionsData.questions.forEach(q => q.shown = false);
             questionsAnswered = 0;
@@ -844,9 +887,9 @@
             currentQuestionIndex = 0;
             currentVideoTime = 0;
             
-            // Pausar video
-            pauseVideo();
-            document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+            // Pausar y reiniciar video
+            player.seekTo(0, true);
+            player.pauseVideo();
             
             // Ocultar overlay
             document.getElementById('question-overlay').style.display = 'none';
@@ -862,9 +905,7 @@
             // Actualizar progreso
             updateProgress();
             
-            // Recargar iframe del video
-            const iframe = document.getElementById('video-player');
-            iframe.src = iframe.src;
+            showNotification('Video reiniciado');
         }
 
 
@@ -890,7 +931,10 @@
         }
 
         function setSpeed(speed) {
+            if (!playerReady || !player) return;
+            
             currentSpeed = speed;
+            player.setPlaybackRate(speed);
             
             // Actualizar indicador visual
             document.querySelectorAll('#speed-menu .dropdown-item').forEach(item => {
@@ -922,14 +966,18 @@
         }
 
         function toggleAudio() {
+            if (!playerReady || !player) return;
+            
             isMuted = !isMuted;
             const audioBtn = document.getElementById('audio-btn');
             
             if (isMuted) {
+                player.mute();
                 audioBtn.innerHTML = '<span class="material-icons">volume_off</span>';
                 audioBtn.title = 'Activar audio';
                 showNotification('Audio silenciado');
             } else {
+                player.unMute();
                 audioBtn.innerHTML = '<span class="material-icons">volume_up</span>';
                 audioBtn.title = 'Silenciar audio';
                 showNotification('Audio activado');
@@ -1075,5 +1123,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f3023c86322fde',t:'MTc2MzI1NDM3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f3099041e62fde',t:'MTc2MzI1NDY3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
