@@ -1067,13 +1067,27 @@
 
         function onPlayerReady(event) {
             playerReady = true;
-            videoDuration = player.getDuration();
-            console.log('Player ready, duration:', videoDuration);
-            updateTimeDisplay();
+            console.log('Player ready');
+            
+            // Obtener duración del video
+            setTimeout(() => {
+                try {
+                    videoDuration = player.getDuration();
+                    console.log('Video duration:', videoDuration);
+                    updateTimeDisplay();
+                    createInteractiveMarkers();
+                } catch (error) {
+                    console.log('Duration not available yet, will retry');
+                    videoDuration = 180; // Duración por defecto
+                }
+            }, 1000);
+            
             setupEventListeners();
         }
 
         function onPlayerStateChange(event) {
+            console.log('Player state changed:', event.data);
+            
             if (event.data == YT.PlayerState.PLAYING) {
                 isPlaying = true;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
@@ -1092,6 +1106,9 @@
                     clearInterval(videoTimer);
                     videoTimer = null;
                 }
+            } else if (event.data == YT.PlayerState.CUED || event.data == -1) {
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
             }
         }
 
@@ -1160,10 +1177,7 @@
                 }
             }
             
-            // Crear marcadores después de cargar los datos
-            setTimeout(() => {
-                createInteractiveMarkers();
-            }, 1000);
+            console.log('Questions data loaded:', questionsData);
         }
 
         function createInteractiveMarkers() {
@@ -1332,9 +1346,15 @@
             }
             
             try {
-                if (isPlaying) {
+                const playerState = player.getPlayerState();
+                console.log('Current player state:', playerState);
+                
+                if (playerState === YT.PlayerState.PLAYING) {
                     player.pauseVideo();
-                } else {
+                } else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.CUED || playerState === -1) {
+                    player.playVideo();
+                } else if (playerState === YT.PlayerState.ENDED) {
+                    player.seekTo(0);
                     player.playVideo();
                 }
             } catch (error) {
@@ -1860,5 +1880,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f33dcef07f2b3d',t:'MTc2MzI1NjgxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f344144422cc82',t:'MTc2MzI1NzA3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
