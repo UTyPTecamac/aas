@@ -1153,6 +1153,11 @@
         // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
+            // MODIFICACIÓN: Si el timeout se estaba ejecutando, limpiarlo.
+            if (window.youtubeApiTimeout) {
+                clearTimeout(window.youtubeApiTimeout);
+                window.youtubeApiTimeout = null;
+            }
             tryInitializePlayer();
         }
         
@@ -1170,8 +1175,26 @@
             
             // PASO 2: Verificar que la API de YouTube esté lista
             if (!youtubeAPIReady) {
-                // console.log('Esperando API de YouTube...');
+                // MODIFICACIÓN: Si el JSON está listo, pero la API no, es la API la que está
+                // atascada. Establecer un temporizador para re-verificar.
+                console.log('JSON listo, esperando API de YouTube...');
+                
+                // Iniciar un temporizador de 10s para la API
+                if (!window.youtubeApiTimeout) { // Evitar múltiples timeouts
+                    window.youtubeApiTimeout = setTimeout(() => {
+                        if (!youtubeAPIReady) {
+                             console.error('Timeout: La API de YouTube no respondió.');
+                             showError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
+                        }
+                    }, 10000); // 10s de espera
+                }
                 return;
+            }
+
+            // MODIFICACIÓN: Si la API está lista, limpiar cualquier timeout
+            if (window.youtubeApiTimeout) {
+                clearTimeout(window.youtubeApiTimeout);
+                window.youtubeApiTimeout = null;
             }
             
             // PASO 3: Verificar que tengamos un videoId
@@ -1198,7 +1221,8 @@
                     },
                     events: {
                         'onReady': onPlayerReady,
-                        'onStateChange': onPlayerStateChange
+                        'onStateChange': onPlayerStateChange,
+                        'onError': onPlayerError // <-- MODIFICACIÓN: Añadir manejador de errores
                     }
                 });
                 
@@ -1230,6 +1254,20 @@
             }, 1000);
             
             setupEventListeners();
+        }
+
+        // NUEVA FUNCIÓN: Manejador de errores del reproductor
+        function onPlayerError(event) {
+            console.error('Error del reproductor de YouTube:', event.data);
+            // El error '150' y '101' a menudo significa que el propietario del video no permite la reproducción en embeds.
+            // El error '2' significa ID de video inválido.
+            let subtext = 'No se pudo cargar el video.';
+            if (event.data === 150 || event.data === 101) {
+                subtext = 'El propietario de este video no permite su reproducción en este sitio.';
+            } else if (event.data === 2) {
+                subtext = 'El ID del video no es válido.';
+            }
+            showError('Error del Video', subtext);
         }
 
         function onPlayerStateChange(event) {
