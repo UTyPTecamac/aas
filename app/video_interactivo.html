@@ -1105,70 +1105,98 @@
             }
         }
 
-        // Variable para controlar si la API está lista
+        // Variables de control del flujo de inicialización
         let youtubeAPIReady = false;
         let jsonDataLoaded = false;
         let playerInitialized = false;
+        let initializationInProgress = false;
 
         // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
-            console.log('YouTube API está lista');
-            initializePlayerIfReady();
+            console.log('✅ YouTube API está lista');
+            // NO inicializar aquí, esperar a que el JSON se cargue primero
+            tryInitializePlayer();
         }
         
-        // Función para inicializar el player cuando todo esté listo
-        function initializePlayerIfReady() {
-            // Solo inicializar si la API está lista, el JSON está cargado (o no hay JSON), y aún no se ha inicializado
-            if (youtubeAPIReady && (jsonDataLoaded || !jsonFile) && !playerInitialized && videoId) {
-                console.log('Inicializando player con videoId:', videoId);
+        // Función para intentar inicializar el player (solo cuando JSON esté cargado)
+        function tryInitializePlayer() {
+            // Evitar múltiples intentos simultáneos
+            if (initializationInProgress || playerInitialized) {
+                return;
+            }
+            
+            // PASO 1: Verificar que el JSON esté cargado (si hay uno especificado)
+            if (jsonFile && !jsonDataLoaded) {
+                console.log('⏳ Esperando carga de JSON antes de inicializar el video...');
+                return;
+            }
+            
+            // PASO 2: Verificar que la API de YouTube esté lista
+            if (!youtubeAPIReady) {
+                console.log('⏳ Esperando YouTube API antes de inicializar el video...');
+                return;
+            }
+            
+            // PASO 3: Verificar que tengamos un videoId
+            if (!videoId) {
+                console.warn('⚠️ No hay videoId disponible');
+                return;
+            }
+            
+            // PASO 4: Inicializar el player
+            console.log('🚀 Inicializando player con videoId:', videoId);
+            initializationInProgress = true;
+            
+            try {
+                player = new YT.Player('video-player', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: videoId,
+                    playerVars: {
+                        'controls': 0,
+                        'rel': 0,
+                        'autoplay': 0,
+                        'mute': 0,
+                        'enablejsapi': 1
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
                 
-                try {
-                    player = new YT.Player('video-player', {
-                        height: '100%',
-                        width: '100%',
-                        videoId: videoId,
-                        playerVars: {
-                            'controls': 0,
-                            'rel': 0,
-                            'autoplay': 0,
-                            'mute': 0,
-                            'enablejsapi': 1
-                        },
-                        events: {
-                            'onReady': onPlayerReady,
-                            'onStateChange': onPlayerStateChange
-                        }
-                    });
-                    
-                    playerInitialized = true;
-                    console.log('Player inicializado correctamente');
-                } catch (error) {
-                    console.error('Error al inicializar el player:', error);
-                }
-            } else {
-                if (!youtubeAPIReady) console.log('Esperando YouTube API...');
-                if (!jsonDataLoaded && jsonFile) console.log('Esperando carga de JSON...');
-                if (playerInitialized) console.log('Player ya inicializado');
-                if (!videoId) console.warn('No hay videoId disponible');
+                playerInitialized = true;
+                initializationInProgress = false;
+                console.log('✅ Player inicializado correctamente');
+            } catch (error) {
+                console.error('❌ Error al inicializar el player:', error);
+                initializationInProgress = false;
             }
         }
 
         function onPlayerReady(event) {
             playerReady = true;
-            console.log('Player ready - videoId:', videoId);
+            console.log('✅ PASO 2 COMPLETADO: Player ready - videoId:', videoId);
             
             // Obtener duración del video
             setTimeout(() => {
                 try {
                     videoDuration = player.getDuration();
-                    console.log('Video duration:', videoDuration);
+                    console.log('⏱️ Video duration:', videoDuration, 'segundos');
                     updateTimeDisplay();
+                    
+                    // PASO 3: Crear marcadores de interactividad ahora que el video está listo
+                    console.log('📥 PASO 3: Creando marcadores de interactividad...');
                     createInteractiveMarkers();
+                    console.log('✅ PASO 3 COMPLETADO: Marcadores creados');
                 } catch (error) {
-                    console.log('Duration not available yet, will retry');
+                    console.log('⚠️ Duration not available yet, will retry');
                     videoDuration = 180; // Duración por defecto
-                    createInteractiveMarkers(); // Crear marcadores con duración por defecto
+                    // Crear marcadores con duración por defecto
+                    console.log('📥 PASO 3: Creando marcadores con duración estimada...');
+                    createInteractiveMarkers();
+                    console.log('✅ PASO 3 COMPLETADO: Marcadores creados (duración estimada)');
                 }
             }, 1000);
             
@@ -1229,25 +1257,30 @@
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('DOM cargado, iniciando aplicación...');
+            console.log('🚀 ===== INICIANDO APLICACIÓN =====');
+            console.log('📋 DOM cargado');
             
-            // 1. Obtener parámetros de URL primero
+            // PASO 0: Obtener parámetros de URL primero
             getUrlParams();
-            console.log('Parámetros de URL procesados. videoId:', videoId, 'jsonFile:', jsonFile);
+            console.log('📋 Parámetros de URL procesados:');
+            console.log('   - videoId:', videoId);
+            console.log('   - jsonFile:', jsonFile || 'ninguno (usando datos por defecto)');
             
-            // 2. Cargar datos de preguntas (esto marcará jsonDataLoaded como true)
+            // PASO 1: Cargar datos de preguntas PRIMERO (esto es crítico)
+            // Esta función marcará jsonDataLoaded como true y luego llamará a tryInitializePlayer()
             await loadQuestionsData();
             
-            // 3. Si la API de YouTube ya está lista, inicializar el player
-            // (si no, se inicializará cuando onYouTubeIframeAPIReady se ejecute)
-            if (youtubeAPIReady) {
-                initializePlayerIfReady();
-            }
+            // NOTA: El video se inicializará automáticamente cuando:
+            // - El JSON esté cargado (ya hecho arriba)
+            // - La API de YouTube esté lista (onYouTubeIframeAPIReady)
+            // La función tryInitializePlayer() se llama desde loadQuestionsData() y onYouTubeIframeAPIReady()
             
             updateProgress();
             
             // Configurar eventos básicos que no dependen del player
             setupBasicEventListeners();
+            
+            console.log('⏳ Esperando inicialización del video...');
         });
         
         // Event listeners básicos que no dependen del reproductor
@@ -1271,20 +1304,22 @@
 
         // Función para cargar datos de preguntas
         async function loadQuestionsData() {
+            console.log('📥 PASO 1: Cargando datos de preguntas...');
+            
             if (jsonFile) {
                 try {
-                    console.log('Cargando JSON desde:', jsonFile);
+                    console.log('📡 Cargando JSON desde:', jsonFile);
                     const response = await fetch(jsonFile);
                     if (response.ok) {
                         const data = await response.json();
-                        console.log('JSON recibido:', data);
+                        console.log('✅ JSON recibido:', data);
                         
                         // Actualizar video_id si viene en el JSON (tiene prioridad sobre parámetro URL)
                         if (data.video_id) {
                             const extractedId = extractYouTubeId(data.video_id);
                             if (extractedId) {
                                 videoId = extractedId;
-                                console.log('Video ID actualizado desde JSON:', videoId);
+                                console.log('🎬 Video ID actualizado desde JSON:', videoId);
                             }
                         }
                         
@@ -1292,44 +1327,64 @@
                         if (data.questions && Array.isArray(data.questions)) {
                             questionsData.questions = data.questions;
                             questionsData.video_id = videoId;
-                            console.log('Preguntas cargadas desde JSON:', data.questions.length);
+                            console.log(`✅ ${data.questions.length} preguntas cargadas desde JSON`);
                         } else {
                             Object.assign(questionsData, data);
+                            console.log('✅ Datos del JSON asignados');
                         }
                         
-                        console.log('JSON cargado exitosamente desde:', jsonFile);
+                        console.log('✅ JSON cargado exitosamente desde:', jsonFile);
                     } else {
-                        console.warn('No se pudo cargar el JSON (status:', response.status, '), usando datos por defecto');
+                        console.warn('⚠️ No se pudo cargar el JSON (status:', response.status, '), usando datos por defecto');
                     }
                 } catch (error) {
-                    console.error('Error cargando JSON:', error);
-                    console.warn('Usando datos por defecto');
+                    console.error('❌ Error cargando JSON:', error);
+                    console.warn('⚠️ Usando datos por defecto');
                 }
             } else {
-                console.log('No hay URL JSON especificada, usando datos por defecto');
+                console.log('ℹ️ No hay URL JSON especificada, usando datos por defecto');
             }
             
+            // Marcar JSON como cargado (incluso si no había JSON, usamos datos por defecto)
             jsonDataLoaded = true;
-            console.log('Questions data loaded:', questionsData);
+            console.log('✅ PASO 1 COMPLETADO: Questions data loaded. Total preguntas:', questionsData.questions.length);
+            console.log('📊 Datos cargados:', questionsData);
             
-            // Intentar inicializar el player si la API ya está lista
-            initializePlayerIfReady();
+            // PASO 2: Ahora que el JSON está cargado, intentar inicializar el video
+            console.log('📥 PASO 2: Intentando inicializar el video...');
+            tryInitializePlayer();
         }
 
         function createInteractiveMarkers() {
             const markersContainer = document.getElementById('markers-container');
             
+            if (!markersContainer) {
+                console.error('❌ No se encontró el contenedor de marcadores');
+                return;
+            }
+            
+            // Verificar que tenemos preguntas
+            if (!questionsData.questions || questionsData.questions.length === 0) {
+                console.warn('⚠️ No hay preguntas disponibles para crear marcadores');
+                return;
+            }
+            
+            console.log(`📍 Creando ${questionsData.questions.length} marcadores de interactividad...`);
+            
             // Limpiar solo los marcadores, mantener timeline-progress, handle y tooltip
             const existingMarkers = markersContainer.querySelectorAll('.marker');
             existingMarkers.forEach(marker => marker.remove());
+            console.log(`🧹 ${existingMarkers.length} marcadores anteriores eliminados`);
             
             // Usar duración real del video si está disponible, sino estimar
             const duration = videoDuration || 180;
+            console.log(`⏱️ Duración del video: ${duration} segundos`);
             
             questionsData.questions.forEach((question, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'marker';
-                marker.style.left = `${(question.time / duration) * 100}%`;
+                const positionPercent = (question.time / duration) * 100;
+                marker.style.left = `${positionPercent}%`;
                 marker.dataset.questionIndex = index;
                 marker.dataset.time = question.time;
                 marker.addEventListener('click', () => jumpToQuestion(index));
@@ -1341,9 +1396,12 @@
                 marker.appendChild(tooltip);
                 
                 markersContainer.appendChild(marker);
+                console.log(`   ✓ Marcador ${index + 1} creado en ${formatTime(question.time)} (${positionPercent.toFixed(1)}%)`);
             });
             
-            // Configurar eventos del slider
+            console.log(`✅ ${questionsData.questions.length} marcadores creados exitosamente`);
+            
+            // Configurar eventos del slider (solo una vez)
             setupTimelineSlider();
         }
 
