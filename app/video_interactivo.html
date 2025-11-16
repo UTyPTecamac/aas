@@ -191,6 +191,18 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
+
+        /* NUEVO: Estilo para spinner de error */
+        .loading-spinner.error {
+            border-top-color: #dc3545;
+            animation: none; /* Detener giro */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc3545;
+            font-size: 40px;
+            font-weight: bold;
+        }
         
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -202,6 +214,11 @@
             color: #2d3748;
             font-weight: 600;
             margin-bottom: 10px;
+        }
+
+        /* NUEVO: Estilo para texto de error */
+        .loading-text.error {
+            color: #dc3545;
         }
         
         .loading-subtext {
@@ -953,7 +970,7 @@
   <!-- Overlay de carga -->
   <div class="loading-overlay" id="loading-overlay">
    <div class="loading-content">
-    <div class="loading-spinner"></div>
+    <div class="loading-spinner" id="loading-spinner"></div>
     <div class="loading-text" id="loading-text">Cargando contenido...</div>
     <div class="loading-subtext" id="loading-subtext">Por favor espera</div>
    </div>
@@ -964,14 +981,15 @@
             video_description: "Responde las preguntas que aparecen durante el video"
         };
 
-        // Datos JSON de las preguntas
-        const questionsData = {
+        // Datos JSON de las preguntas (Fallback)
+        // ESTOS DATOS SÓLO SE USARÁN SI NO SE PROVEE UN JSON EXTERNO
+        let questionsData = {
             "video_id": "jCcZfY04at4",
             "questions": [
                 {
                     "id": 1,
                     "time": 15,
-                    "question": "¿Cuál es el tema principal que se presenta al inicio del video?",
+                    "question": "(EJEMPLO) ¿Cuál es el tema principal que se presenta al inicio del video?",
                     "image": null,
                     "options": [
                         "Introducción a la programación",
@@ -988,7 +1006,7 @@
                 {
                     "id": 2,
                     "time": 45,
-                    "question": "Según el video, ¿qué es lo más importante al aprender a programar?",
+                    "question": "(EJEMPLO) Según el video, ¿qué es lo más importante al aprender a programar?",
                     "image": null,
                     "options": [
                         "Memorizar sintaxis",
@@ -1000,57 +1018,6 @@
                     "feedback": {
                         "correct": "¡Excelente! La lógica es fundamental en la programación.",
                         "incorrect": "No es correcto. Lo más importante es desarrollar el pensamiento lógico."
-                    }
-                },
-                {
-                    "id": 3,
-                    "time": 75,
-                    "question": "¿Cuál de estos lenguajes se menciona como ideal para principiantes?",
-                    "image": null,
-                    "options": [
-                        "C++",
-                        "JavaScript",
-                        "Python",
-                        "Assembly"
-                    ],
-                    "correct_answer": 2,
-                    "feedback": {
-                        "correct": "¡Correcto! Python es conocido por su sintaxis clara y fácil aprendizaje.",
-                        "incorrect": "Incorrecto. Python es el lenguaje recomendado para principiantes por su simplicidad."
-                    }
-                },
-                {
-                    "id": 4,
-                    "time": 105,
-                    "question": "¿Qué concepto se explica como fundamental para resolver problemas?",
-                    "image": null,
-                    "options": [
-                        "Variables",
-                        "Funciones",
-                        "Algoritmos",
-                        "Bucles"
-                    ],
-                    "correct_answer": 2,
-                    "feedback": {
-                        "correct": "¡Perfecto! Los algoritmos son la base para resolver cualquier problema de programación.",
-                        "incorrect": "No es la respuesta correcta. Los algoritmos son el concepto clave para resolver problemas."
-                    }
-                },
-                {
-                    "id": 5,
-                    "time": 135,
-                    "question": "¿Cuál es la recomendación final del video para los nuevos programadores?",
-                    "image": null,
-                    "options": [
-                        "Estudiar teoría únicamente",
-                        "Practicar constantemente",
-                        "Especializarse inmediatamente",
-                        "Evitar los errores"
-                    ],
-                    "correct_answer": 1,
-                    "feedback": {
-                        "correct": "¡Excelente! La práctica constante es clave para dominar la programación.",
-                        "incorrect": "Incorrecto. El video enfatiza la importancia de la práctica continua."
                     }
                 }
             ]
@@ -1076,7 +1043,7 @@
         
         // Configuración del video desde URL
         let videoId = 'jCcZfY04at4'; // Por defecto
-        let jsonFile = null; // Se cargará desde URL o por defecto
+        let jsonFile = null; // Se cargará desde URL
 
         // Función para crear sonidos de retroalimentación
         function createAudioFeedback(type) {
@@ -1150,9 +1117,6 @@
 
         // Función para obtener parámetros de URL
         // Uso: video_interactivo.html?video=VIDEO_ID_OR_URL&json=URL_JSON
-        // Ejemplo: video_interactivo.html?video=jCcZfY04at4&json=https://ejemplo.com/preguntas.json
-        // El parámetro 'video' puede ser un ID de YouTube o una URL completa
-        // El parámetro 'json' debe ser la URL completa al archivo JSON con las preguntas
         function getUrlParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const videoParam = urlParams.get('video');
@@ -1181,30 +1145,31 @@
         // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
-            // NO inicializar aquí, esperar a que el JSON se cargue primero
             tryInitializePlayer();
         }
         
-        // Función para intentar inicializar el player (solo cuando JSON esté cargado)
+        // Función para intentar inicializar el player
         function tryInitializePlayer() {
-            // Evitar múltiples intentos simultáneos
             if (initializationInProgress || playerInitialized) {
                 return;
             }
             
-            // PASO 1: Verificar que el JSON esté cargado (si hay uno especificado)
-            if (jsonFile && !jsonDataLoaded) {
+            // PASO 1: Verificar que el JSON/Datos estén listos
+            if (!jsonDataLoaded) {
+                 // console.log('Esperando JSON...');
                 return;
             }
             
             // PASO 2: Verificar que la API de YouTube esté lista
             if (!youtubeAPIReady) {
+                // console.log('Esperando API de YouTube...');
                 return;
             }
             
             // PASO 3: Verificar que tengamos un videoId
             if (!videoId) {
                 console.warn('No hay videoId disponible');
+                showError('Error Crítico', 'No se ha especificado un ID de video válido.');
                 return;
             }
             
@@ -1233,6 +1198,7 @@
                 initializationInProgress = false;
             } catch (error) {
                 console.error('Error al inicializar el player:', error);
+                showError('Error de Player', 'No se pudo iniciar el reproductor de YouTube.');
                 initializationInProgress = false;
             }
         }
@@ -1240,13 +1206,13 @@
         function onPlayerReady(event) {
             playerReady = true;
             
-            // Obtener duración del video
             setTimeout(() => {
                 try {
                     videoDuration = player.getDuration();
                     updateTimeDisplay();
                     createInteractiveMarkers();
                 } catch (error) {
+                    console.warn('No se pudo obtener la duración, usando 180s por defecto.', error);
                     videoDuration = 180; // Duración por defecto
                     createInteractiveMarkers();
                 }
@@ -1285,56 +1251,37 @@
 
         // Configurar event listeners
         function setupEventListeners() {
-            // Botón play/pause
             document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
-            
-            // Botones de control
             document.getElementById('audio-btn').addEventListener('click', toggleAudio);
             document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
             document.getElementById('restart-btn').addEventListener('click', restartVideo);
             document.getElementById('results-btn').addEventListener('click', showResults);
             
-            // Botones de pregunta y retroalimentación - verificar que existan
             const submitBtn = document.getElementById('submit-btn');
             const continueBtn = document.getElementById('continue-btn');
             
-            if (submitBtn) {
-                submitBtn.addEventListener('click', submitAnswer);
-            }
-            if (continueBtn) {
-                continueBtn.addEventListener('click', continueVideo);
-            }
+            if (submitBtn) submitBtn.addEventListener('click', submitAnswer);
+            if (continueBtn) continueBtn.addEventListener('click', continueVideo);
         }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
-            // Deshabilitar botón play al inicio
             const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn) {
-                playBtn.disabled = true;
-            }
+            if (playBtn) playBtn.disabled = true;
             
-            // PASO 0: Obtener parámetros de URL primero
             getUrlParams();
             
-            // PASO 1: Cargar datos de preguntas PRIMERO (esto es crítico)
-            // Esta función marcará jsonDataLoaded como true y luego llamará a tryInitializePlayer()
+            // Cargar datos (externos o por defecto)
             await loadQuestionsData();
             
-            // NOTA: El video se inicializará automáticamente cuando:
-            // - El JSON esté cargado (ya hecho arriba)
-            // - La API de YouTube esté lista (onYouTubeIframeAPIReady)
-            // La función tryInitializePlayer() se llama desde loadQuestionsData() y onYouTubeIframeAPIReady()
+            // tryInitializePlayer() es llamado desde loadQuestionsData() y onYouTubeIframeAPIReady()
             
             updateProgress();
-            
-            // Configurar eventos básicos que no dependen del player
             setupBasicEventListeners();
         });
         
         // Event listeners básicos que no dependen del reproductor
         function setupBasicEventListeners() {
-            // Estos eventos se configuran inmediatamente
             const restartBtn = document.getElementById('restart-btn');
             const resultsBtn = document.getElementById('results-btn');
             
@@ -1354,14 +1301,41 @@
             const overlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
             const loadingSubtext = document.getElementById('loading-subtext');
+            const loadingSpinner = document.getElementById('loading-spinner');
             
             if (overlay) {
-                if (text) loadingText.textContent = text;
-                if (subtext) loadingSubtext.textContent = subtext;
+                loadingText.textContent = text || 'Cargando contenido...';
+                loadingSubtext.textContent = subtext || 'Por favor espera';
+                loadingText.classList.remove('error');
+                loadingSpinner.classList.remove('error');
+                loadingSpinner.innerHTML = ''; // Limpiar ícono de error
                 overlay.style.display = 'flex';
             }
             
-            // Deshabilitar botón play
+            const playBtn = document.getElementById('play-pause-btn');
+            if (playBtn) {
+                playBtn.disabled = true;
+                playBtn.style.opacity = '0.5';
+                playBtn.style.cursor = 'not-allowed';
+            }
+        }
+        
+        // NUEVA: Función para mostrar error en pantalla de carga
+        function showError(text, subtext) {
+            const overlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const loadingSubtext = document.getElementById('loading-subtext');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            
+            if (overlay) {
+                loadingText.textContent = text || 'Error';
+                loadingSubtext.textContent = subtext || 'No se pudo cargar el contenido';
+                loadingText.classList.add('error');
+                loadingSpinner.classList.add('error');
+                loadingSpinner.innerHTML = 'X'; // Ícono de error
+                overlay.style.display = 'flex';
+            }
+            
             const playBtn = document.getElementById('play-pause-btn');
             if (playBtn) {
                 playBtn.disabled = true;
@@ -1376,7 +1350,6 @@
                 overlay.style.display = 'none';
             }
             
-            // Habilitar botón play
             const playBtn = document.getElementById('play-pause-btn');
             if (playBtn) {
                 playBtn.disabled = false;
@@ -1390,9 +1363,11 @@
             showLoading('Cargando preguntas...', 'Conectando con el servidor');
             
             if (jsonFile) {
+                // Hay un JSON externo especificado
                 const maxRetries = 3;
                 let retryCount = 0;
                 let success = false;
+                let lastError = null;
                 
                 while (retryCount < maxRetries && !success) {
                     try {
@@ -1411,80 +1386,77 @@
                         if (response.ok) {
                             const data = await response.json();
                             
-                            // Validar que el JSON tenga la estructura correcta
                             if (!data || (!data.questions && !data.video_id)) {
                                 throw new Error('JSON inválido: estructura incorrecta');
                             }
                             
-                            // Actualizar video_id si viene en el JSON (tiene prioridad sobre parámetro URL)
                             if (data.video_id) {
                                 const extractedId = extractYouTubeId(data.video_id);
-                                if (extractedId) {
-                                    videoId = extractedId;
-                                }
+                                if (extractedId) videoId = extractedId;
                             }
                             
-                            // Actualizar preguntas
                             if (data.questions && Array.isArray(data.questions)) {
                                 if (data.questions.length === 0) {
                                     throw new Error('JSON no contiene preguntas');
                                 }
-                                questionsData.questions = data.questions;
-                                questionsData.video_id = videoId;
+                                // REEMPLAZAR los datos de ejemplo por los del JSON
+                                questionsData = data;
+                                if (!questionsData.video_id) questionsData.video_id = videoId;
                             } else {
-                                Object.assign(questionsData, data);
+                                throw new Error('JSON no contiene un array de "questions"');
                             }
                             
                             success = true;
                             showLoading('Preguntas cargadas', 'Inicializando video...');
                         } else {
-                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
                         }
                     } catch (error) {
                         retryCount++;
+                        lastError = error;
                         console.error(`Error cargando JSON (intento ${retryCount}/${maxRetries}):`, error);
                         
-                        if (retryCount >= maxRetries) {
-                            console.warn('No se pudo cargar el JSON después de', maxRetries, 'intentos. Usando datos por defecto');
-                            showLoading('Usando datos por defecto', 'No se pudo cargar el JSON remoto');
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                        } else {
-                            // Esperar antes de reintentar (backoff exponencial)
+                        if (retryCount < maxRetries) {
                             await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
                         }
                     }
                 }
+
+                // FIN DEL BUCLE DE REINTENTOS
+                if (!success) {
+                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON después de', maxRetries, 'intentos.');
+                    // MODIFICACIÓN: Mostrar error al usuario en lugar de usar datos de ejemplo
+                    showError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise la URL y la configuración CORS)');
+                    console.error('Último error:', lastError);
+                    // NO marcaremos jsonDataLoaded como true, para que el player no inicie
+                    return; 
+                }
+
             } else {
-                showLoading('Cargando datos por defecto...', 'Preparando contenido');
+                // No hay JSON externo, usar datos de ejemplo (fallback)
+                showLoading('Cargando datos de ejemplo...', 'Preparando contenido');
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            // Marcar JSON como cargado (incluso si no había JSON, usamos datos por defecto)
+            // Si llegamos aquí, o el JSON cargó bien, o estamos usando los datos de ejemplo
             jsonDataLoaded = true;
             
-            // PASO 2: Ahora que el JSON está cargado, intentar inicializar el video
+            // Intentar inicializar el video
             tryInitializePlayer();
         }
 
         function createInteractiveMarkers() {
             const markersContainer = document.getElementById('markers-container');
+            if (!markersContainer) return;
             
-            if (!markersContainer) {
-                console.error('No se encontró el contenedor de marcadores');
-                return;
-            }
-            
-            // Verificar que tenemos preguntas
             if (!questionsData.questions || questionsData.questions.length === 0) {
                 console.warn('No hay preguntas disponibles para crear marcadores');
                 return;
             }
             
-            // Limpiar solo los marcadores, mantener timeline-progress, handle y tooltip
             const existingMarkers = markersContainer.querySelectorAll('.marker');
             existingMarkers.forEach(marker => marker.remove());
             
-            // Usar duración real del video si está disponible, sino estimar
             const duration = videoDuration || 180;
             
             questionsData.questions.forEach((question, index) => {
@@ -1496,7 +1468,6 @@
                 marker.dataset.time = question.time;
                 marker.addEventListener('click', () => jumpToQuestion(index));
                 
-                // Crear tooltip para el marcador
                 const tooltip = document.createElement('div');
                 tooltip.className = 'marker-tooltip';
                 tooltip.textContent = `Actividad ${index + 1} - ${formatTime(question.time)}`;
@@ -1505,33 +1476,23 @@
                 markersContainer.appendChild(marker);
             });
             
-            // Configurar eventos del slider (solo una vez)
             setupTimelineSlider();
         }
 
         let timelineSliderSetup = false;
         
         function setupTimelineSlider() {
-            // Evitar configurar múltiples veces
-            if (timelineSliderSetup) {
-                return;
-            }
+            if (timelineSliderSetup) return;
             
             const markersContainer = document.getElementById('markers-container');
             const timelineHandle = document.getElementById('timeline-handle');
             const timelineTooltip = document.getElementById('timeline-tooltip');
             
-            if (!markersContainer || !timelineHandle || !timelineTooltip) {
-                console.warn('Elementos del timeline no encontrados');
-                return;
-            }
+            if (!markersContainer || !timelineHandle || !timelineTooltip) return;
             
             let wasPlaying = false;
 
-            // Eventos del handle
             timelineHandle.addEventListener('mousedown', startDrag);
-            
-            // Eventos del contenedor para clics directos
             markersContainer.addEventListener('click', handleTimelineClick);
             markersContainer.addEventListener('mousemove', showTimelineTooltip);
             markersContainer.addEventListener('mouseleave', hideTimelineTooltip);
@@ -1557,13 +1518,9 @@
                 const duration = player.getDuration();
                 const newTime = percentage * duration;
                 
-                // Actualizar posición del handle
                 updateTimelineHandle(percentage);
-                
-                // Buscar en el video
                 player.seekTo(newTime, true);
                 
-                // Actualizar tooltip
                 timelineTooltip.textContent = formatTime(newTime);
                 timelineTooltip.style.left = `${x}px`;
                 timelineTooltip.style.opacity = '1';
@@ -1576,7 +1533,6 @@
                 document.removeEventListener('mousemove', drag);
                 document.removeEventListener('mouseup', stopDrag);
                 
-                // Reanudar reproducción si estaba reproduciéndose
                 if (wasPlaying) {
                     setTimeout(() => playVideo(), 100);
                 }
@@ -1586,8 +1542,6 @@
 
             function handleTimelineClick(e) {
                 if (isDragging || !playerReady) return;
-                
-                // No procesar clics en marcadores
                 if (e.target.classList.contains('marker') || e.target.closest('.marker')) return;
                 
                 const rect = markersContainer.getBoundingClientRect();
@@ -1596,14 +1550,11 @@
                 const duration = player.getDuration();
                 const newTime = percentage * duration;
                 
-                // Pausar si está reproduciéndose
                 const wasPlayingBefore = isPlaying;
                 if (isPlaying) pauseVideo();
                 
-                // Buscar en el video
                 player.seekTo(newTime, true);
                 
-                // Reanudar después de un momento
                 if (wasPlayingBefore) {
                     setTimeout(() => playVideo(), 200);
                 }
@@ -1643,20 +1594,15 @@
             const question = questionsData.questions[questionIndex];
             console.log(`Saltando a pregunta ${questionIndex + 1} en tiempo ${question.time}s`);
             
-            // Si la pregunta ya fue respondida, ir directamente al tiempo
             if (question.answered) {
                 player.seekTo(question.time, true);
                 return;
             }
             
-            // Ir unos segundos antes para que la pregunta aparezca naturalmente
             const seekTime = Math.max(0, question.time - 3);
             player.seekTo(seekTime, true);
-            
-            // Resetear el estado de la pregunta para que pueda aparecer de nuevo
             question.shown = false;
             
-            // Reproducir el video para que llegue al momento de la pregunta
             setTimeout(() => {
                 playVideo();
             }, 500);
@@ -1664,13 +1610,8 @@
 
         function togglePlayPause() {
             const playBtn = document.getElementById('play-pause-btn');
-            if (playBtn && playBtn.disabled) {
-                return; // No hacer nada si el botón está deshabilitado
-            }
-            
-            if (!playerReady || !player) {
-                return;
-            }
+            if (playBtn && playBtn.disabled) return;
+            if (!playerReady || !player) return;
             
             try {
                 const playerState = player.getPlayerState();
@@ -1715,36 +1656,27 @@
                 if (!playerReady || !player) return;
                 
                 try {
-                    // Obtener tiempo actual del reproductor
                     currentVideoTime = player.getCurrentTime();
                     const currentTimeSeconds = Math.floor(currentVideoTime);
                     
-                    // Actualizar displays
                     updateTimelineProgress();
                     updateTimeDisplay();
                     
-                    // Solo verificar preguntas si está reproduciendo
                     if (isPlaying && questionsEnabled) {
                         questionsData.questions.forEach((question, index) => {
-                            // Verificar si es el momento de mostrar la pregunta (con rango de ±1 segundo)
                             if (currentTimeSeconds >= question.time && currentTimeSeconds <= question.time + 1 && !question.shown) {
                                 console.log(`🎯 ACTIVANDO pregunta ${index + 1} en tiempo ${currentTimeSeconds}s (objetivo: ${question.time}s)`);
-                                console.log('Estado de la pregunta:', question);
                                 question.shown = true;
-                                pauseVideo(); // Pausar automáticamente
+                                pauseVideo();
                                 showQuestion(index);
                             }
                         });
                     }
                     
-                    // Log cada 5 segundos para depuración
-                    if (currentTimeSeconds % 5 === 0 && currentTimeSeconds !== 0) {
-                        console.log(`⏰ Tiempo actual: ${currentTimeSeconds}s, Reproduciendo: ${isPlaying}, Preguntas habilitadas: ${questionsEnabled}`);
-                    }
                 } catch (error) {
-                    console.error('Error in video timer:', error);
+                    // console.error('Error in video timer:', error);
                 }
-            }, 250); // Verificar cada 250ms para mayor precisión
+            }, 250); 
         }
 
         function formatTime(seconds) {
@@ -1763,7 +1695,7 @@
                 document.getElementById('current-time').textContent = formatTime(current);
                 document.getElementById('total-time').textContent = formatTime(duration);
             } catch (error) {
-                console.error('Error updating time display:', error);
+                // console.error('Error updating time display:', error);
             }
         }
 
@@ -1778,26 +1710,21 @@
                     const progress = (current / duration) * 100;
                     const progressPercentage = Math.min(Math.max(progress, 0), 100);
                     
-                    // Actualizar barra de progreso
                     const timelineProgress = document.getElementById('timeline-progress');
                     if (timelineProgress) {
                         timelineProgress.style.width = `${progressPercentage}%`;
                     }
                     
-                    // Actualizar handle del slider
                     updateTimelineHandle(progressPercentage / 100);
-                    
-                    // Actualizar estados de los marcadores
                     updateMarkerStates(current);
                     
-                    // Actualizar duración global si no está establecida
                     if (!videoDuration) {
                         videoDuration = duration;
-                        createInteractiveMarkers(); // Recrear marcadores con duración correcta
+                        createInteractiveMarkers();
                     }
                 }
             } catch (error) {
-                console.error('Error updating timeline progress:', error);
+                // console.error('Error updating timeline progress:', error);
             }
         }
 
@@ -1807,19 +1734,18 @@
             markers.forEach((marker, index) => {
                 const questionTime = parseInt(marker.dataset.time);
                 const questionIndex = parseInt(marker.dataset.questionIndex);
+                
+                if (!questionsData.questions[questionIndex]) return; // Guard
+                
                 const question = questionsData.questions[questionIndex];
                 
-                // Limpiar clases anteriores
                 marker.classList.remove('approaching', 'active', 'completed');
                 
                 if (question && question.answered) {
-                    // Pregunta ya respondida
                     marker.classList.add('completed');
                 } else if (Math.abs(currentTime - questionTime) <= 1) {
-                    // Momento exacto de la pregunta (±1 segundo)
                     marker.classList.add('active');
                 } else if (currentTime >= questionTime - 10 && currentTime < questionTime) {
-                    // Se acerca la pregunta (10 segundos antes)
                     marker.classList.add('approaching');
                 }
             });
@@ -1830,14 +1756,12 @@
             currentQuestionIndex = questionIndex;
             selectedAnswer = null;
             
-            // Actualizar contenido de la pregunta
             document.getElementById('question-title').textContent = question.question;
             document.getElementById('question-counter').innerHTML = `
                 <span class="material-icons">help_outline</span>
                 Pregunta ${questionIndex + 1} de ${questionsData.questions.length}
             `;
             
-            // Mostrar imagen si existe
             const questionImage = document.getElementById('question-image');
             if (question.image) {
                 questionImage.src = question.image;
@@ -1846,7 +1770,6 @@
                 questionImage.style.display = 'none';
             }
             
-            // Crear opciones
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
             
@@ -1858,22 +1781,18 @@
                 optionsContainer.appendChild(button);
             });
             
-            // Resetear botón
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="material-icons">send</span> Responder';
             
-            // Mostrar overlay
             document.getElementById('question-overlay').style.display = 'flex';
         }
 
         function selectOption(index, button) {
-            // Remover selección anterior
             document.querySelectorAll('.option-button').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
-            // Seleccionar nueva opción
             button.classList.add('selected');
             selectedAnswer = index;
             document.getElementById('submit-btn').disabled = false;
@@ -1885,19 +1804,16 @@
             const question = questionsData.questions[currentQuestionIndex];
             const isCorrect = selectedAnswer === question.correct_answer;
             
-            // Deshabilitar botón inmediatamente
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Procesando...';
             
-            // Reproducir sonido de retroalimentación
             try {
                 createAudioFeedback(isCorrect ? 'correct' : 'incorrect');
             } catch (error) {
                 console.log('Audio feedback not available:', error);
             }
             
-            // Marcar respuestas
             document.querySelectorAll('.option-button').forEach((btn, index) => {
                 if (index === question.correct_answer) {
                     btn.classList.add('correct');
@@ -1907,15 +1823,12 @@
                 btn.onclick = null; // Deshabilitar clics
             });
             
-            // Marcar pregunta como respondida
             question.answered = true;
             question.correct = isCorrect;
             
-            // Actualizar estadísticas
             questionsAnswered++;
             if (isCorrect) correctAnswers++;
             
-            // Mostrar pantalla de retroalimentación después de un momento
             setTimeout(() => {
                 showFeedback(isCorrect, question.feedback);
             }, 1500);
@@ -1924,10 +1837,8 @@
         }
 
         function showFeedback(isCorrect, feedback) {
-            // Ocultar pantalla de pregunta
             document.getElementById('question-overlay').style.display = 'none';
             
-            // Configurar pantalla de retroalimentación
             const feedbackCard = document.getElementById('feedback-card');
             const feedbackIcon = document.getElementById('feedback-icon');
             const feedbackTitle = document.getElementById('feedback-title');
@@ -1947,25 +1858,22 @@
                 feedbackMessage.textContent = feedback.incorrect;
             }
             
-            // Mostrar pantalla de retroalimentación
             document.getElementById('feedback-overlay').style.display = 'flex';
         }
 
         function continueVideo() {
-            // Ocultar pantalla de retroalimentación
             document.getElementById('feedback-overlay').style.display = 'none';
             
-            // Marcar el marcador como completado
             const markers = document.querySelectorAll('.marker');
             if (markers[currentQuestionIndex]) {
                 markers[currentQuestionIndex].classList.add('completed');
             }
             
-            // Reanudar el video automáticamente
             playVideo();
         }
 
         function updateProgress() {
+            if (!questionsData.questions || questionsData.questions.length === 0) return;
             const progress = (questionsAnswered / questionsData.questions.length) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
         }
@@ -1974,7 +1882,6 @@
             if (!playerReady || !player) return;
             
             try {
-                // Resetear todas las preguntas
                 questionsData.questions.forEach(q => {
                     q.shown = false;
                     q.answered = false;
@@ -1985,31 +1892,25 @@
                 currentQuestionIndex = 0;
                 currentVideoTime = 0;
                 
-                // Pausar y reiniciar video
                 player.seekTo(0, true);
                 player.pauseVideo();
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                 
-                // Ocultar overlays
                 document.getElementById('question-overlay').style.display = 'none';
                 document.getElementById('feedback-overlay').style.display = 'none';
                 
-                // Resetear marcadores - remover todas las clases de estado
                 document.querySelectorAll('.marker').forEach(marker => {
                     marker.classList.remove('completed', 'approaching', 'active');
                 });
                 
-                // Resetear handle del slider
                 updateTimelineHandle(0);
                 
-                // Resetear displays
                 setTimeout(() => {
                     updateTimelineProgress();
                     updateTimeDisplay();
                 }, 200);
                 
-                // Actualizar progreso
                 updateProgress();
                 
                 showNotification('Video reiniciado');
@@ -2044,15 +1945,11 @@
             const container = document.querySelector('.container');
             
             if (!document.fullscreenElement) {
-                container.requestFullscreen().then(() => {
-                    showNotification('Modo pantalla completa');
-                }).catch(() => {
+                container.requestFullscreen().catch(() => {
                     showNotification('No se pudo activar pantalla completa');
                 });
             } else {
-                document.exitFullscreen().then(() => {
-                    showNotification('Saliendo de pantalla completa');
-                });
+                document.exitFullscreen();
             }
         }
 
@@ -2081,10 +1978,14 @@
         }
 
         function showResults() {
+            if (!questionsData.questions || questionsData.questions.length === 0) {
+                showNotification("Aún no hay preguntas cargadas.");
+                return;
+            }
+
             const totalQuestions = questionsData.questions.length;
             const percentage = Math.round((correctAnswers / Math.max(questionsAnswered, 1)) * 100);
             
-            // Crear modal personalizado en lugar de alert
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
