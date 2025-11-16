@@ -839,7 +839,7 @@
    <div class="progress-bar">
     <div class="progress-fill" id="progress-fill"></div>
    </div>
-   <div class="video-container"><iframe id="video-player" class="video-player" src="https://www.youtube.com/embed/jCcZfY04at4?enablejsapi=1&amp;controls=0&amp;rel=0&amp;autoplay=0&amp;mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe> <!-- Pantalla de Pregunta -->
+   <div class="video-container"><iframe id="video-player" class="video-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe> <!-- Pantalla de Pregunta -->
     <div class="question-overlay" id="question-overlay">
      <div class="question-card">
       <div class="question-header">
@@ -1054,17 +1054,54 @@
             }
         }
 
+        // Función para extraer ID de YouTube desde URL o ID
+        function extractYouTubeId(urlOrId) {
+            if (!urlOrId) return null;
+            
+            // Si ya es un ID (solo letras, números, guiones y guiones bajos)
+            if (/^[a-zA-Z0-9_-]{11}$/.test(urlOrId)) {
+                return urlOrId;
+            }
+            
+            // Intentar extraer de diferentes formatos de URL de YouTube
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/
+            ];
+            
+            for (const pattern of patterns) {
+                const match = urlOrId.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            
+            return null;
+        }
+
         // Función para obtener parámetros de URL
+        // Uso: video_interactivo.html?video=VIDEO_ID_OR_URL&json=URL_JSON
+        // Ejemplo: video_interactivo.html?video=jCcZfY04at4&json=https://ejemplo.com/preguntas.json
+        // El parámetro 'video' puede ser un ID de YouTube o una URL completa
+        // El parámetro 'json' debe ser la URL completa al archivo JSON con las preguntas
         function getUrlParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const videoParam = urlParams.get('video');
             const jsonParam = urlParams.get('json');
             
             if (videoParam) {
-                videoId = videoParam;
+                const extractedId = extractYouTubeId(videoParam);
+                if (extractedId) {
+                    videoId = extractedId;
+                    console.log('Video ID extraído de URL:', videoId);
+                } else {
+                    console.warn('No se pudo extraer el ID del video de:', videoParam);
+                }
             }
+            
             if (jsonParam) {
-                jsonFile = jsonParam;
+                jsonFile = decodeURIComponent(jsonParam);
+                console.log('URL JSON configurada:', jsonFile);
             }
         }
 
@@ -1104,6 +1141,7 @@
                 } catch (error) {
                     console.log('Duration not available yet, will retry');
                     videoDuration = 180; // Duración por defecto
+                    createInteractiveMarkers(); // Crear marcadores con duración por defecto
                 }
             }, 1000);
             
@@ -1163,10 +1201,19 @@
         }
 
         // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM cargado, iniciando aplicación...');
             getUrlParams();
-            loadQuestionsData();
+            
+            // Cargar datos de preguntas antes de inicializar el video
+            await loadQuestionsData();
+            
+            // Actualizar el iframe con el videoId correcto
+            const videoPlayer = document.getElementById('video-player');
+            if (videoPlayer && videoId) {
+                videoPlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&rel=0&autoplay=0&mute=0`;
+            }
+            
             updateProgress();
             
             // Configurar eventos básicos que no dependen del player
@@ -1199,10 +1246,44 @@
                     const response = await fetch(jsonFile);
                     if (response.ok) {
                         const data = await response.json();
-                        Object.assign(questionsData, data);
-                        console.log('JSON cargado:', jsonFile);
+                        
+                        // Actualizar video_id si viene en el JSON
+                        if (data.video_id) {
+                            const extractedId = extractYouTubeId(data.video_id);
+                            if (extractedId) {
+                                videoId = extractedId;
+                                console.log('Video ID actualizado desde JSON:', videoId);
+                                
+                                // Actualizar el iframe del video si ya existe
+                                const videoPlayer = document.getElementById('video-player');
+                                if (videoPlayer) {
+                                    videoPlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&rel=0&autoplay=0&mute=0`;
+                                }
+                                
+                                // Si el player ya está inicializado, recargarlo
+                                if (playerReady && player) {
+                                    player.loadVideoById(videoId);
+                                }
+                            }
+                        }
+                        
+                        // Actualizar preguntas
+                        if (data.questions && Array.isArray(data.questions)) {
+                            questionsData.questions = data.questions;
+                            questionsData.video_id = videoId;
+                            console.log('Preguntas cargadas desde JSON:', data.questions.length);
+                        } else {
+                            Object.assign(questionsData, data);
+                        }
+                        
+                        // Recrear marcadores si el player ya está listo
+                        if (playerReady) {
+                            createInteractiveMarkers();
+                        }
+                        
+                        console.log('JSON cargado exitosamente desde:', jsonFile);
                     } else {
-                        console.warn('No se pudo cargar el JSON, usando datos por defecto');
+                        console.warn('No se pudo cargar el JSON (status:', response.status, '), usando datos por defecto');
                     }
                 } catch (error) {
                     console.warn('Error cargando JSON, usando datos por defecto:', error);

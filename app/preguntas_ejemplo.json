@@ -1,0 +1,91 @@
+{
+  "video_id": "jCcZfY04at4",
+  "questions": [
+    {
+      "id": 1,
+      "time": 15,
+      "question": "¿Cuál es el tema principal que se presenta al inicio del video?",
+      "image": null,
+      "options": [
+        "Introducción a la programación",
+        "Historia de la computación",
+        "Conceptos básicos de algoritmos",
+        "Desarrollo web moderno"
+      ],
+      "correct_answer": 0,
+      "feedback": {
+        "correct": "¡Correcto! El video comienza con una introducción a los conceptos de programación.",
+        "incorrect": "Incorrecto. El video se enfoca en introducir conceptos básicos de programación."
+      }
+    },
+    {
+      "id": 2,
+      "time": 45,
+      "question": "Según el video, ¿qué es lo más importante al aprender a programar?",
+      "image": null,
+      "options": [
+        "Memorizar sintaxis",
+        "Entender la lógica",
+        "Usar las herramientas más nuevas",
+        "Programar rápidamente"
+      ],
+      "correct_answer": 1,
+      "feedback": {
+        "correct": "¡Excelente! La lógica es fundamental en la programación.",
+        "incorrect": "No es correcto. Lo más importante es desarrollar el pensamiento lógico."
+      }
+    },
+    {
+      "id": 3,
+      "time": 75,
+      "question": "¿Cuál de estos lenguajes se menciona como ideal para principiantes?",
+      "image": null,
+      "options": [
+        "C++",
+        "JavaScript",
+        "Python",
+        "Assembly"
+      ],
+      "correct_answer": 2,
+      "feedback": {
+        "correct": "¡Correcto! Python es conocido por su sintaxis clara y fácil aprendizaje.",
+        "incorrect": "Incorrecto. Python es el lenguaje recomendado para principiantes por su simplicidad."
+      }
+    },
+    {
+      "id": 4,
+      "time": 105,
+      "question": "¿Qué concepto se explica como fundamental para resolver problemas?",
+      "image": null,
+      "options": [
+        "Variables",
+        "Funciones",
+        "Algoritmos",
+        "Bucles"
+      ],
+      "correct_answer": 2,
+      "feedback": {
+        "correct": "¡Perfecto! Los algoritmos son la base para resolver cualquier problema de programación.",
+        "incorrect": "No es la respuesta correcta. Los algoritmos son el concepto clave para resolver problemas."
+      }
+    },
+    {
+      "id": 5,
+      "time": 135,
+      "question": "¿Cuál es la recomendación final del video para los nuevos programadores?",
+      "image": null,
+      "options": [
+        "Estudiar teoría únicamente",
+        "Practicar constantemente",
+        "Especializarse inmediatamente",
+        "Evitar los errores"
+      ],
+      "correct_answer": 1,
+      "feedback": {
+        "correct": "¡Excelente! La práctica constante es clave para dominar la programación.",
+        "incorrect": "Incorrecto. El video enfatiza la importancia de la práctica continua."
+      }
+    }
+  ]
+}
+
