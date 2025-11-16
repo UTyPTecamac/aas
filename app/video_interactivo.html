@@ -310,6 +310,19 @@
             background: #0f5c9c;
         }
 
+        .time-display {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 12px;
+            font-family: 'Courier New', monospace;
+            min-width: 100px;
+        }
+
+        .time-display span {
+            color: #ffffff;
+        }
+
         .interactive-markers {
             display: flex;
             align-items: center;
@@ -518,6 +531,8 @@
    </div>
    <div class="controls">
     <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()"> <span class="material-icons">play_arrow</span> </button>
+     <div class="time-display" id="time-display"><span id="current-time">0:00</span> / <span id="total-time">0:00</span>
+     </div>
     </div>
     <div class="interactive-markers"><span class="markers-label">Actividades:</span>
      <div class="markers-container" id="markers-container">
@@ -641,18 +656,39 @@
         let isPlaying = false;
         let videoTimer = null;
         let currentVideoTime = 0;
+        let videoDuration = 0;
         let currentSpeed = 1;
         let currentQuality = '480p';
         let isMuted = false;
         let player = null;
         let playerReady = false;
+        
+        // Configuración del video desde URL
+        let videoId = 'jCcZfY04at4'; // Por defecto
+        let jsonFile = null; // Se cargará desde URL o por defecto
+
+        // Función para obtener parámetros de URL
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoParam = urlParams.get('video');
+            const jsonParam = urlParams.get('json');
+            
+            if (videoParam) {
+                videoId = videoParam;
+            }
+            if (jsonParam) {
+                jsonFile = jsonParam;
+            }
+        }
 
         // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
+            getUrlParams(); // Obtener parámetros antes de crear el player
+            
             player = new YT.Player('video-player', {
                 height: '100%',
                 width: '100%',
-                videoId: 'jCcZfY04at4',
+                videoId: videoId,
                 playerVars: {
                     'controls': 0,
                     'rel': 0,
@@ -669,7 +705,9 @@
 
         function onPlayerReady(event) {
             playerReady = true;
-            console.log('Player ready');
+            videoDuration = player.getDuration();
+            console.log('Player ready, duration:', videoDuration);
+            updateTimeDisplay();
         }
 
         function onPlayerStateChange(event) {
@@ -680,25 +718,62 @@
             } else if (event.data == YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
-                pauseVideo();
+                if (videoTimer) {
+                    clearInterval(videoTimer);
+                    videoTimer = null;
+                }
+            } else if (event.data == YT.PlayerState.ENDED) {
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">replay</span>';
+                if (videoTimer) {
+                    clearInterval(videoTimer);
+                    videoTimer = null;
+                }
             }
         }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
+            getUrlParams();
+            loadQuestionsData();
             updateProgress();
-            createInteractiveMarkers();
         });
+
+        // Función para cargar datos de preguntas
+        async function loadQuestionsData() {
+            if (jsonFile) {
+                try {
+                    const response = await fetch(jsonFile);
+                    if (response.ok) {
+                        const data = await response.json();
+                        Object.assign(questionsData, data);
+                        console.log('JSON cargado:', jsonFile);
+                    } else {
+                        console.warn('No se pudo cargar el JSON, usando datos por defecto');
+                    }
+                } catch (error) {
+                    console.warn('Error cargando JSON, usando datos por defecto:', error);
+                }
+            }
+            
+            // Crear marcadores después de cargar los datos
+            setTimeout(() => {
+                createInteractiveMarkers();
+            }, 1000);
+        }
 
         function createInteractiveMarkers() {
             const markersContainer = document.getElementById('markers-container');
-            const videoDuration = 180; // Duración estimada del video en segundos
+            markersContainer.innerHTML = ''; // Limpiar marcadores existentes
+            
+            // Usar duración real del video si está disponible, sino estimar
+            const duration = videoDuration || 180;
             
             questionsData.questions.forEach((question, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'marker';
-                marker.style.left = `${(question.time / videoDuration) * 100}%`;
-                marker.title = `Actividad ${index + 1} - ${question.time}s`;
+                marker.style.left = `${(question.time / duration) * 100}%`;
+                marker.title = `Actividad ${index + 1} - ${formatTime(question.time)}`;
                 marker.onclick = () => jumpToQuestion(index);
                 markersContainer.appendChild(marker);
             });
@@ -720,28 +795,39 @@
         }
 
         function togglePlayPause() {
-            if (!playerReady || !player) return;
+            if (!playerReady || !player) {
+                console.log('Player not ready');
+                return;
+            }
             
-            if (isPlaying) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
+            try {
+                if (isPlaying) {
+                    player.pauseVideo();
+                } else {
+                    player.playVideo();
+                }
+            } catch (error) {
+                console.error('Error toggling play/pause:', error);
             }
         }
 
         function playVideo() {
             if (playerReady && player) {
-                player.playVideo();
+                try {
+                    player.playVideo();
+                } catch (error) {
+                    console.error('Error playing video:', error);
+                }
             }
         }
 
         function pauseVideo() {
             if (playerReady && player) {
-                player.pauseVideo();
-            }
-            if (videoTimer) {
-                clearInterval(videoTimer);
-                videoTimer = null;
+                try {
+                    player.pauseVideo();
+                } catch (error) {
+                    console.error('Error pausing video:', error);
+                }
             }
         }
 
@@ -751,35 +837,75 @@
             videoTimer = setInterval(() => {
                 if (!playerReady || !player) return;
                 
-                // Obtener tiempo actual del reproductor de YouTube SOLO si está reproduciendo
-                if (isPlaying) {
-                    currentVideoTime = Math.floor(player.getCurrentTime());
-                    updateTimelineProgress();
+                try {
+                    // Obtener tiempo actual del reproductor
+                    currentVideoTime = player.getCurrentTime();
+                    const currentTimeSeconds = Math.floor(currentVideoTime);
                     
-                    // Buscar preguntas que deben mostrarse en este momento exacto
-                    questionsData.questions.forEach((question, index) => {
-                        if (Math.abs(question.time - currentVideoTime) <= 1 && !question.shown && isPlaying) {
-                            question.shown = true;
-                            pauseVideo(); // Pausar el video cuando aparece una pregunta
-                            showQuestion(index);
-                        }
-                    });
-                } else {
-                    // Si el video está pausado, solo actualizar la línea de tiempo sin avanzar preguntas
-                    currentVideoTime = Math.floor(player.getCurrentTime());
+                    // Actualizar displays
                     updateTimelineProgress();
+                    updateTimeDisplay();
+                    
+                    // Solo verificar preguntas si está reproduciendo
+                    if (isPlaying) {
+                        questionsData.questions.forEach((question, index) => {
+                            // Verificar si es el momento exacto de mostrar la pregunta
+                            if (currentTimeSeconds === question.time && !question.shown) {
+                                console.log(`Mostrando pregunta ${index + 1} en tiempo ${currentTimeSeconds}s`);
+                                question.shown = true;
+                                player.pauseVideo(); // Pausar automáticamente
+                                showQuestion(index);
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error in video timer:', error);
                 }
-            }, 500); // Verificar cada 500ms para mayor precisión
+            }, 250); // Verificar cada 250ms para mayor precisión
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimeDisplay() {
+            if (!playerReady || !player) return;
+            
+            try {
+                const current = player.getCurrentTime();
+                const duration = player.getDuration();
+                
+                document.getElementById('current-time').textContent = formatTime(current);
+                document.getElementById('total-time').textContent = formatTime(duration);
+            } catch (error) {
+                console.error('Error updating time display:', error);
+            }
         }
 
         function updateTimelineProgress() {
             if (!playerReady || !player) return;
             
-            const videoDuration = player.getDuration() || 180;
-            const progress = (currentVideoTime / videoDuration) * 100;
-            const timelineProgress = document.getElementById('timeline-progress');
-            if (timelineProgress) {
-                timelineProgress.style.width = `${Math.min(progress, 100)}%`;
+            try {
+                const duration = player.getDuration();
+                const current = player.getCurrentTime();
+                
+                if (duration > 0) {
+                    const progress = (current / duration) * 100;
+                    const timelineProgress = document.getElementById('timeline-progress');
+                    if (timelineProgress) {
+                        timelineProgress.style.width = `${Math.min(Math.max(progress, 0), 100)}%`;
+                    }
+                    
+                    // Actualizar duración global si no está establecida
+                    if (!videoDuration) {
+                        videoDuration = duration;
+                        createInteractiveMarkers(); // Recrear marcadores con duración correcta
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating timeline progress:', error);
             }
         }
 
@@ -892,38 +1018,44 @@
         function restartVideo() {
             if (!playerReady || !player) return;
             
-            // Resetear todas las preguntas
-            questionsData.questions.forEach(q => {
-                q.shown = false;
-            });
-            questionsAnswered = 0;
-            correctAnswers = 0;
-            currentQuestionIndex = 0;
-            currentVideoTime = 0;
-            
-            // Pausar y reiniciar video
-            player.seekTo(0, true);
-            player.pauseVideo();
-            isPlaying = false;
-            document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
-            
-            // Ocultar overlay
-            document.getElementById('question-overlay').style.display = 'none';
-            
-            // Resetear marcadores
-            document.querySelectorAll('.marker').forEach(marker => {
-                marker.classList.remove('completed');
-            });
-            
-            // Resetear línea de tiempo
-            setTimeout(() => {
-                updateTimelineProgress();
-            }, 100);
-            
-            // Actualizar progreso
-            updateProgress();
-            
-            showNotification('Video reiniciado');
+            try {
+                // Resetear todas las preguntas
+                questionsData.questions.forEach(q => {
+                    q.shown = false;
+                });
+                questionsAnswered = 0;
+                correctAnswers = 0;
+                currentQuestionIndex = 0;
+                currentVideoTime = 0;
+                
+                // Pausar y reiniciar video
+                player.seekTo(0, true);
+                player.pauseVideo();
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+                
+                // Ocultar overlay
+                document.getElementById('question-overlay').style.display = 'none';
+                
+                // Resetear marcadores
+                document.querySelectorAll('.marker').forEach(marker => {
+                    marker.classList.remove('completed');
+                });
+                
+                // Resetear displays
+                setTimeout(() => {
+                    updateTimelineProgress();
+                    updateTimeDisplay();
+                }, 200);
+                
+                // Actualizar progreso
+                updateProgress();
+                
+                showNotification('Video reiniciado');
+                console.log('Video reiniciado correctamente');
+            } catch (error) {
+                console.error('Error restarting video:', error);
+            }
         }
 
 
@@ -1141,5 +1273,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f30fa682c42fde',t:'MTc2MzI1NDkyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f318ea35cbc7d1',t:'MTc2MzI1NTMwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
