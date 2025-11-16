@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Interactivo Avanzado</title>
+  <!-- 1. Cargar la API de YouTube inmediatamente -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
@@ -129,9 +130,23 @@
             display: none;
         }
         
+        /* NUEVO: Estilo de texto de error en splash */
         .video-state-overlay.error .splash-title {
             color: #dc3545; /* Rojo de error */
         }
+        
+        /* NUEVO: Animación de spinner en splash screen */
+        .video-state-overlay.loading .splash-play-button {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        .video-state-overlay.loading .splash-play-button .material-icons {
+            display: none;
+        }
+        
 
         .splash-play-button:hover {
             background: rgba(255, 255, 255, 0.4);
@@ -432,6 +447,11 @@
         @keyframes slideOutRight {
             from { opacity: 1; transform: translateX(0); }
             to { opacity: 0; transform: translateX(100%); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* --- Estilos de Contenido de Interacción --- */
@@ -1099,7 +1119,13 @@
    <div class="video-container">
        <!-- NUEVO: Wrapper que mantiene la proporción 16:9 -->
        <div class="video-aspect-wrapper">
-            <div id="video-player" class="video-player"></div>
+            <!-- MODIFICADO: de <div> a <iframe> sin src -->
+            <iframe id="video-player" class="video-player"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                src=""> 
+            </iframe>
             
             <div class="video-overlay-blocker" id="video-overlay-blocker"></div>
 
@@ -1214,7 +1240,6 @@
   </div>
   
   <!-- MODIFICADO: Overlay de carga ELIMINADO -->
-  <!-- <div class="loading-overlay" id="loading-overlay"> ... </div> -->
   
   <script>
         // Configuración por defecto
@@ -1382,6 +1407,7 @@
         let playerInitializationWatchdog = null; 
 
         // MODIFICADO: onYouTubeIframeAPIReady AHORA INICIA la carga del JSON
+        // PASO 1: La API de YouTube está lista
         function onYouTubeIframeAPIReady() {
             console.log('PASO 1: API de YouTube está lista.');
             youtubeAPIReady = true;
@@ -1393,6 +1419,7 @@
             loadQuestionsData();
         }
         
+        // PASO 3: Iniciar el reproductor
         function tryInitializePlayer() {
             if (initializationInProgress || playerInitialized) return;
 
@@ -1411,6 +1438,7 @@
             initializationInProgress = true;
             
             console.log('PASO 3: Inicializando el reproductor de video...');
+            updateSplashLoading(true, 'Preparando Video...'); // Mostrar spinner
             
             // NUEVO: Iniciar el "watchdog" del player. Si onReady no se dispara en 15s, mostrar error.
             playerInitializationWatchdog = setTimeout(() => {
@@ -1421,10 +1449,9 @@
             }, 15000); // 15 segundos de espera para que el video se inicialice
 
             try {
+                // MODIFICADO: Adjuntar el player al IFRAME existente
                 player = new YT.Player('video-player', {
-                    height: '100%',
-                    width: '100%',
-                    videoId: videoId,
+                    // videoId: videoId, // No es necesario si el src ya está puesto
                     playerVars: {
                         'controls': 0, 
                         'rel': 0, 
@@ -1451,6 +1478,7 @@
             }
         }
 
+        // PASO 4: El video está listo
         function onPlayerReady(event) {
             // ¡ÉXITO! El player está listo.
             console.log('PASO 4: El reproductor de video está listo (onReady).');
@@ -1464,7 +1492,8 @@
             playerReady = true;
 
             // MODIFICACIÓN: La configuración ahora se hace aquí
-            // hideLoading(); // Ya no se usa
+            updateSplashLoading(false); // Ocultar spinner, mostrar botón de Play
+            
             document.getElementById('video-overlay-blocker').style.display = 'block'; // Mostrar el blocker
             document.getElementById('play-pause-btn').disabled = false; // Habilitar controles
             setupEventListeners();
@@ -1576,6 +1605,7 @@
             // MODIFICACIÓN: Mostrar "Cargando..." como primer paso
             // showLoading('Iniciando...', 'Cargando API de Video...'); // ELIMINADO
             console.log('DOM Listo. Esperando API de YouTube...');
+            updateSplashLoading(true, 'Cargando API de Video...'); // Mostrar spinner
             
             getUrlParams();
             
@@ -1589,76 +1619,70 @@
                 }, 30000); // MODIFICADO: 30s de espera, más generoso
             }
             
+            // MODIFICADO: Poner el SRC en el iframe inmediatamente
+            const iframe = document.getElementById('video-player');
+            if (iframe) {
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&origin=${window.location.origin}`;
+            } else {
+                showSplashError('Error Crítico', 'No se encontró el <iframe> del video.');
+            }
+            
             // NO cargar JSON aquí. onYouTubeIframeAPIReady se encargará de eso.
-            // await loadQuestionsData(); // <-- ELIMINADO
             updateProgress();
         });
         
-        // MODIFICADO: Ya no se usa showLoading/hideLoading, ahora se usa showSplashError
-        function showSplashError(title, message) {
-            const stateOverlay = document.getElementById('video-state-overlay');
-            const titleEl = stateOverlay.querySelector('.splash-title');
-            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
-            const playButton = stateOverlay.querySelector('.splash-play-button');
-            
-            titleEl.textContent = title;
-            titleEl.style.color = '#dc3545'; // Red
-            subtitleEl.textContent = message;
-            
-            playButton.style.display = 'none'; // Ocultar botón de play
-            
-            stateOverlay.classList.add('visible', 'error'); // Mostrar overlay en modo error
-            stateOverlay.style.cursor = 'default'; // No es clickeable
-            
-            // Deshabilitar otros blockers
-            const blocker = document.getElementById('video-overlay-blocker');
-            if (blocker) blocker.style.display = 'none';
+        // NUEVA FUNCIÓN: fetchWithRetries
+        async function fetchWithRetries(url, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout por intento
+                    
+                    const response = await fetch(url, { 
+                        signal: controller.signal, 
+                        cache: 'no-cache' 
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        return await response.json(); // Éxito
+                    }
+                    throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+                } catch (error) {
+                    console.error(`Error cargando JSON (intento ${i + 1}/${retries}):`, error);
+                    if (i === retries - 1) { // Si es el último intento, rechazar
+                        throw error;
+                    }
+                    // Esperar antes de reintentar
+                    await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+                }
+            }
         }
         
-        // MODIFICADO: loadQuestionsData ahora es el PASO 2
+        // MODIFICADO: loadQuestionsData ahora es el PASO 2 y usa fetchWithRetries
         async function loadQuestionsData() {
             console.log('PASO 2: Cargando archivo JSON...');
+            updateSplashLoading(true, 'Cargando Preguntas...'); // Mostrar spinner
             
             if (jsonFile) {
-                const maxRetries = 3;
-                let retryCount = 0;
-                let success = false;
-                let lastError = null;
-                
-                while (retryCount < maxRetries && !success) {
-                    try {
-                        // showLoading('Cargando preguntas...', retryCount > 0 ? `Reintento ${retryCount + 1}/${maxRetries}` : 'Conectando'); // ELIMINADO
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 10000); 
-                        const response = await fetch(jsonFile, { signal: controller.signal, cache: 'no-cache' });
-                        clearTimeout(timeoutId);
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (!data || !data.questions) throw new Error('JSON inválido o falta el array "questions"');
-                            
-                            if (data.video_id && !videoParamProvided) {
-                                const extractedId = extractYouTubeId(data.video_id);
-                                if (extractedId) videoId = extractedId;
-                            }
-                            
-                            interactionsData = data; 
-                            success = true;
-                            console.log('PASO 2.1: JSON cargado y procesado.');
-                        } else {
-                            throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
-                        }
-                    } catch (error) {
-                        retryCount++;
-                        lastError = error;
-                        console.error(`Error cargando JSON (intento ${retryCount}/${maxRetries}):`, error);
-                        if (retryCount < maxRetries) await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                try {
+                    const data = await fetchWithRetries(jsonFile, 3);
+                    
+                    if (!data || !data.questions) throw new Error('JSON inválido o falta el array "questions"');
+                    
+                    if (data.video_id && !videoParamProvided) {
+                        const extractedId = extractYouTubeId(data.video_id);
+                        if (extractedId) videoId = extractedId;
                     }
-                }
-                if (!success) {
-                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON.');
-                    showSplashError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise URL/CORS)');
-                    console.error('Último error:', lastError);
+                    
+                    interactionsData = data; 
+                    console.log('PASO 2.1: JSON cargado y procesado.');
+                    
+                } catch (error) {
+                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON después de 3 intentos.');
+                    showSplashError('Error de Carga', 'No se pudo cargar el archivo de preguntas.');
+                    console.error('Último error:', error);
                     return; 
                 }
             } else {
@@ -1818,13 +1842,19 @@
         // --- Controles de Video (Play, Pausa, Tiempo) ---
 
         function togglePlayPause() {
-            if (document.getElementById('play-pause-btn').disabled) return;
-            if (!playerReady || !player) return;
+            // MODIFICADO: No hacer nada si el player no está listo
+            if (document.getElementById('play-pause-btn').disabled || !playerReady) {
+                console.log('TogglePlayPause: Player no está listo.');
+                return;
+            }
+            
             try {
                 const playerState = player.getPlayerState();
-                if (playerState === YT.PlayerState.PLAYING) player.pauseVideo();
-                else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.CUED || playerState === -1) player.playVideo();
-                else if (playerState === YT.PlayerState.ENDED) {
+                if (playerState === YT.PlayerState.PLAYING) {
+                    player.pauseVideo();
+                } else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.CUED || playerState === -1) {
+                    player.playVideo();
+                } else if (playerState === YT.PlayerState.ENDED) {
                     player.seekTo(0);
                     player.playVideo();
                 }
@@ -2532,6 +2562,22 @@
             // Deshabilitar otros blockers
             const blocker = document.getElementById('video-overlay-blocker');
             if (blocker) blocker.style.display = 'none';
+        }
+
+        // NUEVO: Controlar el estado de carga del splash screen
+        function updateSplashLoading(isLoading, message = "Presiona para iniciar") {
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+
+            subtitleEl.textContent = message;
+            if (isLoading) {
+                stateOverlay.classList.add('loading');
+                stateOverlay.style.cursor = 'default';
+            } else {
+                stateOverlay.classList.remove('loading');
+                stateOverlay.style.cursor = 'pointer';
+            }
         }
 
         // --- SDK de Elementos (sin cambios) ---
