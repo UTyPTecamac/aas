@@ -1319,15 +1319,25 @@
             if (!playerReady || !player) return;
             
             const question = questionsData.questions[questionIndex];
+            console.log(`Saltando a pregunta ${questionIndex + 1} en tiempo ${question.time}s`);
+            
+            // Si la pregunta ya fue respondida, ir directamente al tiempo
+            if (question.answered) {
+                player.seekTo(question.time, true);
+                return;
+            }
+            
             // Ir unos segundos antes para que la pregunta aparezca naturalmente
-            const seekTime = Math.max(0, question.time - 2);
+            const seekTime = Math.max(0, question.time - 3);
             player.seekTo(seekTime, true);
             
             // Resetear el estado de la pregunta para que pueda aparecer de nuevo
             question.shown = false;
             
             // Reproducir el video para que llegue al momento de la pregunta
-            playVideo();
+            setTimeout(() => {
+                playVideo();
+            }, 500);
         }
 
         function togglePlayPause() {
@@ -1389,16 +1399,22 @@
                     updateTimeDisplay();
                     
                     // Solo verificar preguntas si está reproduciendo
-                    if (isPlaying) {
+                    if (isPlaying && questionsEnabled) {
                         questionsData.questions.forEach((question, index) => {
-                            // Verificar si es el momento exacto de mostrar la pregunta
-                            if (currentTimeSeconds === question.time && !question.shown) {
-                                console.log(`Mostrando pregunta ${index + 1} en tiempo ${currentTimeSeconds}s`);
+                            // Verificar si es el momento de mostrar la pregunta (con rango de ±1 segundo)
+                            if (currentTimeSeconds >= question.time && currentTimeSeconds <= question.time + 1 && !question.shown) {
+                                console.log(`🎯 ACTIVANDO pregunta ${index + 1} en tiempo ${currentTimeSeconds}s (objetivo: ${question.time}s)`);
+                                console.log('Estado de la pregunta:', question);
                                 question.shown = true;
-                                player.pauseVideo(); // Pausar automáticamente
+                                pauseVideo(); // Pausar automáticamente
                                 showQuestion(index);
                             }
                         });
+                    }
+                    
+                    // Log cada 5 segundos para depuración
+                    if (currentTimeSeconds % 5 === 0 && currentTimeSeconds !== 0) {
+                        console.log(`⏰ Tiempo actual: ${currentTimeSeconds}s, Reproduciendo: ${isPlaying}, Preguntas habilitadas: ${questionsEnabled}`);
                     }
                 } catch (error) {
                     console.error('Error in video timer:', error);
@@ -1818,5 +1834,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f34ed4a6397a65',t:'MTc2MzI1NzUxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f3541553b17a65',t:'MTc2MzI1NzczMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
