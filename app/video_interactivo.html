@@ -68,24 +68,24 @@
         }
 
         /* MODIFICADO: Overlay de estado rediseñado como "Splash Screen" */
-        /* AHORA ES VISIBLE POR DEFECTO */
+        /* AHORA ESTÁ OCULTO POR DEFECTO */
         .video-state-overlay {
             z-index: 6; 
             background: #000; 
-            display: flex; /* <-- MODIFICADO: visible por defecto */
+            display: none; /* <-- MODIFICADO: oculto por defecto */
             flex-direction: column; 
             align-items: center;
             justify-content: center;
             color: white;
-            opacity: 1; /* <-- MODIFICADO: visible por defecto */
+            opacity: 0; /* <-- MODIFICADO: oculto por defecto */
             transition: opacity 0.2s ease;
             cursor: pointer;
         }
         
-        /* MODIFICADO: Esta clase ahora OCULTA el overlay */
-        .video-state-overlay.hidden {
-            display: none;
-            opacity: 0;
+        /* MODIFICADO: Esta clase ahora MUESTRA el overlay */
+        .video-state-overlay.visible {
+            display: flex;
+            opacity: 1;
         }
 
         /* NUEVO: Título de la pantalla de inicio */
@@ -315,7 +315,7 @@
         }
         
         /* --- Estilos de Carga --- */
-
+        /* MODIFICADO: Ahora visible por defecto */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -1460,6 +1460,10 @@
             }
             
             initializationInProgress = true;
+            
+            // MODIFICACIÓN: Avisar al usuario que el reproductor se está preparando
+            showLoading('Preparando reproductor...', 'Casi listo');
+            
             try {
                 player = new YT.Player('video-player', {
                     height: '100%',
@@ -1501,6 +1505,8 @@
                     videoDuration = 180;
                     createInteractiveMarkers();
                 }
+                // MODIFICACIÓN: Ocultar la pantalla de "Cargando..."
+                // El onPlayerStateChange se encargará de mostrar el overlay de "Play"
                 hideLoading();
             }, 1000);
             setupEventListeners();
@@ -1524,7 +1530,7 @@
                 isPlaying = true;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
                 startVideoTimer();
-                stateOverlay.classList.add('hidden'); // MODIFICADO: Ocultar
+                stateOverlay.classList.remove('visible'); // MODIFICADO: Usar clase .visible
             } else if (event.data == YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
@@ -1532,7 +1538,7 @@
                 videoTimer = null;
                 
                 if (!isInteractionActive) {
-                    stateOverlay.classList.remove('hidden'); // MODIFICADO: Mostrar
+                    stateOverlay.classList.add('visible'); // MODIFICADO: Usar clase .visible
                 }
             } else if (event.data == YT.PlayerState.ENDED) {
                 isPlaying = false;
@@ -1540,7 +1546,7 @@
                 if (videoTimer) clearInterval(videoTimer);
                 videoTimer = null;
                 
-                stateOverlay.classList.add('hidden'); // MODIFICADO: Ocultar
+                stateOverlay.classList.remove('visible'); // MODIFICADO: Usar clase .visible
                 
                 showResults();
             } else if (event.data == YT.PlayerState.CUED || event.data == -1) { 
@@ -1548,7 +1554,7 @@
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                 
                 if (!isInteractionActive) {
-                    stateOverlay.classList.remove('hidden'); // MODIFICADO: Mostrar (asegura que esté visible al inicio)
+                    stateOverlay.classList.add('visible'); // MODIFICADO: Usar clase .visible
                 }
             }
         }
@@ -1582,22 +1588,26 @@
                 document.getElementById('results-overlay').style.display = 'none';
                 isInteractionActive = false; 
                 // MODIFICADO: Al cerrar resultados, mostrar el overlay de estado
-                document.getElementById('video-state-overlay').classList.remove('hidden');
+                document.getElementById('video-state-overlay').classList.add('visible');
             });
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('play-pause-btn').disabled = true;
+            
+            // MODIFICACIÓN: Mostrar "Cargando..." como primer paso
+            showLoading('Iniciando...', 'Preparando componentes');
+            
             getUrlParams();
             
             // MODIFICACIÓN: Iniciar el temporizador maestro de la API aquí
             if (!window.youtubeApiTimeout) { 
                 window.youtubeApiTimeout = setTimeout(() => {
                     if (!youtubeAPIReady) {
-                         console.error('Timeout: La API de YouTube no respondió en 15 segundos.');
+                         console.error('Timeout: La API de YouTube no respondió en 30 segundos.');
                          showError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
                     }
-                }, 15000); // 15s de espera, más generoso
+                }, 30000); // MODIFICADO: 30s de espera, más generoso
             }
             
             // Cargar el JSON (esto llamará a tryInitializePlayer cuando termine)
@@ -1671,7 +1681,8 @@
                             
                             interactionsData = data; 
                             success = true;
-                            showLoading('Preguntas cargadas', 'Inicializando video...');
+                            // MODIFICACIÓN: No ocultar "cargando", solo cambiar texto
+                            showLoading('Preguntas cargadas', 'Esperando API de video...');
                         } else {
                             throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
                         }
@@ -1948,7 +1959,7 @@
             isInteractionActive = true; // <-- AÑADIR ESTO
             
             // NUEVO: Ocultar el overlay de estado si se muestra una interacción
-            document.getElementById('video-state-overlay').classList.add('hidden');
+            document.getElementById('video-state-overlay').classList.remove('visible');
             
             currentInteractionIndex = index;
             const interaction = questions[index];
@@ -2387,7 +2398,7 @@
                 document.getElementById('results-overlay').style.display = 'none';
                 
                 // MODIFICACIÓN: Mostrar el overlay de estado al reiniciar
-                document.getElementById('video-state-overlay').classList.remove('hidden');
+                document.getElementById('video-state-overlay').classList.add('visible');
                 
                 document.querySelectorAll('.marker').forEach(marker => {
                     marker.classList.remove('completed', 'approaching', 'active');
@@ -2461,7 +2472,7 @@
             isInteractionActive = true; 
 
             // NUEVO: Ocultar el overlay de estado si se muestran los resultados
-            document.getElementById('video-state-overlay').classList.add('hidden');
+            document.getElementById('video-state-overlay').classList.remove('visible');
 
             const percentage = Math.round((userScore / totalPossiblePoints) * 100);
             
