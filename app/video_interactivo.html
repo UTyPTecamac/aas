@@ -326,6 +326,17 @@
             cursor: pointer;
         }
 
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #1768ac;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
         .marker {
             position: absolute;
             top: -2px;
@@ -505,10 +516,12 @@
     </div>
    </div>
    <div class="controls">
-    <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()">▶</button>
+    <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()"> <span class="material-icons">play_arrow</span> </button>
     </div>
     <div class="interactive-markers"><span class="markers-label">Actividades:</span>
-     <div class="markers-container" id="markers-container"></div>
+     <div class="markers-container" id="markers-container">
+      <div class="timeline-progress" id="timeline-progress"></div>
+     </div>
     </div>
     <div class="control-buttons"><button class="control-btn icon-only" onclick="toggleSpeedMenu()" title="Velocidad de reproducción"> <span class="material-icons">speed</span> </button> <button class="control-btn icon-only" onclick="toggleAudio()" title="Silenciar/Activar audio" id="audio-btn"> <span class="material-icons">volume_up</span> </button> <button class="control-btn icon-only" onclick="toggleQualityMenu()" title="Calidad de video"> <span class="material-icons">high_quality</span> </button> <button class="control-btn icon-only" onclick="toggleFullscreen()" title="Pantalla completa"> <span class="material-icons">fullscreen</span> </button> <!-- Menú de velocidad -->
      <div class="dropdown-menu" id="speed-menu"><button class="dropdown-item" onclick="setSpeed(0.5)">0.5x</button> <button class="dropdown-item" onclick="setSpeed(0.75)">0.75x</button> <button class="dropdown-item active" onclick="setSpeed(1)">1x Normal</button> <button class="dropdown-item" onclick="setSpeed(1.25)">1.25x</button> <button class="dropdown-item" onclick="setSpeed(1.5)">1.5x</button> <button class="dropdown-item" onclick="setSpeed(2)">2x</button>
@@ -665,10 +678,10 @@
             const btn = document.getElementById('play-pause-btn');
             if (isPlaying) {
                 pauseVideo();
-                btn.textContent = '▶';
+                btn.innerHTML = '<span class="material-icons">play_arrow</span>';
             } else {
                 playVideo();
-                btn.textContent = '⏸';
+                btn.innerHTML = '<span class="material-icons">pause</span>';
             }
         }
 
@@ -694,17 +707,27 @@
                 if (!isPlaying || !questionsEnabled) return;
                 
                 currentVideoTime++;
+                updateTimelineProgress();
                 
                 // Buscar preguntas que deben mostrarse en este momento
                 questionsData.questions.forEach((question, index) => {
                     if (question.time === currentVideoTime && !question.shown) {
                         question.shown = true;
                         pauseVideo(); // Pausar el video cuando aparece una pregunta
-                        document.getElementById('play-pause-btn').textContent = '▶';
+                        document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                         showQuestion(index);
                     }
                 });
             }, 1000);
+        }
+
+        function updateTimelineProgress() {
+            const videoDuration = 180; // Duración estimada del video en segundos
+            const progress = (currentVideoTime / videoDuration) * 100;
+            const timelineProgress = document.getElementById('timeline-progress');
+            if (timelineProgress) {
+                timelineProgress.style.width = `${Math.min(progress, 100)}%`;
+            }
         }
 
         function showQuestion(questionIndex) {
@@ -805,7 +828,7 @@
             
             // Reanudar el video automáticamente
             playVideo();
-            document.getElementById('play-pause-btn').textContent = '⏸';
+            document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
         }
 
         function updateProgress() {
@@ -823,7 +846,7 @@
             
             // Pausar video
             pauseVideo();
-            document.getElementById('play-pause-btn').textContent = '▶';
+            document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
             
             // Ocultar overlay
             document.getElementById('question-overlay').style.display = 'none';
@@ -832,6 +855,9 @@
             document.querySelectorAll('.marker').forEach(marker => {
                 marker.classList.remove('completed');
             });
+            
+            // Resetear línea de tiempo
+            updateTimelineProgress();
             
             // Actualizar progreso
             updateProgress();
@@ -1049,5 +1075,5 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f2f7f63208b6e7',t:'MTc2MzI1Mzk1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f3023c86322fde',t:'MTc2MzI1NDM3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
