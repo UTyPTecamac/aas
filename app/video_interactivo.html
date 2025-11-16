@@ -15,7 +15,7 @@
     iframe.video-player { width:100%; height:100%; border:0; background:#000; }
 
     /* Overlay splash / estado */
-    .video-state-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#fff; z-index:10; background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.65)); }
+    .video-state-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#fff; z-index:10; background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.65)); pointer-events:auto; }
     .splash-play { width:90px; height:90px; border-radius:50%; border:3px solid #fff; display:flex; align-items:center; justify-content:center; font-size:48px; cursor:pointer; background:rgba(255,255,255,0.08); }
     .splash-title { margin-top:16px; font-size:18px; }
 
@@ -158,7 +158,11 @@
       }, 25000);
 
       try{
+        // IMPORTANT: Pasar videoId aquí evita problemas donde el player no responde
         player = new YT.Player('video-player', {
+          videoId: videoId,
+          width: '100%',
+          height: '100%',
           playerVars: { controls:0, rel:0, enablejsapi:1, modestbranding:1, iv_load_policy:3 },
           events: { onReady:onPlayerReady, onStateChange:onPlayerStateChange, onError:onPlayerError }
         });
@@ -166,7 +170,7 @@
         console.warn('Primera inicialización falló, reintentando...');
         setTimeout(()=>{
           try{
-            player = new YT.Player('video-player', { playerVars:{controls:0,rel:0,enablejsapi:1,modestbranding:1,iv_load_policy:3}, events:{ onReady:onPlayerReady, onStateChange:onPlayerStateChange, onError:onPlayerError } });
+            player = new YT.Player('video-player', { videoId: videoId, width:'100%', height:'100%', playerVars:{controls:0,rel:0,enablejsapi:1,modestbranding:1,iv_load_policy:3}, events:{ onReady:onPlayerReady, onStateChange:onPlayerStateChange, onError:onPlayerError } });
           }catch(e){ console.error('Reintento fallido', e); showMessage('No se pudo inicializar el reproductor.'); }
         }, 2500);
       }
@@ -184,6 +188,9 @@
       updateTimeDisplay(); createMarkers();
       document.getElementById('play-pause-btn').disabled = false;
       setupControls();
+
+      // hide overlay so user can interact with the player controls if present
+      document.getElementById('video-state-overlay').style.display = 'flex';
     }
 
     function onPlayerError(e){ console.error('YT Error', e.data); if (playerInitializationWatchdog){ clearTimeout(playerInitializationWatchdog); playerInitializationWatchdog=null; } let msg='Error al cargar el video.'; if (e.data===150||e.data===101) msg='El propietario del video no permite reproducción en este sitio.'; if (e.data===2) msg='ID de video inválido.'; showMessage(msg); updateSplash(msg, false); }
@@ -206,7 +213,8 @@
 
       document.getElementById('splash-play').addEventListener('click', ()=>{
         if (!playerReady) { showMessage('El reproductor aún se está preparando.'); return; }
-        player.playVideo();
+        // user gesture - should allow playback even if autoplay was blocked
+        try{ player.playVideo(); }catch(e){ console.error('playVideo failed', e); showMessage('No se pudo iniciar reproducción.'); }
       });
 
       // timeline click
@@ -231,8 +239,7 @@
 
     function checkInteractions(currSec){ if (!questions) return; questions.forEach((q, i)=>{ if (!q._shown && currSec>=q.time && currSec<=q.time+1){ q._shown = true; // aquí podrías mostrar overlay de pregunta
           console.log('Mostrar interacción', q);
-        }});
-    }
+        }}); }
 
     // ---------------------- Splash helpers ----------------------
     function updateSplash(text, loading=true){ const splash = document.getElementById('video-state-overlay'); const sub = document.getElementById('splash-sub'); sub.textContent = text||''; if (loading){ splash.style.display='flex'; } else { splash.style.display='flex'; setTimeout(()=>{ /* mantener visible como 'Play' */ }, 200); } }
@@ -248,6 +255,8 @@
       // Set iframe src inmediatamente con origin correcto
       const iframe = document.getElementById('video-player');
       iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&origin=${location.protocol}//${location.host}`;
+      // Ensure iframe allows autoplay and picture-in-picture
+      iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
 
       // Esperar a que el iframe físico haya cargado
       iframe.addEventListener('load', ()=>{
