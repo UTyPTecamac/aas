@@ -78,6 +78,31 @@
             height: 100%;
             z-index: 5; /* Asegura que esté sobre el iframe pero debajo de los overlays de preguntas */
             background: transparent;
+            cursor: pointer; /* NUEVO: Indica que se puede hacer clic */
+        }
+
+        /* NUEVO: Overlay de Pausa (para ocultar sugerencias de YouTube) */
+        .video-pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 6; /* Encima del blocker, debajo de las preguntas */
+            background: rgba(0, 0, 0, 0.3); /* Un poco oscuro */
+            display: none; /* Oculto por defecto */
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 80px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none; /* No debe ser clickeable */
+        }
+        
+        .video-pause-overlay.visible {
+            display: flex;
+            opacity: 1;
         }
 
         /* --- Estilos de Overlays --- */
@@ -1111,6 +1136,11 @@
     
     <!-- NUEVO: Overlay para bloquear clics en el iframe de YouTube -->
     <div class="video-overlay-blocker"></div>
+
+    <!-- NUEVO: Overlay para ocultar "videos sugeridos" al pausar -->
+    <div class="video-pause-overlay" id="video-pause-overlay">
+        <span class="material-icons">pause</span>
+    </div>
     
     <!-- Overlay para Textos e Imágenes -->
     <div class="info-overlay" id="info-overlay">
@@ -1278,6 +1308,7 @@
         let player = null;
         let playerReady = false;
         let isDragging = false;
+        let isInteractionActive = false; // NUEVO FLAG para controlar overlays
         
         // Configuración del video desde URL
         let videoId = 'jCcZfY04at4';
@@ -1482,30 +1513,50 @@
         }
 
         function onPlayerStateChange(event) {
+            const pauseOverlay = document.getElementById('video-pause-overlay'); // Obtener el nuevo overlay
+
             if (event.data == YT.PlayerState.PLAYING) {
                 isPlaying = true;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
                 startVideoTimer();
+                pauseOverlay.classList.remove('visible'); // Ocultar overlay de pausa
             } else if (event.data == YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
                 if (videoTimer) clearInterval(videoTimer);
                 videoTimer = null;
+                
+                // MODIFICADO: Usar el flag global
+                // No mostrar el overlay de pausa si una pregunta, info o resultados están activos
+                if (!isInteractionActive) {
+                    pauseOverlay.classList.add('visible'); // Mostrar overlay de pausa
+                }
             } else if (event.data == YT.PlayerState.ENDED) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">replay</span>';
                 if (videoTimer) clearInterval(videoTimer);
                 videoTimer = null;
+                
+                pauseOverlay.classList.remove('visible'); // Ocultar al final
+                
                 // MODIFICACIÓN: Mostrar resultados automáticamente al final del video
                 showResults();
             } else if (event.data == YT.PlayerState.CUED || event.data == -1) {
                 isPlaying = false;
                 document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+                pauseOverlay.classList.remove('visible'); // Ocultar
             }
         }
 
         function setupEventListeners() {
             document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
+            
+            // NUEVO: Hacer que el blocker también active play/pause
+            const blocker = document.querySelector('.video-overlay-blocker');
+            if (blocker) {
+                blocker.addEventListener('click', togglePlayPause);
+            }
+            
             document.getElementById('audio-btn').addEventListener('click', toggleAudio);
             document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
             document.getElementById('restart-btn').addEventListener('click', restartVideo);
@@ -1518,6 +1569,7 @@
             // NUEVO: Botón de cerrar en resultados
             document.getElementById('results-continue-btn').addEventListener('click', () => {
                 document.getElementById('results-overlay').style.display = 'none';
+                isInteractionActive = false; // <-- AÑADIR ESTO
             });
         }
 
@@ -1869,6 +1921,7 @@
         // 1. Dispatcher Principal: Decide qué mostrar
         function showInteraction(index) {
             pauseVideo();
+            isInteractionActive = true; // <-- AÑADIR ESTO
             currentInteractionIndex = index;
             const interaction = questions[index];
             selectedAnswer = null; // Resetear selección
@@ -2250,6 +2303,8 @@
             document.getElementById('info-overlay').style.display = 'none';
             document.getElementById('question-overlay').style.display = 'none';
             
+            isInteractionActive = false; // <-- AÑADIDO
+            
             // Marcar el marcador como completado
             const markers = document.querySelectorAll('.marker');
             if (markers[currentInteractionIndex]) {
@@ -2391,6 +2446,7 @@
             
             // Pausar video si está reproduciéndose
             pauseVideo();
+            isInteractionActive = true; // <-- AÑADIDO
 
             const percentage = Math.round((userScore / totalPossiblePoints) * 100);
             
