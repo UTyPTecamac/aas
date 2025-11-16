@@ -1436,29 +1436,24 @@
         // NUEVO: "Watchdog" (vigilante) para la inicialización del player
         let playerInitializationWatchdog = null; 
 
+        // MODIFICADO: onYouTubeIframeAPIReady AHORA INICIA la carga del JSON
         function onYouTubeIframeAPIReady() {
             youtubeAPIReady = true;
-            // MODIFICACIÓN: Limpiar el temporizador maestro
             if (window.youtubeApiTimeout) {
                 clearTimeout(window.youtubeApiTimeout);
                 window.youtubeApiTimeout = null;
             }
-            tryInitializePlayer();
+            // Ahora que la API está lista, cargar el JSON
+            loadQuestionsData();
         }
         
         function tryInitializePlayer() {
             if (initializationInProgress || playerInitialized) return;
 
-            // MODIFICACIÓN: Esta es la nueva "puerta". Solo continúa si AMBOS están listos.
+            // Esta función ahora solo se llama DESPUÉS de que el JSON y la API están listos
             if (!jsonDataLoaded || !youtubeAPIReady) {
-                console.log('tryInitializePlayer: Aún no listo. JSON:', jsonDataLoaded, 'API:', youtubeAPIReady);
+                console.error('Error de lógica: tryInitializePlayer llamado prematuramente.');
                 return;
-            }
-            
-            // Si llegamos aquí, AMBOS están listos. Limpiamos cualquier timer restante.
-            if (window.youtubeApiTimeout) {
-                clearTimeout(window.youtubeApiTimeout);
-                window.youtubeApiTimeout = null;
             }
             
             if (!videoId) {
@@ -1469,7 +1464,6 @@
             
             initializationInProgress = true;
             
-            // MODIFICACIÓN: Avisar al usuario que el reproductor se está preparando
             showLoading('Preparando reproductor...', 'Casi listo');
             
             // NUEVO: Iniciar el "watchdog" del player. Si onReady no se dispara en 15s, mostrar error.
@@ -1626,11 +1620,12 @@
             });
         }
 
+        // MODIFICADO: DOMContentLoaded AHORA SOLO INICIA LA CADENA DE CARGA
         document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('play-pause-btn').disabled = true;
             
             // MODIFICACIÓN: Mostrar "Cargando..." como primer paso
-            showLoading('Iniciando...', 'Preparando componentes');
+            showLoading('Iniciando...', 'Cargando API de Video...');
             
             getUrlParams();
             
@@ -1644,8 +1639,8 @@
                 }, 30000); // MODIFICADO: 30s de espera, más generoso
             }
             
-            // Cargar el JSON (esto llamará a tryInitializePlayer cuando termine)
-            await loadQuestionsData();
+            // NO cargar JSON aquí. onYouTubeIframeAPIReady se encargará de eso.
+            // await loadQuestionsData(); // <-- ELIMINADO
             updateProgress();
         });
         
@@ -1687,6 +1682,7 @@
             document.getElementById('play-pause-btn').disabled = false;
         }
 
+        // MODIFICADO: loadQuestionsData ahora es el PASO 2
         async function loadQuestionsData() {
             showLoading('Cargando preguntas...', 'Conectando con el servidor');
             
@@ -1716,7 +1712,7 @@
                             interactionsData = data; 
                             success = true;
                             // MODIFICACIÓN: No ocultar "cargando", solo cambiar texto
-                            showLoading('Preguntas cargadas', 'Esperando API de video...');
+                            showLoading('Preguntas cargadas', 'Iniciando video...');
                         } else {
                             throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
                         }
@@ -1745,6 +1741,7 @@
             calculateTotalPoints();
             
             jsonDataLoaded = true;
+            // PASO 3: Ahora que el JSON está listo (y la API ya lo estaba), iniciar el player.
             tryInitializePlayer();
         }
         
