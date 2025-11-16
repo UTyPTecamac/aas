@@ -839,7 +839,7 @@
    <div class="progress-bar">
     <div class="progress-fill" id="progress-fill"></div>
    </div>
-   <div class="video-container"><iframe id="video-player" class="video-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe> <!-- Pantalla de Pregunta -->
+   <div class="video-container"><iframe id="video-player" class="video-player" src="https://www.youtube.com/embed/jCcZfY04at4?enablejsapi=1&amp;controls=0&amp;rel=0&amp;autoplay=0&amp;mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe> <!-- Pantalla de Pregunta -->
     <div class="question-overlay" id="question-overlay">
      <div class="question-card">
       <div class="question-header">
@@ -1105,31 +1105,58 @@
             }
         }
 
+        // Variable para controlar si la API está lista
+        let youtubeAPIReady = false;
+        let jsonDataLoaded = false;
+        let playerInitialized = false;
+
         // Función requerida por YouTube API
         function onYouTubeIframeAPIReady() {
-            getUrlParams(); // Obtener parámetros antes de crear el player
-            
-            player = new YT.Player('video-player', {
-                height: '100%',
-                width: '100%',
-                videoId: videoId,
-                playerVars: {
-                    'controls': 0,
-                    'rel': 0,
-                    'autoplay': 0,
-                    'mute': 0,
-                    'enablejsapi': 1
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
+            youtubeAPIReady = true;
+            console.log('YouTube API está lista');
+            initializePlayerIfReady();
+        }
+        
+        // Función para inicializar el player cuando todo esté listo
+        function initializePlayerIfReady() {
+            // Solo inicializar si la API está lista, el JSON está cargado (o no hay JSON), y aún no se ha inicializado
+            if (youtubeAPIReady && (jsonDataLoaded || !jsonFile) && !playerInitialized && videoId) {
+                console.log('Inicializando player con videoId:', videoId);
+                
+                try {
+                    player = new YT.Player('video-player', {
+                        height: '100%',
+                        width: '100%',
+                        videoId: videoId,
+                        playerVars: {
+                            'controls': 0,
+                            'rel': 0,
+                            'autoplay': 0,
+                            'mute': 0,
+                            'enablejsapi': 1
+                        },
+                        events: {
+                            'onReady': onPlayerReady,
+                            'onStateChange': onPlayerStateChange
+                        }
+                    });
+                    
+                    playerInitialized = true;
+                    console.log('Player inicializado correctamente');
+                } catch (error) {
+                    console.error('Error al inicializar el player:', error);
                 }
-            });
+            } else {
+                if (!youtubeAPIReady) console.log('Esperando YouTube API...');
+                if (!jsonDataLoaded && jsonFile) console.log('Esperando carga de JSON...');
+                if (playerInitialized) console.log('Player ya inicializado');
+                if (!videoId) console.warn('No hay videoId disponible');
+            }
         }
 
         function onPlayerReady(event) {
             playerReady = true;
-            console.log('Player ready');
+            console.log('Player ready - videoId:', videoId);
             
             // Obtener duración del video
             setTimeout(() => {
@@ -1203,15 +1230,18 @@
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM cargado, iniciando aplicación...');
-            getUrlParams();
             
-            // Cargar datos de preguntas antes de inicializar el video
+            // 1. Obtener parámetros de URL primero
+            getUrlParams();
+            console.log('Parámetros de URL procesados. videoId:', videoId, 'jsonFile:', jsonFile);
+            
+            // 2. Cargar datos de preguntas (esto marcará jsonDataLoaded como true)
             await loadQuestionsData();
             
-            // Actualizar el iframe con el videoId correcto
-            const videoPlayer = document.getElementById('video-player');
-            if (videoPlayer && videoId) {
-                videoPlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&rel=0&autoplay=0&mute=0`;
+            // 3. Si la API de YouTube ya está lista, inicializar el player
+            // (si no, se inicializará cuando onYouTubeIframeAPIReady se ejecute)
+            if (youtubeAPIReady) {
+                initializePlayerIfReady();
             }
             
             updateProgress();
@@ -1243,27 +1273,18 @@
         async function loadQuestionsData() {
             if (jsonFile) {
                 try {
+                    console.log('Cargando JSON desde:', jsonFile);
                     const response = await fetch(jsonFile);
                     if (response.ok) {
                         const data = await response.json();
+                        console.log('JSON recibido:', data);
                         
-                        // Actualizar video_id si viene en el JSON
+                        // Actualizar video_id si viene en el JSON (tiene prioridad sobre parámetro URL)
                         if (data.video_id) {
                             const extractedId = extractYouTubeId(data.video_id);
                             if (extractedId) {
                                 videoId = extractedId;
                                 console.log('Video ID actualizado desde JSON:', videoId);
-                                
-                                // Actualizar el iframe del video si ya existe
-                                const videoPlayer = document.getElementById('video-player');
-                                if (videoPlayer) {
-                                    videoPlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&rel=0&autoplay=0&mute=0`;
-                                }
-                                
-                                // Si el player ya está inicializado, recargarlo
-                                if (playerReady && player) {
-                                    player.loadVideoById(videoId);
-                                }
                             }
                         }
                         
@@ -1276,21 +1297,23 @@
                             Object.assign(questionsData, data);
                         }
                         
-                        // Recrear marcadores si el player ya está listo
-                        if (playerReady) {
-                            createInteractiveMarkers();
-                        }
-                        
                         console.log('JSON cargado exitosamente desde:', jsonFile);
                     } else {
                         console.warn('No se pudo cargar el JSON (status:', response.status, '), usando datos por defecto');
                     }
                 } catch (error) {
-                    console.warn('Error cargando JSON, usando datos por defecto:', error);
+                    console.error('Error cargando JSON:', error);
+                    console.warn('Usando datos por defecto');
                 }
+            } else {
+                console.log('No hay URL JSON especificada, usando datos por defecto');
             }
             
+            jsonDataLoaded = true;
             console.log('Questions data loaded:', questionsData);
+            
+            // Intentar inicializar el player si la API ya está lista
+            initializePlayerIfReady();
         }
 
         function createInteractiveMarkers() {
@@ -1324,10 +1347,23 @@
             setupTimelineSlider();
         }
 
+        let timelineSliderSetup = false;
+        
         function setupTimelineSlider() {
+            // Evitar configurar múltiples veces
+            if (timelineSliderSetup) {
+                return;
+            }
+            
             const markersContainer = document.getElementById('markers-container');
             const timelineHandle = document.getElementById('timeline-handle');
             const timelineTooltip = document.getElementById('timeline-tooltip');
+            
+            if (!markersContainer || !timelineHandle || !timelineTooltip) {
+                console.warn('Elementos del timeline no encontrados');
+                return;
+            }
+            
             let wasPlaying = false;
 
             // Eventos del handle
@@ -1337,6 +1373,8 @@
             markersContainer.addEventListener('click', handleTimelineClick);
             markersContainer.addEventListener('mousemove', showTimelineTooltip);
             markersContainer.addEventListener('mouseleave', hideTimelineTooltip);
+            
+            timelineSliderSetup = true;
 
             function startDrag(e) {
                 isDragging = true;
