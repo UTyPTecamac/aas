@@ -1,280 +1,2601 @@
 <!doctype html>
 <html lang="es">
-<head>
+ <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Interactivo Mejorado</title>
+  <title>Video Interactivo Avanzado</title>
+  <!-- 1. Cargar la API de YouTube inmediatamente -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* Estilos básicos y contenedor */
-    html, body { height:100%; margin:0; padding:0; font-family:Inter, Arial, sans-serif; background:transparent; }
-    .container { display:flex; flex-direction:column; height:100vh; }
-    .video-container { flex:1; display:flex; align-items:center; justify-content:center; background:#000; }
-    .video-aspect { width:100%; max-width:1200px; aspect-ratio:16/9; position:relative; }
-    iframe.video-player { width:100%; height:100%; border:0; background:#000; }
-
-    /* Overlay splash / estado */
-    .video-state-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#fff; z-index:10; background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.65)); pointer-events:auto; }
-    .splash-play { width:90px; height:90px; border-radius:50%; border:3px solid #fff; display:flex; align-items:center; justify-content:center; font-size:48px; cursor:pointer; background:rgba(255,255,255,0.08); }
-    .splash-title { margin-top:16px; font-size:18px; }
-
-    /* Controles inferiores */
-    .controls { background:#000; display:flex; align-items:center; gap:12px; padding:10px 14px; color:#fff; }
-    .play-pause { width:40px; height:40px; border-radius:50%; background:#1768ac; border:none; color:#fff; cursor:pointer; }
-    .time { font-family:monospace; min-width:90px; }
-    .markers-container { flex:1; height:8px; background:#e6e6e6; border-radius:6px; position:relative; cursor:pointer; }
-    .marker { position:absolute; top:-2px; width:12px; height:12px; border-radius:50%; background:#1768ac; border:2px solid #fff; transform:translateX(-50%); }
-    .timeline-progress { position:absolute; left:0; top:0; bottom:0; width:0%; background:#1768ac; border-radius:6px; }
-
-    /* Mensajes de error / info */
-    .message { padding:12px; background:#fff5f5; color:#742a2a; border-radius:6px; margin:8px; display:none; }
-
-    @media (max-width:600px){ .splash-play{width:68px;height:68px;font-size:34px;} }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="video-container">
-      <div class="video-aspect">
-        <iframe id="video-player" class="video-player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen src=""></iframe>
-
-        <div id="video-state-overlay" class="video-state-overlay">
-          <div id="splash-play" class="splash-play"><span class="material-icons">play_arrow</span></div>
-          <div class="splash-title">Pulsa para iniciar</div>
-          <div id="splash-sub" style="margin-top:8px; font-size:13px; color:rgba(255,255,255,0.8)">Cargando...</div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="controls">
-      <button id="play-pause-btn" class="play-pause" disabled><span class="material-icons">play_arrow</span></button>
-      <div class="time"><span id="current-time">0:00</span> / <span id="total-time">0:00</span></div>
-      <div class="markers-container" id="markers-container"><div class="timeline-progress" id="timeline-progress"></div></div>
-    </div>
-
-    <div id="message" class="message"></div>
-  </div>
-
-  <script>
-    // ---------------------- Config y estado ----------------------
-    let videoId = 'jCcZfY04at4'; // fallback
-    let jsonFile = null;
-    let videoParamProvided = false;
-
-    let youtubeAPIReady = false;
-    let jsonDataLoaded = false;
-    let playerInitialized = false;
-    let playerReady = false;
-    let player = null;
-    let questions = [];
-    let videoDuration = 0;
-    let videoTimer = null;
-    let playerInitializationWatchdog = null;
-
-    // ---------------------- Utilidades ----------------------
-    function showMessage(text, isError = true) {
-      const el = document.getElementById('message');
-      el.textContent = text;
-      el.style.display = 'block';
-      el.style.background = isError ? '#fff5f5' : '#e6ffef';
-      el.style.color = isError ? '#742a2a' : '#155724';
-      setTimeout(()=> el.style.display = 'none', 6000);
-    }
-
-    function extractYouTubeId(urlOrId) {
-      if (!urlOrId) return null;
-      if (/^[a-zA-Z0-9_-]{11}$/.test(urlOrId)) return urlOrId;
-      const patterns = [ /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/, /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/ ];
-      for (const p of patterns) { const m = urlOrId.match(p); if (m && m[1]) return m[1]; }
-      return null;
-    }
-
-    function formatTime(s) { s = Math.floor(s||0); const m = Math.floor(s/60); const sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; }
-
-    // ---------------------- Lectura parámetros URL ----------------------
-    function getUrlParams(){
-      const params = new URLSearchParams(window.location.search);
-      const v = params.get('video'); const j = params.get('json');
-      if (v){ const id = extractYouTubeId(v); if (id){ videoId = id; videoParamProvided = true; } }
-      if (j) jsonFile = decodeURIComponent(j);
-    }
-
-    // ---------------------- Carga JSON con reintentos ----------------------
-    async function fetchWithRetries(url, retries=3, delay=1000){
-      for (let i=0;i<retries;i++){
-        try{
-          const controller = new AbortController();
-          const timeout = setTimeout(()=>controller.abort(), 10000);
-          const res = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
-          clearTimeout(timeout);
-          if (!res.ok) throw new Error('HTTP '+res.status);
-          return await res.json();
-        }catch(err){
-          console.warn('fetch fail', err);
-          if (i===retries-1) throw err;
-          await new Promise(r=>setTimeout(r, delay*(i+1)));
+        /* MODIFICADO: Fondo transparente y altura completa */
+        html, body {
+            height: 100%; 
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: transparent; 
+            overflow: hidden; 
         }
-      }
-    }
 
-    async function loadQuestionsData(){
-      if (!jsonFile){
-        // fallback simple
-        questions = [ {id:1, time:5, type:'text', content:{title:'Bienvenido', text:'Ejemplo'}} , {id:2, time:15, type:'mc', content:{question:'¿Ejemplo?', options:['A','B'], correct:0}} ];
-        jsonDataLoaded = true; if (youtubeAPIReady) tryInitializePlayer(); return;
-      }
-      try{
-        const data = await fetchWithRetries(jsonFile, 3);
-        if (!data) throw new Error('JSON vacío');
-        if (data.video_id && !videoParamProvided){ const id = extractYouTubeId(data.video_id); if (id) videoId = id; }
-        questions = data.questions || [];
-        jsonDataLoaded = true;
-        if (youtubeAPIReady) tryInitializePlayer();
-      }catch(err){
-        console.error('No se pudo cargar JSON', err);
-        showMessage('No se pudo cargar el archivo de preguntas. '+(err.message||''));
-      }
-    }
+        /* MODIFICADO: Contenedor principal ahora usa flex para llenar el body */
+        .container {
+            width: 100%; 
+            height: 100%;
+            display: flex; 
+            flex-direction: column; 
+            background: transparent; 
+            border: none; 
+            box-shadow: none;
+            border-radius: 0;
+        }
 
-    // ---------------------- API YouTube ----------------------
-    function onYouTubeIframeAPIReady(){
-      console.log('YouTube API ready');
-      youtubeAPIReady = true;
-      if (window.youtubeApiTimeout){ clearTimeout(window.youtubeApiTimeout); window.youtubeApiTimeout = null; }
-      loadQuestionsData();
-    }
+        /* MODIFICADO: .video-container ahora es flexible y centra su contenido */
+        .video-container {
+            width: 100%;
+            flex: 1; /* Ocupa el espacio disponible */
+            min-height: 0; /* Permite que el contenedor se encoja */
+            position: relative;
+            background: #000;
+            /* NUEVO: Centra el .video-aspect-wrapper */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Oculta cualquier desbordamiento */
+        }
+        
+        /* NUEVO: Contenedor de proporción 16:9 */
+        /* Este div mantiene la proporción y se centra */
+        .video-aspect-wrapper {
+            width: 100%;
+            max-width: 100%;
+            height: auto; /* Se ajusta automáticamente */
+            max-height: 100%;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            margin: auto; /* Centrado */
+        }
 
-    function tryInitializePlayer(){
-      if (playerInitialized) return;
-      if (!youtubeAPIReady || !jsonDataLoaded) return;
-      playerInitialized = true;
-      updateSplash('Preparando video...', true);
+        /* MODIFICADO: El player y overlays ahora son absolutos DENTRO del wrapper */
+        .video-player,
+        .video-overlay-blocker,
+        .video-state-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-      // watchdog extendido
-      playerInitializationWatchdog = setTimeout(()=>{
-        if (!playerReady){ showMessage('El reproductor tardó demasiado en inicializar. Intenta recargar la página.'); }
-      }, 25000);
+        /* Div transparente para bloquear clics a YouTube */
+        .video-overlay-blocker {
+            z-index: 5;
+            cursor: pointer;
+            display: none; /* MODIFICADO: Oculto hasta que el video esté listo */
+        }
 
-      try{
-        // IMPORTANT: Pasar videoId aquí evita problemas donde el player no responde
-        player = new YT.Player('video-player', {
-          videoId: videoId,
-          width: '100%',
-          height: '100%',
-          playerVars: { controls:0, rel:0, enablejsapi:1, modestbranding:1, iv_load_policy:3 },
-          events: { onReady:onPlayerReady, onStateChange:onPlayerStateChange, onError:onPlayerError }
+        /* MODIFICADO: Overlay de estado rediseñado como "Splash Screen" */
+        /* AHORA ES VISIBLE POR DEFECTO */
+        .video-state-overlay {
+            z-index: 6; 
+            background: #000; 
+            display: flex; /* <-- MODIFICADO: visible por defecto */
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 1; /* <-- MODIFICADO: visible por defecto */
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+        }
+        
+        /* MODIFICADO: Esta clase ahora OCULTA el overlay */
+        .video-state-overlay.hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        /* NUEVO: Título de la pantalla de inicio */
+        .splash-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* NUEVO: Subtítulo de la pantalla de inicio */
+        .splash-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 20px;
+        }
+
+        /* NUEVO: Botón de Play circular y estético */
+        .splash-play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            transition: all 0.2s ease;
+            font-size: 50px; /* Tamaño del icono */
+        }
+        
+        /* NUEVO: Ocultar el botón de play si hay un error */
+        .video-state-overlay.error .splash-play-button {
+            display: none;
+        }
+        
+        /* NUEVO: Estilo de texto de error en splash */
+        .video-state-overlay.error .splash-title {
+            color: #dc3545; /* Rojo de error */
+        }
+        
+        /* NUEVO: Animación de spinner en splash screen */
+        .video-state-overlay.loading .splash-play-button {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        .video-state-overlay.loading .splash-play-button .material-icons {
+            display: none;
+        }
+        
+
+        .splash-play-button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* --- Estilos de Overlays --- */
+        .question-overlay, .info-overlay, .feedback-overlay, .results-overlay {
+            position: fixed; /* Usar fixed para cubrir toda la ventana, no solo el video */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            /* MODIFICADO: Quitado el backdrop-filter para compatibilidad */
+        }
+        
+        /* Z-index para apilar overlays */
+        .feedback-overlay { z-index: 1001; }
+        .results-overlay { z-index: 1002; } /* Los resultados van encima de todo */
+
+
+        .question-card, .info-card, .feedback-card, .results-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: none;
+            animation: slideIn 0.4s ease-out;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Evitar overflow en la animación */
+        }
+        
+        .question-card, .info-card {
+            width: 80%;
+            height: 80%;
+            max-width: 1000px;
+            max-height: 800px;
+            overflow-y: auto; /* Permitir scroll si el contenido es mucho */
+        }
+        
+        .info-card {
+            max-width: 800px;
+            height: auto;
+            max-height: 80%;
+        }
+        
+        .feedback-card, .results-card {
+            width: 90%;
+            height: auto;
+            max-width: 500px;
+            max-height: 90%; /* Incrementar altura máxima para resultados */
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .feedback-card {
+            animation: bounceIn 0.6s ease-out;
+        }
+        
+        .results-card {
+            padding: 40px;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        .feedback-card.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 3px solid #28a745;
+        }
+
+        .feedback-card.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 3px solid #dc3545;
+        }
+
+        .feedback-icon {
+            font-size: 0;
+            margin-bottom: 30px;
+            animation: iconPulse 0.8s ease-out;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .feedback-icon .material-icons {
+            font-size: 150px;
+            line-height: 1;
+        }
+
+        .feedback-icon.correct {
+            color: #ffffff;
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .feedback-icon.incorrect {
+            color: #ffffff;
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+        }
+        
+        /* --- NUEVO: Estilos de Resultados --- */
+        
+        .results-icon {
+            font-size: 60px; /* Icono más pequeño que el de feedback */
+            margin-bottom: 20px;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            animation: iconPulse 0.8s ease-out;
+        }
+        
+        .results-icon.excellent { background: linear-gradient(135deg, #28a745, #20c997); }
+        .results-icon.good { background: linear-gradient(135deg, #1768ac, #0f5c9c); }
+        .results-icon.improve { background: linear-gradient(135deg, #ff9500, #ffc107); }
+        
+        .results-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        
+        .results-score-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto 30px;
+            /* El fondo se aplica con JS y animación */
+            background: #e2e8f0; /* Color base */
+            position: relative;
+        }
+        
+        .results-score-ring.animate {
+            /* Variable --ring-percentage (en deg) y --ring-color (hex) se establecen desde JS */
+            animation: fill-ring 1.5s 0.3s ease-out forwards;
+        }
+
+        @keyframes fill-ring {
+            from {
+                background: conic-gradient(#e2e8f0 0deg, #e2e8f0 360deg);
+            }
+            to {
+                background: conic-gradient(var(--ring-color) 0deg, var(--ring-color) var(--ring-percentage), #e2e8f0 var(--ring-percentage));
+            }
+        }
+
+        .results-score-inner {
+            width: 160px; /* Más pequeño para crear el anillo */
+            height: 160px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1; /* Asegurarse de que esté sobre el fondo cónico */
+        }
+        
+        .results-percentage {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2d3748;
+            /* Animación de contador */
+            opacity: 0;
+            transform: scale(0.5);
+            animation: bounceIn 0.6s 1s ease-out forwards;
+        }
+        
+        .results-details {
+            font-size: 18px;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        
+        .results-message {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            max-width: 350px;
+        }
+        
+        /* --- Estilos de Carga --- */
+        /* MODIFICADO: ELIMINADO. Ya no se usa. */
+        .loading-overlay {
+            display: none !important;
+        }
+        
+        /* --- Estilos de Tarjetas (Pregunta e Info) --- */
+
+        .feedback-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #2d3748;
+        }
+
+        .feedback-message {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            color: #4a5568;
+            max-width: 400px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-icon {
+            font-size: 48px;
+            color: #1768ac;
+            margin-right: 16px;
+        }
+
+        .card-info {
+            flex: 1;
+        }
+        
+        .card-counter {
+            color: #4a5568;
+            font-size: 16px;
+            font-weight: 600;
+            background: #f7fafc;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 16px; /* Espacio para scrollbar */
+        }
+        
+        .card-actions {
+            display: flex;
+            justify-content: flex-end; /* Alineado a la derecha */
+            align-items: center;
+            padding-top: 16px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes iconPulse {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            30% { transform: scale(1.3) rotate(-90deg); opacity: 0.7; }
+            60% { transform: scale(0.9) rotate(0deg); opacity: 0.9; }
+            80% { transform: scale(1.1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOutRight {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- Estilos de Contenido de Interacción --- */
+
+        .interaction-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .interaction-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+        
+        .interaction-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 24px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex: 1;
+        }
+
+        .option-button {
+            background: #ffffff;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            color: #2d3748;
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        .option-button:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .option-button.selected {
+            background: #ebf8ff;
+            border-color: #1768ac;
+            color: #1768ac;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23,104,172,0.2);
+        }
+
+        .option-button.correct {
+            background: #f0fff4;
+            border-color: #28a745;
+            color: #22543d;
+            animation: correctAnswer 0.6s ease-out;
+        }
+
+        .option-button.correct::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .option-button.incorrect {
+            background: #fff5f5;
+            border-color: #dc3545;
+            color: #742a2a;
+            animation: incorrectAnswer 0.6s ease-out;
+        }
+
+        .option-button.incorrect::before {
+            content: '✗';
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); background: #c6f6d5; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        /* --- Botones --- */
+
+        .submit-btn, .continue-btn {
+            background: #1768ac;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .submit-btn:hover, .continue-btn:hover {
+            background: #0f5c9c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23,104,172,0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            color: #a0aec0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .continue-btn {
+            background: #28a745;
+        }
+
+        .continue-btn:hover {
+            background: #218838;
+            box-shadow: 0 8px 25px rgba(40,167,69,0.3);
+        }
+        
+        /* --- Estilos para Relación de Columnas --- */
+        
+        .matching-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex: 1;
+        }
+        
+        .matching-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .column-item {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 16px;
+            color: #2d3748;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .column-item:hover {
+            border-color: #cbd5e0;
+            background: #fff;
+        }
+        
+        .column-item.selected {
+            border-color: #1768ac;
+            background: #ebf8ff;
+            box-shadow: 0 4px 12px rgba(23,104,172,0.2);
+            transform: scale(1.03);
+        }
+        
+        .column-item.paired-a {
+            background: #ebf8ff;
+            border-color: #1768ac;
+            color: #1768ac;
+        }
+        
+        .column-item.paired-b {
+            background: #ebf8ff;
+            border-color: #1768ac;
+            color: #1768ac;
+        }
+
+        .column-item.correct {
+            background: #f0fff4;
+            border-color: #28a745;
+            color: #22543d;
+        }
+        
+        .column-item.incorrect {
+            background: #fff5f5;
+            border-color: #dc3545;
+            color: #742a2a;
+        }
+        
+        /* --- Barra de Progreso --- */
+
+        .progress-bar {
+            background: #e6e6e6;
+            height: 6px;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: #1768ac;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: #0f5c9c;
+        }
+        
+        /* --- Controles de Video (Inferior) --- */
+
+        .controls {
+            padding: 16px 24px;
+            background: #000000;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .video-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .play-pause-btn {
+            background: #1768ac;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .play-pause-btn:hover {
+            background: #0f5c9c;
+        }
+        
+        .play-pause-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .play-pause-btn:disabled:hover {
+            background: #cbd5e0;
+        }
+
+        .time-display {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 12px;
+            font-family: 'Courier New', monospace;
+            min-width: 100px;
+        }
+
+        .time-display span {
+            color: #ffffff;
+        }
+
+        .interactive-markers {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            margin: 0 16px;
+        }
+
+        .markers-container {
+            position: relative;
+            flex: 1;
+            height: 8px;
+            background: #e6e6e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .markers-container:hover {
+            height: 12px;
+            margin: -2px 0;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #1768ac;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+            pointer-events: none;
+        }
+
+        .timeline-handle {
+            position: absolute;
+            top: -4px;
+            width: 16px;
+            height: 16px;
+            background: #1768ac;
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            z-index: 5;
+        }
+
+        .timeline-handle:hover {
+            transform: translateX(-50%) scale(1.2);
+            background: #0f5c9c;
+        }
+
+        .timeline-handle:active {
+            cursor: grabbing;
+            transform: translateX(-50%) scale(1.3);
+        }
+
+        .marker {
+            position: absolute;
+            top: -2px;
+            width: 12px;
+            height: 12px;
+            background: #1768ac;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+
+        .marker:hover {
+            transform: scale(1.3);
+            background: #0f5c9c;
+            z-index: 4;
+        }
+
+        .marker.completed {
+            background: #5cb85c;
+            animation: completedPulse 0.5s ease-out;
+        }
+
+        .marker.approaching {
+            background: #ff9500;
+            animation: approachingPulse 1.5s infinite;
+            transform: scale(1.2);
+        }
+
+        .marker.active {
+            background: #ff4444;
+            animation: activePulse 1s infinite;
+            transform: scale(1.4);
+        }
+
+        @keyframes completedPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes approachingPulse {
+            0%, 100% { 
+                transform: scale(1.2);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            50% { 
+                transform: scale(1.4);
+                box-shadow: 0 4px 12px rgba(255, 149, 0, 0.6);
+            }
+        }
+
+        @keyframes activePulse {
+            0%, 100% { 
+                transform: scale(1.4);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            50% { 
+                transform: scale(1.6);
+                box-shadow: 0 6px 16px rgba(255, 68, 68, 0.8);
+            }
+        }
+
+        .marker-tooltip {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .marker:hover .marker-tooltip {
+            opacity: 1;
+        }
+
+        .timeline-tooltip {
+            position: absolute;
+            bottom: 25px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+            transform: translateX(-50%);
+        }
+
+        .markers-label {
+            font-size: 12px;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: normal;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-btn:hover {
+            border-color: #777;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .control-btn.icon-only {
+            padding: 8px;
+            min-width: 36px;
+            justify-content: center;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 120px;
+            margin-bottom: 8px;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            color: #333;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .dropdown-item.active {
+            background: #e8f4fd;
+            color: #1768ac;
+        }
+
+        .control-btn {
+            position: relative;
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-weight: normal;
+            text-align: left;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .feedback.correct {
+            background: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+
+        .feedback.correct::before {
+            content: '✓';
+            color: #5cb85c;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .feedback.incorrect {
+            background: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+
+        .feedback.incorrect::before {
+            content: '✗';
+            color: #d9534f;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            /* MODIFICADO: Se quitó el margen del contenedor */
+            .container {
+                border-radius: 0;
+            }
+            
+            .question-card, .feedback-card, .info-card, .results-card {
+                width: 95%;
+                height: 90%;
+                padding: 24px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .interaction-title {
+                font-size: 20px;
+            }
+            
+            .results-title {
+                font-size: 28px;
+            }
+            
+            .results-score-ring {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .results-score-inner {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .results-percentage {
+                font-size: 36px;
+            }
+
+            .option-button {
+                font-size: 16px;
+                padding: 16px 20px;
+            }
+
+            .feedback-title {
+                font-size: 24px;
+            }
+
+            .feedback-message {
+                font-size: 16px;
+            }
+
+            .feedback-icon {
+                font-size: 80px;
+                margin-bottom: 16px;
+            }
+
+            .feedback-card {
+                padding: 24px;
+                max-height: 80%;
+            }
+            
+            .matching-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header" style="display: none;">
+    <p id="video-description">Responde las preguntas que aparecen durante el video</p>
+   </div>
+   <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+   </div>
+
+   <!-- MODIFICADO: Contenedor flexible que centra el wrapper 16:9 -->
+   <div class="video-container">
+       <!-- NUEVO: Wrapper que mantiene la proporción 16:9 -->
+       <div class="video-aspect-wrapper">
+            <!-- MODIFICADO: de <div> a <iframe> sin src -->
+            <iframe id="video-player" class="video-player"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                src=""> 
+            </iframe>
+            
+            <div class="video-overlay-blocker" id="video-overlay-blocker"></div>
+
+            <!-- MODIFICADO: Overlay de Estado con nuevo contenido (Splash Screen) -->
+            <div class="video-state-overlay" id="video-state-overlay">
+                <span class="splash-title">Video Interactivo</span>
+                <div class="splash-play-button">
+                    <!-- NUEVO: Icono de Material Icons en lugar de CSS -->
+                    <span class="material-icons" style="font-size: 50px; color: white;">play_arrow</span>
+                </div>
+                <span class="splash-subtitle">Presiona para iniciar</span>
+            </div>
+       </div>
+   </div>
+    
+    <!-- Overlays (ahora fuera del .video-container para cubrir la pantalla completa) -->
+    <div class="info-overlay" id="info-overlay">
+     <div class="info-card">
+        <div class="card-header">
+           <div class="card-icon"><span class="material-icons">info</span></div>
+           <div class="card-info">
+                <div class="interaction-title" id="info-title"></div>
+           </div>
+        </div>
+        <div class="card-content" id="info-content">
+            <!-- El contenido (imagen, texto) se insertará aquí -->
+        </div>
+        <div class="card-actions">
+            <button class="continue-btn" id="info-continue-btn">
+                <span class="material-icons">play_arrow</span> Continuar
+            </button>
+        </div>
+     </div>
+    </div>
+    
+    <div class="question-overlay" id="question-overlay">
+     <div class="question-card">
+      <div class="card-header">
+       <div class="card-icon"><span class="material-icons">quiz</span></div>
+       <div class="card-info">
+        <div class="card-counter" id="question-counter">Pregunta 1 de 5</div>
+       </div>
+      </div>
+      <div class="card-content" id="interaction-content">
+          <!-- El contenido (opciones, columnas, etc.) se insertará aquí -->
+      </div>
+      <div class="card-actions">
+          <button class="submit-btn" id="submit-btn" disabled>
+            <span class="material-icons">send</span> Responder
+          </button>
+      </div>
+     </div>
+    </div>
+    
+    <div class="feedback-overlay" id="feedback-overlay">
+     <div class="feedback-card" id="feedback-card">
+      <div class="feedback-icon" id="feedback-icon"><span class="material-icons">check_circle</span>
+      </div>
+      <div class="feedback-title" id="feedback-title">
+       ¡Correcto!
+      </div>
+      <div class="feedback-message" id="feedback-message">
+       ¡Excelente! Has respondido correctamente.
+      </div><button class="continue-btn" id="feedback-continue-btn"> <span class="material-icons">play_arrow</span> Continuar </button>
+     </div>
+    </div>
+    
+    <div class="results-overlay" id="results-overlay">
+     <div class="results-card" id="results-card">
+        <div class="results-icon" id="results-icon">
+            <span class="material-icons">emoji_events</span>
+        </div>
+        <div class="results-title" id="results-title">¡Resultados!</div>
+        
+        <div class="results-score-ring" id="results-score-ring">
+            <div class="results-score-inner">
+                <span class="results-percentage" id="results-percentage">100%</span>
+            </div>
+        </div>
+        
+        <div class="results-details" id="results-details">
+            Puntos: 5 / 5
+        </div>
+        <div class="results-message" id="results-message">
+            Mensaje de retroalimentación.
+        </div>
+        
+        <button class="continue-btn" id="results-continue-btn">
+            <span class="material-icons">check</span> Finalizar
+        </button>
+     </div>
+    </div>
+
+   <!-- MODIFICADO: Barra de controles (sin cambios, pero ahora se posiciona correctamente) -->
+   <div class="controls">
+    <div class="video-controls"><button class="play-pause-btn" id="play-pause-btn"> <span class="material-icons">play_arrow</span> </button>
+     <div class="time-display" id="time-display"><span id="current-time">0:00</span> / <span id="total-time">0:00</span>
+     </div>
+    </div>
+    <div class="interactive-markers"><span class="markers-label">Actividades:</span>
+     <div class="markers-container" id="markers-container">
+      <div class="timeline-progress" id="timeline-progress"></div>
+      <div class="timeline-handle" id="timeline-handle"></div>
+      <div class="timeline-tooltip" id="timeline-tooltip">
+       0:00
+      </div>
+     </div>
+    </div>
+    <div class="control-buttons"><button class="control-btn icon-only" id="audio-btn" title="Silenciar/Activar audio"> <span class="material-icons">volume_up</span> </button> <button class="control-btn icon-only" id="fullscreen-btn" title="Pantalla completa"> <span class="material-icons">fullscreen</span> </button> <button class="control-btn icon-only" id="restart-btn" title="Reiniciar video"> <span class="material-icons">replay</span> </button> <button class="control-btn icon-only" id="results-btn" title="Ver resultados"> <span class="material-icons">assessment</span> </button>
+    </div>
+   </div>
+  </div>
+  
+  <!-- MODIFICADO: Overlay de carga ELIMINADO -->
+  
+  <script>
+        // Configuración por defecto
+        const defaultConfig = {
+            video_description: "Responde las preguntas que aparecen durante el video"
+        };
+
+        // Datos de ejemplo (fallback)
+        let interactionsData = {
+            "video_id": "jCcZfY04at4",
+            "questions": [
+                {
+                    "id": 1,
+                    "time": 5,
+                    "type": "text_media",
+                    "content": {
+                        "title": "(EJEMPLO) ¡Bienvenido!",
+                        "text": "Este es un texto de ejemplo. El video se pausará para mostrarte información o preguntas.",
+                        "image": null
+                    }
+                },
+                {
+                    "id": 2,
+                    "time": 15,
+                    "type": "multiple_choice",
+                    "content": {
+                        "question": "(EJEMPLO) ¿Cuál es el tema principal?",
+                        "options": ["Programación", "Historia", "Algoritmos"],
+                        "correct_answer": 0,
+                        "feedback": {
+                            "correct": "¡Correcto!",
+                            "incorrect": "Incorrecto."
+                        }
+                    }
+                }
+            ]
+        };
+
+        // Variables globales
+        let questions = []; // Array de todas las interacciones
+        let currentInteractionIndex = 0;
+        let selectedAnswer = null;
+        let userMatches = []; // Para relación de columnas
+        let selectedColumnA = null; // Para relación de columnas
+        
+        let questionsAnswered = 0;
+        // MODIFICACIÓN: Sistema de Puntuación
+        let userScore = 0;
+        let totalPossiblePoints = 0;
+        
+        let isPlaying = false;
+        let videoTimer = null;
+        let currentVideoTime = 0;
+        let videoDuration = 0;
+        let isMuted = false;
+        let player = null;
+        let playerReady = false;
+        let isDragging = false;
+        
+        // MODIFICADO: Flag global para saber si una interacción (pregunta, info, resultados) está activa
+        let isInteractionActive = false; 
+        
+        // Configuración del video desde URL
+        let videoId = 'jCcZfY04at4';
+        let jsonFile = null; 
+        let videoParamProvided = false; 
+
+        // --- Funciones de Audio ---
+        function createAudioFeedback(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let frequencies = [];
+            let baseDelay = 0.1;
+            let duration = 0.4;
+            let waveType = 'sine';
+            
+            switch(type) {
+                case 'correct':
+                    frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+                    break;
+                case 'incorrect':
+                    frequencies = [400, 200];
+                    waveType = 'sawtooth';
+                    duration = 0.5;
+                    break;
+                // NUEVO: Sonidos de resultados
+                case 'results_excellent':
+                    frequencies = [523, 659, 783, 1046]; // C, E, G, C6 (Ascendente)
+                    baseDelay = 0.08;
+                    duration = 0.5;
+                    break;
+                case 'results_good':
+                    frequencies = [523, 659, 783]; // C, E, G (Estándar)
+                    baseDelay = 0.1;
+                    duration = 0.5;
+                    break;
+                case 'results_bad':
+                    frequencies = [523, 440, 392]; // C, A, G (Descendente)
+                    baseDelay = 0.12;
+                    duration = 0.5;
+                    break;
+                default:
+                    return;
+            }
+
+            frequencies.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                oscillator.type = waveType;
+                
+                const startTime = audioContext.currentTime + (index * baseDelay);
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+                
+                oscillator.start(startTime);
+                oscillator.stop(startTime + duration + 0.1);
+            });
+        }
+
+        // --- Funciones de Utilidad (sin cambios) ---
+        function extractYouTubeId(urlOrId) {
+            if (!urlOrId) return null;
+            if (/^[a-zA-Z0-9_-]{11}$/.test(urlOrId)) return urlOrId;
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+                /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/
+            ];
+            for (const pattern of patterns) {
+                const match = urlOrId.match(pattern);
+                if (match && match[1]) return match[1];
+            }
+            return null;
+        }
+
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoParam = urlParams.get('video');
+            const jsonParam = urlParams.get('json');
+            
+            if (videoParam) {
+                const extractedId = extractYouTubeId(videoParam);
+                if (extractedId) {
+                    videoId = extractedId;
+                    videoParamProvided = true; 
+                } else {
+                    console.warn('No se pudo extraer el ID del video de:', videoParam);
+                }
+            }
+            if (jsonParam) {
+                jsonFile = decodeURIComponent(jsonParam);
+            }
+        }
+        
+        // --- Lógica de Carga e Inicialización ---
+
+        let youtubeAPIReady = false;
+        let jsonDataLoaded = false;
+        let playerInitialized = false;
+        let initializationInProgress = false;
+        // NUEVO: "Watchdog" (vigilante) para la inicialización del player
+        let playerInitializationWatchdog = null; 
+
+        // MODIFICADO: onYouTubeIframeAPIReady AHORA INICIA la carga del JSON
+        // PASO 1: La API de YouTube está lista
+        function onYouTubeIframeAPIReady() {
+            console.log('PASO 1: API de YouTube está lista.');
+            youtubeAPIReady = true;
+            if (window.youtubeApiTimeout) {
+                clearTimeout(window.youtubeApiTimeout);
+                window.youtubeApiTimeout = null;
+            }
+            // Ahora que la API está lista, cargar el JSON
+            loadQuestionsData();
+        }
+        
+        // PASO 3: Iniciar el reproductor
+        function tryInitializePlayer() {
+            if (initializationInProgress || playerInitialized) return;
+
+            // Esta función ahora solo se llama DESPUÉS de que el JSON y la API están listos
+            if (!jsonDataLoaded || !youtubeAPIReady) {
+                console.error('Error de lógica: tryInitializePlayer llamado prematuramente.');
+                return;
+            }
+            
+            if (!videoId) {
+                console.warn('No hay videoId disponible');
+                showSplashError('Error Crítico', 'No se ha especificado un ID de video válido.');
+                return;
+            }
+            
+            initializationInProgress = true;
+            
+            console.log('PASO 3: Inicializando el reproductor de video...');
+            updateSplashLoading(true, 'Preparando Video...'); // Mostrar spinner
+            
+            // NUEVO: Iniciar el "watchdog" del player. Si onReady no se dispara en 15s, mostrar error.
+            playerInitializationWatchdog = setTimeout(() => {
+                if (!playerReady) { // playerReady solo se vuelve true en onPlayerReady
+                    console.error('Timeout: El reproductor de video no respondió (onReady no se disparó).');
+                    showSplashError('Error de Video', 'El video no respondió. Intenta recargar la página.');
+                }
+            }, 15000); // 15 segundos de espera para que el video se inicialice
+
+            try {
+                // MODIFICADO: Adjuntar el player al IFRAME existente
+                player = new YT.Player('video-player', {
+                    // videoId: videoId, // No es necesario si el src ya está puesto
+                    playerVars: {
+                        'controls': 0, 
+                        'rel': 0, 
+                        'autoplay': 0, 
+                        'mute': 0, 
+                        'enablejsapi': 1,
+                        'modestbranding': 1, // Oculta el logo de YouTube
+                        'iv_load_policy': 3 // Oculta anotaciones
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange,
+                        'onError': onPlayerError
+                    }
+                });
+                playerInitialized = true;
+                initializationInProgress = false;
+            } catch (error) {
+                console.error('Error al inicializar el player:', error);
+                showSplashError('Error de Player', 'No se pudo iniciar el reproductor de YouTube.');
+                initializationInProgress = false;
+                // Limpiar watchdog si la creación del player falla instantáneamente
+                if (playerInitializationWatchdog) clearTimeout(playerInitializationWatchdog);
+            }
+        }
+
+        // PASO 4: El video está listo
+        function onPlayerReady(event) {
+            // ¡ÉXITO! El player está listo.
+            console.log('PASO 4: El reproductor de video está listo (onReady).');
+            
+            // NUEVO: Detener el "watchdog"
+            if (playerInitializationWatchdog) {
+                clearTimeout(playerInitializationWatchdog);
+                playerInitializationWatchdog = null;
+            }
+            
+            playerReady = true;
+
+            // MODIFICACIÓN: La configuración ahora se hace aquí
+            updateSplashLoading(false); // Ocultar spinner, mostrar botón de Play
+            
+            document.getElementById('video-overlay-blocker').style.display = 'block'; // Mostrar el blocker
+            document.getElementById('play-pause-btn').disabled = false; // Habilitar controles
+            setupEventListeners();
+            
+            try {
+                videoDuration = player.getDuration();
+                updateTimeDisplay();
+                createInteractiveMarkers();
+            } catch (error) {
+                console.warn('No se pudo obtener la duración, usando 180s por defecto.', error);
+                videoDuration = 180;
+                createInteractiveMarkers();
+            }
+        }
+
+        function onPlayerError(event) {
+            console.error('Error del reproductor de YouTube:', event.data);
+            
+            // NUEVO: Detener el "watchdog" si el player reporta un error
+            if (playerInitializationWatchdog) {
+                clearTimeout(playerInitializationWatchdog);
+                playerInitializationWatchdog = null;
+            }
+            
+            let subtext = 'No se pudo cargar el video.';
+            if (event.data === 150 || event.data === 101) {
+                subtext = 'El propietario de este video no permite su reproducción en este sitio.';
+            } else if (event.data === 2) {
+                subtext = 'El ID del video no es válido.';
+            }
+            showSplashError('Error del Video', subtext);
+        }
+
+        function onPlayerStateChange(event) {
+            const stateOverlay = document.getElementById('video-state-overlay'); 
+
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
+                startVideoTimer();
+                stateOverlay.classList.remove('visible'); 
+                stateOverlay.style.display = 'none'; // Asegurar que esté oculto
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+                if (videoTimer) clearInterval(videoTimer);
+                videoTimer = null;
+                
+                if (!isInteractionActive) {
+                    stateOverlay.classList.add('visible'); 
+                }
+            } else if (event.data == YT.PlayerState.ENDED) {
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">replay</span>';
+                if (videoTimer) clearInterval(videoTimer);
+                videoTimer = null;
+                
+                stateOverlay.classList.remove('visible'); 
+                
+                showResults();
+            } else if (event.data == YT.PlayerState.CUED || event.data == -1) { 
+                // Esto se dispara DESPUÉS de onReady, asegurando que la pantalla de play se muestre
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+                
+                if (!isInteractionActive) {
+                    stateOverlay.classList.add('visible'); 
+                }
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('play-pause-btn').addEventListener('click', togglePlayPause);
+            
+            // NUEVO: Hacer que el blocker también active play/pause
+            const blocker = document.getElementById('video-overlay-blocker');
+            if (blocker) {
+                blocker.addEventListener('click', togglePlayPause);
+            }
+            
+            // NUEVO: Hacer que el overlay de ESTADO (botón play grande) también active play/pause
+            const stateOverlay = document.getElementById('video-state-overlay');
+            if (stateOverlay) {
+                stateOverlay.addEventListener('click', togglePlayPause);
+            }
+            
+            document.getElementById('audio-btn').addEventListener('click', toggleAudio);
+            document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+            document.getElementById('restart-btn').addEventListener('click', restartVideo);
+            document.getElementById('results-btn').addEventListener('click', showResults);
+            
+            // Botones de overlays
+            document.getElementById('submit-btn').addEventListener('click', submitAnswer);
+            document.getElementById('feedback-continue-btn').addEventListener('click', continueVideo);
+            document.getElementById('info-continue-btn').addEventListener('click', continueVideo);
+            // NUEVO: Botón de cerrar en resultados
+            document.getElementById('results-continue-btn').addEventListener('click', () => {
+                document.getElementById('results-overlay').style.display = 'none';
+                isInteractionActive = false; 
+                // MODIFICADO: Al cerrar resultados, mostrar el overlay de estado
+                document.getElementById('video-state-overlay').classList.add('visible');
+            });
+        }
+
+        // MODIFICADO: DOMContentLoaded AHORA SOLO INICIA LA CADENA DE CARGA
+        document.addEventListener('DOMContentLoaded', async function() {
+            document.getElementById('play-pause-btn').disabled = true;
+            
+            // MODIFICACIÓN: Mostrar "Cargando..." como primer paso
+            // showLoading('Iniciando...', 'Cargando API de Video...'); // ELIMINADO
+            console.log('DOM Listo. Esperando API de YouTube...');
+            updateSplashLoading(true, 'Cargando API de Video...'); // Mostrar spinner
+            
+            getUrlParams();
+            
+            // MODIFICACIÓN: Iniciar el temporizador maestro de la API aquí
+            if (!window.youtubeApiTimeout) { 
+                window.youtubeApiTimeout = setTimeout(() => {
+                    if (!youtubeAPIReady) {
+                         console.error('Timeout: La API de YouTube no respondió en 30 segundos.');
+                         showSplashError('Error de Red', 'No se pudo conectar con YouTube. Revisa tu conexión o ad-blocker.');
+                    }
+                }, 30000); // MODIFICADO: 30s de espera, más generoso
+            }
+            
+            // MODIFICADO: Poner el SRC en el iframe inmediatamente
+            const iframe = document.getElementById('video-player');
+            if (iframe) {
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&origin=${window.location.origin}`;
+            } else {
+                showSplashError('Error Crítico', 'No se encontró el <iframe> del video.');
+            }
+            
+            // NO cargar JSON aquí. onYouTubeIframeAPIReady se encargará de eso.
+            updateProgress();
         });
-      }catch(err){
-        console.warn('Primera inicialización falló, reintentando...');
-        setTimeout(()=>{
-          try{
-            player = new YT.Player('video-player', { videoId: videoId, width:'100%', height:'100%', playerVars:{controls:0,rel:0,enablejsapi:1,modestbranding:1,iv_load_policy:3}, events:{ onReady:onPlayerReady, onStateChange:onPlayerStateChange, onError:onPlayerError } });
-          }catch(e){ console.error('Reintento fallido', e); showMessage('No se pudo inicializar el reproductor.'); }
-        }, 2500);
-      }
-    }
+        
+        // NUEVA FUNCIÓN: fetchWithRetries
+        async function fetchWithRetries(url, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout por intento
+                    
+                    const response = await fetch(url, { 
+                        signal: controller.signal, 
+                        cache: 'no-cache' 
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        return await response.json(); // Éxito
+                    }
+                    throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+                } catch (error) {
+                    console.error(`Error cargando JSON (intento ${i + 1}/${retries}):`, error);
+                    if (i === retries - 1) { // Si es el último intento, rechazar
+                        throw error;
+                    }
+                    // Esperar antes de reintentar
+                    await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+                }
+            }
+        }
+        
+        // MODIFICADO: loadQuestionsData ahora es el PASO 2 y usa fetchWithRetries
+        async function loadQuestionsData() {
+            console.log('PASO 2: Cargando archivo JSON...');
+            updateSplashLoading(true, 'Cargando Preguntas...'); // Mostrar spinner
+            
+            if (jsonFile) {
+                try {
+                    const data = await fetchWithRetries(jsonFile, 3);
+                    
+                    if (!data || !data.questions) throw new Error('JSON inválido o falta el array "questions"');
+                    
+                    if (data.video_id && !videoParamProvided) {
+                        const extractedId = extractYouTubeId(data.video_id);
+                        if (extractedId) videoId = extractedId;
+                    }
+                    
+                    interactionsData = data; 
+                    console.log('PASO 2.1: JSON cargado y procesado.');
+                    
+                } catch (error) {
+                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON después de 3 intentos.');
+                    showSplashError('Error de Carga', 'No se pudo cargar el archivo de preguntas.');
+                    console.error('Último error:', error);
+                    return; 
+                }
+            } else {
+                console.warn('No se proveyó ?json=... Usando datos de ejemplo internos.');
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            questions = interactionsData.questions || [];
+            
+            // MODIFICACIÓN: Calcular el total de puntos posibles
+            calculateTotalPoints();
+            
+            jsonDataLoaded = true;
+            // PASO 3: Ahora que el JSON está listo (y la API ya lo estaba), iniciar el player.
+            tryInitializePlayer();
+        }
+        
+        // NUEVA FUNCIÓN: Calcular puntos totales
+        function calculateTotalPoints() {
+            totalPossiblePoints = 0;
+            if (!questions) return;
+            
+            questions.forEach(interaction => {
+                const type = interaction.type;
+                if (type === 'true_false' || type === 'multiple_choice') {
+                    totalPossiblePoints += 1;
+                } else if (type === 'matching' && interaction.content.correct_matches) {
+                    totalPossiblePoints += interaction.content.correct_matches.length;
+                }
+                // 'text_media' no suma puntos
+            });
+            console.log('Total de puntos posibles calculado:', totalPossiblePoints);
+        }
+        
+        // --- Lógica de la Línea de Tiempo ---
 
-    function onPlayerReady(e){
-      console.log('Player ready');
-      if (playerInitializationWatchdog){ clearTimeout(playerInitializationWatchdog); playerInitializationWatchdog = null; }
-      playerReady = true; updateSplash('Listo', false);
+        function createInteractiveMarkers() {
+            const markersContainer = document.getElementById('markers-container');
+            if (!markersContainer) return;
+            if (!questions || questions.length === 0) return;
+            
+            const existingMarkers = markersContainer.querySelectorAll('.marker');
+            existingMarkers.forEach(marker => marker.remove());
+            const duration = videoDuration || 180;
 
-      // Try play/pause trick to unlock audio context and ensure control commands work
-      try{ player.unMute(); player.playVideo(); setTimeout(()=>player.pauseVideo(), 250); }catch(e){}
+            questions.forEach((question, index) => {
+                const marker = document.createElement('div');
+                marker.className = 'marker';
+                const positionPercent = (question.time / duration) * 100;
+                marker.style.left = `${positionPercent}%`;
+                marker.dataset.interactionIndex = index;
+                marker.dataset.time = question.time;
+                marker.addEventListener('click', () => jumpToInteraction(index));
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'marker-tooltip';
+                tooltip.textContent = `Actividad ${index + 1} - ${formatTime(question.time)}`;
+                marker.appendChild(tooltip);
+                markersContainer.appendChild(marker);
+            });
+            setupTimelineSlider();
+        }
 
-      try{ videoDuration = player.getDuration(); }catch(e){ videoDuration = 180; }
-      updateTimeDisplay(); createMarkers();
-      document.getElementById('play-pause-btn').disabled = false;
-      setupControls();
+        let timelineSliderSetup = false;
+        function setupTimelineSlider() {
+            if (timelineSliderSetup) return;
+            const markersContainer = document.getElementById('markers-container');
+            const timelineHandle = document.getElementById('timeline-handle');
+            const timelineTooltip = document.getElementById('timeline-tooltip');
+            if (!markersContainer || !timelineHandle || !timelineTooltip) return;
+            
+            let wasPlaying = false;
+            timelineHandle.addEventListener('mousedown', startDrag);
+            markersContainer.addEventListener('click', handleTimelineClick);
+            markersContainer.addEventListener('mousemove', showTimelineTooltip);
+            markersContainer.addEventListener('mouseleave', hideTimelineTooltip);
+            timelineSliderSetup = true;
 
-      // hide overlay so user can interact with the player controls if present
-      document.getElementById('video-state-overlay').style.display = 'flex';
-    }
+            function startDrag(e) {
+                isDragging = true;
+                wasPlaying = isPlaying;
+                if (isPlaying) pauseVideo();
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                e.preventDefault();
+            }
+            function drag(e) {
+                if (!isDragging || !playerReady) return;
+                const rect = markersContainer.getBoundingClientRect();
+                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                const percentage = x / rect.width;
+                const duration = player.getDuration();
+                const newTime = percentage * duration;
+                updateTimelineHandle(percentage);
+                player.seekTo(newTime, true);
+                timelineTooltip.textContent = formatTime(newTime);
+                timelineTooltip.style.left = `${x}px`;
+                timelineTooltip.style.opacity = '1';
+            }
+            function stopDrag() {
+                if (!isDragging) return;
+                isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                if (wasPlaying) setTimeout(() => playVideo(), 100);
+                hideTimelineTooltip();
+            }
+            function handleTimelineClick(e) {
+                if (isDragging || !playerReady) return;
+                if (e.target.classList.contains('marker') || e.target.closest('.marker')) return;
+                const rect = markersContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = x / rect.width;
+                const duration = player.getDuration();
+                const newTime = percentage * duration;
+                const wasPlayingBefore = isPlaying;
+                if (isPlaying) pauseVideo();
+                player.seekTo(newTime, true);
+                if (wasPlayingBefore) setTimeout(() => playVideo(), 200);
+            }
+            function showTimelineTooltip(e) {
+                if (isDragging) return;
+                const rect = markersContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = x / rect.width;
+                const duration = videoDuration || 180;
+                const time = percentage * duration;
+                timelineTooltip.textContent = formatTime(time);
+                timelineTooltip.style.left = `${x}px`;
+                timelineTooltip.style.opacity = '1';
+            }
+            function hideTimelineTooltip() {
+                if (!isDragging) timelineTooltip.style.opacity = '0';
+            }
+        }
 
-    function onPlayerError(e){ console.error('YT Error', e.data); if (playerInitializationWatchdog){ clearTimeout(playerInitializationWatchdog); playerInitializationWatchdog=null; } let msg='Error al cargar el video.'; if (e.data===150||e.data===101) msg='El propietario del video no permite reproducción en este sitio.'; if (e.data===2) msg='ID de video inválido.'; showMessage(msg); updateSplash(msg, false); }
+        function updateTimelineHandle(percentage) {
+            const timelineHandle = document.getElementById('timeline-handle');
+            if (timelineHandle) timelineHandle.style.left = `${Math.min(Math.max(percentage * 100, 0), 100)}%`;
+        }
 
-    function onPlayerStateChange(e){
-      const state = e.data;
-      const btn = document.getElementById('play-pause-btn');
-      if (state==YT.PlayerState.PLAYING){ btn.innerHTML='<span class="material-icons">pause</span>'; startTimer(); document.getElementById('video-state-overlay').style.display='none'; }
-      else if (state==YT.PlayerState.PAUSED){ btn.innerHTML='<span class="material-icons">play_arrow</span>'; stopTimer(); document.getElementById('video-state-overlay').style.display='flex'; }
-      else if (state==YT.PlayerState.ENDED){ btn.innerHTML='<span class="material-icons">replay</span>'; stopTimer(); document.getElementById('video-state-overlay').style.display='flex'; }
-    }
+        function jumpToInteraction(index) {
+            if (!playerReady || !player) return;
+            const interaction = questions[index];
+            console.log(`Saltando a interacción ${index + 1} en tiempo ${interaction.time}s`);
+            
+            if (interaction.answered) {
+                player.seekTo(interaction.time, true);
+                return;
+            }
+            const seekTime = Math.max(0, interaction.time - 3);
+            player.seekTo(seekTime, true);
+            interaction.shown = false;
+            setTimeout(() => playVideo(), 500);
+        }
+        
+        // --- Controles de Video (Play, Pausa, Tiempo) ---
 
-    // ---------------------- Controls ----------------------
-    function setupControls(){
-      document.getElementById('play-pause-btn').addEventListener('click', ()=>{
-        if (!playerReady) return;
-        const st = player.getPlayerState();
-        if (st===YT.PlayerState.PLAYING) player.pauseVideo(); else player.playVideo();
-      });
+        function togglePlayPause() {
+            // MODIFICADO: No hacer nada si el player no está listo
+            if (document.getElementById('play-pause-btn').disabled || !playerReady) {
+                console.log('TogglePlayPause: Player no está listo.');
+                return;
+            }
+            
+            try {
+                const playerState = player.getPlayerState();
+                if (playerState === YT.PlayerState.PLAYING) {
+                    player.pauseVideo();
+                } else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.CUED || playerState === -1) {
+                    player.playVideo();
+                } else if (playerState === YT.PlayerState.ENDED) {
+                    player.seekTo(0);
+                    player.playVideo();
+                }
+            } catch (error) { console.error('Error toggling play/pause:', error); }
+        }
 
-      document.getElementById('splash-play').addEventListener('click', ()=>{
-        if (!playerReady) { showMessage('El reproductor aún se está preparando.'); return; }
-        // user gesture - should allow playback even if autoplay was blocked
-        try{ player.playVideo(); }catch(e){ console.error('playVideo failed', e); showMessage('No se pudo iniciar reproducción.'); }
-      });
+        function playVideo() {
+            if (playerReady && player) try { player.playVideo(); } catch (e) {}
+        }
 
-      // timeline click
-      const markersContainer = document.getElementById('markers-container');
-      markersContainer.addEventListener('click',(ev)=>{
-        if (!playerReady) return;
-        const rect = markersContainer.getBoundingClientRect();
-        const x = ev.clientX - rect.left; const perc = Math.max(0, Math.min(x/rect.width,1));
-        const t = (videoDuration||player.getDuration())*perc; player.seekTo(t, true);
-      });
-    }
+        function pauseVideo() {
+            if (playerReady && player) try { player.pauseVideo(); } catch (e) {}
+        }
 
-    // ---------------------- Timer y marcadores ----------------------
-    function startTimer(){ if (videoTimer) clearInterval(videoTimer); videoTimer = setInterval(()=>{
-      if (!playerReady) return; try{ const curr = player.getCurrentTime(); document.getElementById('current-time').textContent = formatTime(curr); updateProgress(curr); checkInteractions(Math.floor(curr)); }catch(e){} }, 250); }
-    function stopTimer(){ if (videoTimer) clearInterval(videoTimer); videoTimer = null; }
-    function updateTimeDisplay(){ try{ const d = player.getDuration(); document.getElementById('total-time').textContent = formatTime(d); }catch(e){} }
+        function startVideoTimer() {
+            if (videoTimer) clearInterval(videoTimer);
+            videoTimer = setInterval(() => {
+                if (!playerReady || !player) return;
+                try {
+                    currentVideoTime = player.getCurrentTime();
+                    const currentTimeSeconds = Math.floor(currentVideoTime);
+                    updateTimelineProgress();
+                    updateTimeDisplay();
+                    
+                    if (isPlaying) {
+                        if (questions && questions.length > 0) {
+                            questions.forEach((interaction, index) => {
+                                if (currentTimeSeconds >= interaction.time && currentTimeSeconds <= interaction.time + 1 && !interaction.shown) {
+                                    interaction.shown = true;
+                                    showInteraction(index);
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {}
+            }, 250); 
+        }
 
-    function updateProgress(current){ try{ const dur = player.getDuration(); const perc = (current/dur)*100; document.getElementById('timeline-progress').style.width = perc+'%'; }catch(e){} }
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
 
-    function createMarkers(){ const container = document.getElementById('markers-container'); container.querySelectorAll('.marker').forEach(n=>n.remove()); if (!questions||questions.length===0) return; const dur = videoDuration||player.getDuration()||180; questions.forEach((q,i)=>{ const m = document.createElement('div'); m.className='marker'; const left = Math.min(100, Math.max(0, (q.time/dur)*100)); m.style.left = left+'%'; m.title = (q.title||q.question||'Actividad') + ' - '+ formatTime(q.time); container.appendChild(m); }); }
+        function updateTimeDisplay() {
+            if (!playerReady || !player) return;
+            try {
+                const current = player.getCurrentTime();
+                const duration = player.getDuration();
+                document.getElementById('current-time').textContent = formatTime(current);
+                document.getElementById('total-time').textContent = formatTime(duration);
+            } catch (error) {}
+        }
 
-    function checkInteractions(currSec){ if (!questions) return; questions.forEach((q, i)=>{ if (!q._shown && currSec>=q.time && currSec<=q.time+1){ q._shown = true; // aquí podrías mostrar overlay de pregunta
-          console.log('Mostrar interacción', q);
-        }}); }
+        function updateTimelineProgress() {
+            if (!playerReady || !player) return;
+            try {
+                const duration = player.getDuration();
+                const current = player.getCurrentTime();
+                if (duration > 0) {
+                    const progress = (current / duration) * 100;
+                    const progressPercentage = Math.min(Math.max(progress, 0), 100);
+                    const timelineProgress = document.getElementById('timeline-progress');
+                    if (timelineProgress) timelineProgress.style.width = `${progressPercentage}%`;
+                    updateTimelineHandle(progressPercentage / 100);
+                    updateMarkerStates(current);
+                    if (!videoDuration) {
+                        videoDuration = duration;
+                        createInteractiveMarkers();
+                    }
+                }
+            } catch (error) {}
+        }
 
-    // ---------------------- Splash helpers ----------------------
-    function updateSplash(text, loading=true){ const splash = document.getElementById('video-state-overlay'); const sub = document.getElementById('splash-sub'); sub.textContent = text||''; if (loading){ splash.style.display='flex'; } else { splash.style.display='flex'; setTimeout(()=>{ /* mantener visible como 'Play' */ }, 200); } }
+        function updateMarkerStates(currentTime) {
+            const markers = document.querySelectorAll('.marker');
+            markers.forEach((marker, index) => {
+                const interactionTime = parseInt(marker.dataset.time);
+                const interactionIndex = parseInt(marker.dataset.interactionIndex);
+                if (!questions || !questions[interactionIndex]) return; 
+                const interaction = questions[interactionIndex];
+                marker.classList.remove('approaching', 'active', 'completed');
+                if (interaction && interaction.answered) marker.classList.add('completed');
+                else if (Math.abs(currentTime - interactionTime) <= 1) marker.classList.add('active');
+                else if (currentTime >= interactionTime - 10 && currentTime < interactionTime) marker.classList.add('approaching');
+            });
+        }
+        
+        // --- LÓGICA CENTRAL DE INTERACCIÓN ---
 
-    // ---------------------- Inicio DOM ----------------------
-    document.addEventListener('DOMContentLoaded', ()=>{
-      getUrlParams();
-      document.getElementById('play-pause-btn').disabled = true;
+        // 1. Dispatcher Principal: Decide qué mostrar
+        function showInteraction(index) {
+            pauseVideo();
+            isInteractionActive = true; // <-- AÑADIR ESTO
+            
+            // NUEVO: Ocultar el overlay de estado si se muestra una interacción
+            document.getElementById('video-state-overlay').classList.remove('visible');
+            
+            currentInteractionIndex = index;
+            const interaction = questions[index];
+            selectedAnswer = null; // Resetear selección
+            userMatches = []; // Resetear matches
+            selectedColumnA = null; // Resetear match
+            
+            // Ocultar todos los overlays primero
+            document.getElementById('info-overlay').style.display = 'none';
+            document.getElementById('question-overlay').style.display = 'none';
+            document.getElementById('feedback-overlay').style.display = 'none';
 
-      // mostrar spinner texto
-      updateSplash('Cargando API de YouTube...', true);
+            switch (interaction.type) {
+                case 'text_media':
+                    showTextMedia(interaction);
+                    break;
+                case 'true_false':
+                    showTrueFalse(interaction);
+                    break;
+                case 'multiple_choice':
+                    showMultipleChoice(interaction);
+                    break;
+                case 'matching':
+                    showMatching(interaction);
+                    break;
+                default:
+                    console.warn('Tipo de interacción desconocido:', interaction.type);
+                    continueVideo(); // No se reconoce, continuar video
+            }
+        }
+        
+        // 2. Mostrar "Texto Libre" o "Imagen con Texto"
+        function showTextMedia(interaction) {
+            const content = interaction.content;
+            document.getElementById('info-title').textContent = content.title || '';
+            const infoContent = document.getElementById('info-content');
+            infoContent.innerHTML = ''; // Limpiar
+            
+            if (content.image) {
+                const img = document.createElement('img');
+                img.src = content.image;
+                img.className = 'interaction-image';
+                infoContent.appendChild(img);
+            }
+            if (content.text) {
+                const p = document.createElement('p');
+                p.className = 'interaction-text';
+                p.innerHTML = content.text; // Usar innerHTML para permitir <br>, <b>, etc.
+                infoContent.appendChild(p);
+            }
+            
+            document.getElementById('info-overlay').style.display = 'flex';
+        }
+        
+        // 3. Mostrar Pregunta de Verdadero/Falso
+        function showTrueFalse(interaction) {
+            const content = interaction.content;
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            // Actualizar contador
+            updateQuestionCounter();
+            
+            // Añadir título (pregunta)
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            // Añadir contenedor de opciones
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            // Crear botón Verdadero
+            const trueBtn = document.createElement('button');
+            trueBtn.className = 'option-button';
+            trueBtn.innerHTML = '<span class="material-icons">check_circle_outline</span> Verdadero';
+            trueBtn.addEventListener('click', () => selectOption(true, trueBtn));
+            optionsContainer.appendChild(trueBtn);
+            
+            // Crear botón Falso
+            const falseBtn = document.createElement('button');
+            falseBtn.className = 'option-button';
+            falseBtn.innerHTML = '<span class="material-icons">highlight_off</span> Falso';
+            falseBtn.addEventListener('click', () => selectOption(false, falseBtn));
+            optionsContainer.appendChild(falseBtn);
+            
+            interactionContent.appendChild(optionsContainer);
+            
+            // Resetear y mostrar overlay de pregunta
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // 4. Mostrar Pregunta de Opción Múltiple
+        function showMultipleChoice(interaction) {
+            const content = interaction.content;
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            updateQuestionCounter();
+            
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            content.options.forEach((optionText, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = `${String.fromCharCode(65 + index)}. ${optionText}`;
+                button.addEventListener('click', () => selectOption(index, button));
+                optionsContainer.appendChild(button);
+            });
+            
+            interactionContent.appendChild(optionsContainer);
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // 5. Mostrar Pregunta de Relación de Columnas
+        function showMatching(interaction) {
+            const content = interaction.content;
+            userMatches = []; // Resetear
+            selectedColumnA = null; // Resetear
+            
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            updateQuestionCounter();
+            
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            // Crear contenedor principal
+            const matchingContainer = document.createElement('div');
+            matchingContainer.className = 'matching-container';
+            
+            // Crear Columnas
+            const colA = document.createElement('div');
+            colA.className = 'matching-column';
+            colA.id = 'column-a';
+            
+            const colB = document.createElement('div');
+            colB.className = 'matching-column';
+            colB.id = 'column-b';
+            
+            // Llenar Columnas
+            // IMPORTANTE: Mezclar las columnas para que no sea obvio
+            const shuffledA = shuffleArray([...content.column_a]);
+            const shuffledB = shuffleArray([...content.column_b]);
 
-      // Set iframe src inmediatamente con origin correcto
-      const iframe = document.getElementById('video-player');
-      iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&origin=${location.protocol}//${location.host}`;
-      // Ensure iframe allows autoplay and picture-in-picture
-      iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+            shuffledA.forEach((itemText, shuffledIndex) => {
+                const originalIndex = content.column_a.indexOf(itemText);
+                const item = document.createElement('div');
+                item.className = 'column-item';
+                item.textContent = itemText;
+                item.dataset.index = originalIndex; // Guardar el índice original
+                item.addEventListener('click', () => selectMatchingColumnA(item, originalIndex));
+                colA.appendChild(item);
+            });
+            
+            shuffledB.forEach((itemText, shuffledIndex) => {
+                const originalIndex = content.column_b.indexOf(itemText);
+                const item = document.createElement('div');
+                item.className = 'column-item';
+                item.textContent = itemText;
+                item.dataset.index = originalIndex; // Guardar el índice original
+                item.addEventListener('click', () => selectMatchingColumnB(item, originalIndex));
+                colB.appendChild(item);
+            });
+            
+            matchingContainer.appendChild(colA);
+            matchingContainer.appendChild(colB);
+            interactionContent.appendChild(matchingContainer);
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // --- Lógica de Selección y Envío ---
 
-      // Esperar a que el iframe físico haya cargado
-      iframe.addEventListener('load', ()=>{
-        console.log('Iframe onload');
-        // Si la API ya está lista y JSON cargado, inicializar
-        if (youtubeAPIReady && jsonDataLoaded) tryInitializePlayer();
-      });
+        function selectOption(index, button) {
+            document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectedAnswer = index;
+            document.getElementById('submit-btn').disabled = false;
+        }
+        
+        function selectMatchingColumnA(item, indexA) {
+            // Si se vuelve a hacer clic en el mismo, deseleccionar
+            if (selectedColumnA && selectedColumnA.index === indexA) {
+                selectedColumnA.element.classList.remove('selected');
+                selectedColumnA = null;
+            } else {
+                // Quitar selección anterior
+                document.querySelectorAll('#column-a .column-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedColumnA = { element: item, index: indexA };
+            }
+        }
+        
+        function selectMatchingColumnB(item, indexB) {
+            if (!selectedColumnA) return; // No hay nada seleccionado en A
+            
+            const indexA = selectedColumnA.index;
+            
+            // Quitar cualquier emparejamiento anterior para estos elementos
+            userMatches = userMatches.filter(match => match.a_index !== indexA && match.b_index !== indexB);
+            
+            // Quitar clases de emparejamiento visual
+            document.querySelectorAll(`.paired-a-${indexA}, .paired-b-${indexB}`).forEach(el => {
+                el.classList.remove('paired-a', 'paired-b', `paired-a-${indexA}`, `paired-b-${indexB}`);
+            });
+            
+            // Añadir nuevo emparejamiento
+            userMatches.push({ a_index: indexA, b_index: indexB });
+            
+            // Añadir clases visuales
+            selectedColumnA.element.classList.add('paired-a', `paired-a-${indexA}`);
+            item.classList.add('paired-b', `paired-b-${indexB}`);
+            
+            // Resetear selección
+            selectedColumnA.element.classList.remove('selected');
+            selectedColumnA = null;
+            
+            // Habilitar botón si todos están emparejados
+            if (userMatches.length === questions[currentInteractionIndex].content.column_a.length) {
+                document.getElementById('submit-btn').disabled = false;
+            }
+        }
 
-      // Timeout global para la API (adblock o problemas de red)
-      if (!window.youtubeApiTimeout){ window.youtubeApiTimeout = setTimeout(()=>{ if (!youtubeAPIReady){ showMessage('No se pudo conectar con YouTube. Desactiva ad-block o revisa la conexión.'); updateSplash('Error cargando YouTube', false); } }, 30000); }
+        // 6. Dispatcher de Envío
+        function submitAnswer() {
+            const interaction = questions[currentInteractionIndex];
+            
+            // Deshabilitar botón
+            document.getElementById('submit-btn').disabled = true;
+            
+            // Contar como respondida
+            interaction.answered = true;
+            questionsAnswered++;
+            
+            let isCorrect = false;
+            
+            switch (interaction.type) {
+                case 'true_false':
+                case 'multiple_choice':
+                    isCorrect = (selectedAnswer === interaction.content.correct_answer);
+                    if (isCorrect) userScore += 1; // Sumar 1 punto
+                    highlightChoiceAnswers(isCorrect, interaction.content.correct_answer);
+                    break;
+                case 'matching':
+                    // MODIFICADO: checkMatchingAnswers ahora devuelve el número de aciertos
+                    const correctPairs = checkMatchingAnswers(interaction.content.correct_matches);
+                    userScore += correctPairs; // Sumar puntos parciales
+                    isCorrect = (correctPairs === interaction.content.correct_matches.length); // Es 100% correcta?
+                    highlightMatchingAnswers(isCorrect, interaction.content.correct_matches);
+                    break;
+            }
+            
+            // Actualizar estadísticas
+            interaction.correct = isCorrect;
+            
+            // Reproducir sonido
+            try { createAudioFeedback(isCorrect ? 'correct' : 'incorrect'); } catch (e) {}
+            
+            // Mostrar retroalimentación
+            setTimeout(() => {
+                showFeedback(isCorrect, interaction.content.feedback);
+            }, 1500); // Esperar 1.5s para que el usuario vea la corrección
+            
+            updateProgress();
+        }
+        
+        // 7. Funciones de Verificación y Resaltado
+        
+        function highlightChoiceAnswers(isCorrect, correctIndex) {
+            document.querySelectorAll('.option-button').forEach((btn, index) => {
+                if (index === correctIndex) {
+                    btn.classList.add('correct');
+                } else if (index === selectedAnswer && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+                btn.onclick = null; // Deshabilitar
+            });
+        }
+        
+        // MODIFICADO: Devuelve el NÚMERO de pares correctos
+        function checkMatchingAnswers(correctMatches) {
+            let correctCount = 0;
+            userMatches.forEach(userMatch => {
+                const isPairCorrect = correctMatches.some(cm => 
+                    cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
+                );
+                if (isPairCorrect) {
+                    correctCount++;
+                }
+            });
+            return correctCount;
+        }
+        
+        function highlightMatchingAnswers(isCorrect, correctMatches) {
+            // Deshabilitar clics
+            document.querySelectorAll('.column-item').forEach(el => el.onclick = null);
 
-      // Iniciar carga del JSON (onYouTubeIframeAPIReady también lo hará, pero cargamos aquí si la API tarda)
-      loadQuestionsData();
-    });
+            // Si es 100% correcto, marcar todo verde
+            if (isCorrect) {
+                 document.querySelectorAll('.column-item').forEach(el => el.classList.add('correct'));
+                 return;
+            }
+            
+            // Si es incorrecto, marcar pares individuales
+            userMatches.forEach(userMatch => {
+                const isPairCorrect = correctMatches.some(cm => 
+                    cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
+                );
+                
+                const elA = document.querySelector(`#column-a .column-item[data-index="${userMatch.a_index}"]`);
+                const elB = document.querySelector(`#column-b .column-item[data-index="${userMatch.b_index}"]`);
+                
+                if (isPairCorrect) {
+                    elA.classList.add('correct');
+                    elB.classList.add('correct');
+                } else {
+                    elA.classList.add('incorrect');
+                    elB.classList.add('incorrect');
+                }
+            });
+        }
 
-    // Exponer onYouTubeIframeAPIReady al global (necesario para la API)
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+        // 8. Continuar Video y Feedback
+        
+        function showFeedback(isCorrect, feedback) {
+            document.getElementById('question-overlay').style.display = 'none';
+            document.getElementById('info-overlay').style.display = 'none';
+            
+            const feedbackCard = document.getElementById('feedback-card');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackMessage = document.getElementById('feedback-message');
+            
+            if (isCorrect) {
+                feedbackCard.className = 'feedback-card correct';
+                feedbackIcon.innerHTML = '<span class="material-icons">check_circle</span>';
+                feedbackIcon.className = 'feedback-icon correct';
+                feedbackTitle.textContent = '¡Correcto!';
+                feedbackMessage.textContent = feedback.correct;
+            } else {
+                feedbackCard.className = 'feedback-card incorrect';
+                feedbackIcon.innerHTML = '<span class="material-icons">cancel</span>';
+                feedbackIcon.className = 'feedback-icon incorrect';
+                feedbackTitle.textContent = 'Incorrecto';
+                feedbackMessage.textContent = feedback.incorrect;
+            }
+            
+            document.getElementById('feedback-overlay').style.display = 'flex';
+        }
 
-  </script>
+        function continueVideo() {
+            document.getElementById('feedback-overlay').style.display = 'none';
+            document.getElementById('info-overlay').style.display = 'none';
+            document.getElementById('question-overlay').style.display = 'none';
+            
+            isInteractionActive = false; // <-- AÑADIDO
+            
+            // Marcar el marcador como completado
+            const markers = document.querySelectorAll('.marker');
+            if (markers[currentInteractionIndex]) {
+                markers[currentInteractionIndex].classList.add('completed');
+            }
+            
+            playVideo();
+        }
+
+        function updateProgress() {
+            if (!questions || questions.length === 0) return;
+            
+            // Contar solo las preguntas "respondibles"
+            const respondibleQuestions = questions.filter(q => q.type !== 'text_media').length;
+            const answeredRespondible = questions.filter(q => q.answered && q.type !== 'text_media').length;
+            
+            const progress = (answeredRespondible / respondibleQuestions) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+        
+        function updateQuestionCounter() {
+            const num = currentInteractionIndex + 1;
+            const total = questions.length;
+            document.getElementById('question-counter').innerHTML = `
+                <span class="material-icons">help_outline</span>
+                Actividad ${num} de ${total}
+            `;
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- Controles de Video Adicionales ---
+
+        function restartVideo() {
+            if (!playerReady || !player) return;
+            try {
+                if (questions) {
+                    questions.forEach(q => {
+                        q.shown = false;
+                        q.answered = false;
+                        q.correct = false;
+                    });
+                }
+                questionsAnswered = 0;
+                userScore = 0; // MODIFICADO: Resetear puntaje
+                currentInteractionIndex = 0;
+                currentVideoTime = 0;
+                isInteractionActive = false;
+                
+                player.seekTo(0, true);
+                player.pauseVideo();
+                isPlaying = false;
+                document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
+                
+                document.getElementById('question-overlay').style.display = 'none';
+                document.getElementById('feedback-overlay').style.display = 'none';
+                document.getElementById('info-overlay').style.display = 'none';
+                document.getElementById('results-overlay').style.display = 'none';
+                
+                // MODIFICACIÓN: Mostrar el overlay de estado al reiniciar
+                const stateOverlay = document.getElementById('video-state-overlay');
+                const titleEl = stateOverlay.querySelector('.splash-title');
+                const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+                const playButton = stateOverlay.querySelector('.splash-play-button');
+                
+                titleEl.textContent = 'Video Interactivo';
+                titleEl.style.color = 'white';
+                subtitleEl.textContent = 'Presiona para iniciar';
+                playButton.style.display = 'flex';
+                stateOverlay.classList.remove('error');
+                
+                stateOverlay.classList.add('visible');
+                
+                document.querySelectorAll('.marker').forEach(marker => {
+                    marker.classList.remove('completed', 'approaching', 'active');
+                });
+                
+                updateTimelineHandle(0);
+                setTimeout(() => {
+                    updateTimelineProgress();
+                    updateTimeDisplay();
+                }, 200);
+                
+                updateProgress();
+                showNotification('Video reiniciado');
+            } catch (error) { console.error('Error restarting video:', error); }
+        }
+
+        function toggleAudio() {
+            if (!playerReady || !player) return;
+            isMuted = !isMuted;
+            const audioBtn = document.getElementById('audio-btn');
+            if (isMuted) {
+                player.mute();
+                audioBtn.innerHTML = '<span class="material-icons">volume_off</span>';
+                audioBtn.title = 'Activar audio';
+                showNotification('Audio silenciado');
+            } else {
+                player.unMute();
+                audioBtn.innerHTML = '<span class="material-icons">volume_up</span>';
+                audioBtn.title = 'Silenciar audio';
+                showNotification('Audio activado');
+            }
+        }
+
+        function toggleFullscreen() {
+            const container = document.querySelector('.container');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(() => {
+                    showNotification('No se pudo activar pantalla completa');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px;
+                background: rgba(0,0,0,0.8); color: white;
+                padding: 12px 20px; border-radius: 4px;
+                font-size: 14px; z-index: 2000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // MODIFICADO: showResults ahora es una pantalla modal avanzada
+        function showResults() {
+            if (!questions || totalPossiblePoints === 0) {
+                showNotification("No hay actividades puntuables en este video.");
+                return;
+            }
+            
+            // Pausar video si está reproduciéndose
+            pauseVideo();
+            isInteractionActive = true; 
+
+            // NUEVO: Ocultar el overlay de estado si se muestran los resultados
+            document.getElementById('video-state-overlay').classList.remove('visible');
+
+            const percentage = Math.round((userScore / totalPossiblePoints) * 100);
+            
+            const resultsOverlay = document.getElementById('results-overlay');
+            const resultsIcon = document.getElementById('results-icon');
+            const resultsTitle = document.getElementById('results-title');
+            const resultsMessage = document.getElementById('results-message');
+            const resultsDetails = document.getElementById('results-details');
+            const resultsPercentage = document.getElementById('results-percentage');
+            const resultsScoreRing = document.getElementById('results-score-ring');
+            
+            // Actualizar contenido
+            resultsDetails.textContent = `Puntos: ${userScore} / ${totalPossiblePoints}`;
+            resultsPercentage.textContent = `${percentage}%`;
+
+            // Resetear clases y animación
+            resultsIcon.className = 'results-icon';
+            resultsScoreRing.classList.remove('animate');
+            
+            let message = '';
+            let title = '';
+            let icon = '';
+            let sound = '';
+            let ringColor = '#ff9500'; // Naranja (default)
+
+            if (percentage >= 90) {
+                title = '¡Excelente!';
+                message = '¡Felicidades! Has dominado este contenido.';
+                icon = 'emoji_events';
+                resultsIcon.classList.add('excellent');
+                sound = 'results_excellent';
+                ringColor = '#28a745'; // Verde
+            } else if (percentage >= 85) {
+                title = '¡Buen Trabajo!';
+                message = 'Has entendido la mayor parte del material. ¡Sigue así!';
+                icon = 'thumb_up';
+                resultsIcon.classList.add('good');
+                sound = 'results_good';
+                ringColor = '#1768ac'; // Azul
+            } else {
+                title = '¡Puedes Mejorar!';
+                message = 'No te preocupes. Revisa el video e inténtalo de nuevo.';
+                icon = 'replay';
+                resultsIcon.classList.add('improve');
+                sound = 'results_bad';
+                ringColor = '#ff9500'; // Naranja
+            }
+            
+            resultsTitle.textContent = title;
+            resultsMessage.textContent = message;
+            resultsIcon.querySelector('.material-icons').textContent = icon;
+            
+            // Reproducir sonido
+            try { createAudioFeedback(sound); } catch(e) {}
+
+            // Mostrar overlay
+            resultsOverlay.style.display = 'flex';
+            
+            // Forzar reflow para reiniciar la animación CSS
+            void resultsScoreRing.offsetWidth; 
+            
+            // Aplicar variables CSS y clase de animación
+            resultsScoreRing.style.setProperty('--ring-percentage', `${percentage * 3.6}deg`); // Convertir % a grados
+            resultsScoreRing.style.setProperty('--ring-color', ringColor);
+            resultsScoreRing.classList.add('animate');
+        }
+        
+        // MODIFICADO: NUEVA función para mostrar errores en el Splash Screen
+        function showSplashError(title, message) {
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const titleEl = stateOverlay.querySelector('.splash-title');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+            
+            titleEl.textContent = title;
+            titleEl.style.color = '#dc3545'; // Red
+            subtitleEl.textContent = message;
+            
+            playButton.style.display = 'none'; // Ocultar botón de play
+            
+            stateOverlay.classList.add('visible', 'error'); // Mostrar overlay en modo error
+            stateOverlay.style.cursor = 'default'; // No es clickeable
+            
+            // Deshabilitar otros blockers
+            const blocker = document.getElementById('video-overlay-blocker');
+            if (blocker) blocker.style.display = 'none';
+        }
+
+        // NUEVO: Controlar el estado de carga del splash screen
+        function updateSplashLoading(isLoading, message = "Presiona para iniciar") {
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+
+            subtitleEl.textContent = message;
+            if (isLoading) {
+                stateOverlay.classList.add('loading');
+                stateOverlay.style.cursor = 'default';
+            } else {
+                stateOverlay.classList.remove('loading');
+                stateOverlay.style.cursor = 'pointer';
+            }
+        }
+
+        // --- SDK de Elementos (sin cambios) ---
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange: async (config) => {
+                    const descEl = document.getElementById('video-description');
+                    if (descEl) descEl.textContent = config.video_description || defaultConfig.video_description;
+                },
+                mapToCapabilities: (config) => ({
+                    recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["video_description", config.video_description || defaultConfig.video_description]
+                ])
+            });
+        }
+    </script>
 </body>
 </html>
