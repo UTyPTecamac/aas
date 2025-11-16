@@ -192,7 +192,7 @@
             margin: 0 auto 20px;
         }
 
-        /* NUEVO: Estilo para spinner de error */
+        /* Estilo para spinner de error */
         .loading-spinner.error {
             border-top-color: #dc3545;
             animation: none; /* Detener giro */
@@ -216,7 +216,7 @@
             margin-bottom: 10px;
         }
 
-        /* NUEVO: Estilo para texto de error */
+        /* Estilo para texto de error */
         .loading-text.error {
             color: #dc3545;
         }
@@ -986,8 +986,7 @@
             video_description: "Responde las preguntas que aparecen durante el video"
         };
 
-        // Datos JSON de las preguntas (Fallback)
-        // ESTOS DATOS SÓLO SE USARÁN SI NO SE PROVEE UN JSON EXTERNO
+        // MODIFICACIÓN: Se restauran los datos de ejemplo (fallback).
         let questionsData = {
             "video_id": "jCcZfY04at4",
             "questions": [
@@ -1028,6 +1027,7 @@
             ]
         };
 
+
         // Variables globales
         let currentQuestionIndex = 0;
         let selectedAnswer = null;
@@ -1047,9 +1047,10 @@
         let isDragging = false;
         
         // Configuración del video desde URL
-        let videoId = 'jCcZfY04at4'; // Por defecto
+        // MODIFICACIÓN: Se restaura el videoId por defecto.
+        let videoId = 'jCcZfY04at4';
         let jsonFile = null; // Se cargará desde URL
-        let videoParamProvided = false; // <-- NUEVA VARIABLE: Para dar prioridad al parámetro de URL
+        let videoParamProvided = false; // <-- VARIABLE: Para dar prioridad al parámetro de URL
 
         // Función para crear sonidos de retroalimentación
         function createAudioFeedback(type) {
@@ -1434,15 +1435,15 @@
                 // FIN DEL BUCLE DE REINTENTOS
                 if (!success) {
                     console.error('FALLO DEFINITIVO: No se pudo cargar el JSON después de', maxRetries, 'intentos.');
-                    // MODIFICACIÓN: Mostrar error al usuario en lugar de usar datos de ejemplo
+                    // MODIFICACIÓN: Mostrar error al usuario
                     showError('Error de Carga', 'No se pudo cargar el archivo de preguntas. (Revise la URL y la configuración CORS)');
                     console.error('Último error:', lastError);
-                    // NO marcaremos jsonDataLoaded como true, para que el player no inicie
                     return; 
                 }
 
             } else {
-                // No hay JSON externo, usar datos de ejemplo (fallback)
+                // MODIFICACIÓN: No hay JSON externo, usar datos de ejemplo (fallback).
+                console.warn('No se proveyó ?json=... Usando datos de ejemplo internos.');
                 showLoading('Cargando datos de ejemplo...', 'Preparando contenido');
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
@@ -1458,16 +1459,18 @@
             const markersContainer = document.getElementById('markers-container');
             if (!markersContainer) return;
             
-            if (!questionsData.questions || questionsData.questions.length === 0) {
+            if (!questionsData || !questionsData.questions || questionsData.questions.length === 0) {
                 console.warn('No hay preguntas disponibles para crear marcadores');
                 return;
             }
             
+            // Limpiar marcadores existentes
             const existingMarkers = markersContainer.querySelectorAll('.marker');
             existingMarkers.forEach(marker => marker.remove());
-            
+
+            // Usar duración real del video si está disponible, sino estimar
             const duration = videoDuration || 180;
-            
+
             questionsData.questions.forEach((question, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'marker';
@@ -1477,6 +1480,7 @@
                 marker.dataset.time = question.time;
                 marker.addEventListener('click', () => jumpToQuestion(index));
                 
+                // Crear tooltip para el marcador
                 const tooltip = document.createElement('div');
                 tooltip.className = 'marker-tooltip';
                 tooltip.textContent = `Actividad ${index + 1} - ${formatTime(question.time)}`;
@@ -1484,7 +1488,7 @@
                 
                 markersContainer.appendChild(marker);
             });
-            
+
             setupTimelineSlider();
         }
 
@@ -1672,14 +1676,17 @@
                     updateTimeDisplay();
                     
                     if (isPlaying && questionsEnabled) {
-                        questionsData.questions.forEach((question, index) => {
-                            if (currentTimeSeconds >= question.time && currentTimeSeconds <= question.time + 1 && !question.shown) {
-                                console.log(`🎯 ACTIVANDO pregunta ${index + 1} en tiempo ${currentTimeSeconds}s (objetivo: ${question.time}s)`);
-                                question.shown = true;
-                                pauseVideo();
-                                showQuestion(index);
-                            }
-                        });
+                        // MODIFICACIÓN: Comprobar que questionsData exista
+                        if (questionsData && questionsData.questions) {
+                            questionsData.questions.forEach((question, index) => {
+                                if (currentTimeSeconds >= question.time && currentTimeSeconds <= question.time + 1 && !question.shown) {
+                                    console.log(`🎯 ACTIVANDO pregunta ${index + 1} en tiempo ${currentTimeSeconds}s (objetivo: ${question.time}s)`);
+                                    question.shown = true;
+                                    pauseVideo();
+                                    showQuestion(index);
+                                }
+                            });
+                        }
                     }
                     
                 } catch (error) {
@@ -1744,7 +1751,7 @@
                 const questionTime = parseInt(marker.dataset.time);
                 const questionIndex = parseInt(marker.dataset.questionIndex);
                 
-                if (!questionsData.questions[questionIndex]) return; // Guard
+                if (!questionsData || !questionsData.questions || !questionsData.questions[questionIndex]) return; // Guard
                 
                 const question = questionsData.questions[questionIndex];
                 
@@ -1882,7 +1889,8 @@
         }
 
         function updateProgress() {
-            if (!questionsData.questions || questionsData.questions.length === 0) return;
+            // MODIFICACIÓN: Añadir comprobación de que questionsData existe.
+            if (!questionsData || !questionsData.questions || questionsData.questions.length === 0) return;
             const progress = (questionsAnswered / questionsData.questions.length) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
         }
@@ -1891,11 +1899,14 @@
             if (!playerReady || !player) return;
             
             try {
-                questionsData.questions.forEach(q => {
-                    q.shown = false;
-                    q.answered = false;
-                    q.correct = false;
-                });
+                // MODIFICACIÓN: Añadir comprobación
+                if (questionsData && questionsData.questions) {
+                    questionsData.questions.forEach(q => {
+                        q.shown = false;
+                        q.answered = false;
+                        q.correct = false;
+                    });
+                }
                 questionsAnswered = 0;
                 correctAnswers = 0;
                 currentQuestionIndex = 0;
@@ -1987,7 +1998,8 @@
         }
 
         function showResults() {
-            if (!questionsData.questions || questionsData.questions.length === 0) {
+            // MODIFICACIÓN: Comprobación de que questionsData existe.
+            if (!questionsData || !questionsData.questions || questionsData.questions.length === 0) {
                 showNotification("Aún no hay preguntas cargadas.");
                 return;
             }
