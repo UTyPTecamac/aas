@@ -1295,7 +1295,7 @@
         let totalPossiblePoints = 0;
         
         let isPlaying = false;
-        // let videoTimer = null; // MODIFICADO: Ya no se usa, reemplazado por 'timeupdate'
+        // let videoTimer = null; // Ya no se usa, reemplazado por 'timeupdate'
         let currentVideoTime = 0;
         let videoDuration = 0;
         let isMuted = false;
@@ -1316,12 +1316,61 @@
 
         // --- Funciones de Audio (sin cambios) ---
         function createAudioFeedback(type) {
-            // ... (código de audio sin cambios) ...
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let frequencies = [];
+            let baseDelay = 0.1;
+            let duration = 0.4;
+            let waveType = 'sine';
+            
+            switch(type) {
+                case 'correct':
+                    frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+                    break;
+                case 'incorrect':
+                    frequencies = [400, 200];
+                    waveType = 'sawtooth';
+                    duration = 0.5;
+                    break;
+                // NUEVO: Sonidos de resultados
+                case 'results_excellent':
+                    frequencies = [523, 659, 783, 1046]; // C, E, G, C6 (Ascendente)
+                    baseDelay = 0.08;
+                    duration = 0.5;
+                    break;
+                case 'results_good':
+                    frequencies = [523, 659, 783]; // C, E, G (Estándar)
+                    baseDelay = 0.1;
+                    duration = 0.5;
+                    break;
+                case 'results_bad':
+                    frequencies = [523, 440, 392]; // C, A, G (Descendente)
+                    baseDelay = 0.12;
+                    duration = 0.5;
+                    break;
+                default:
+                    return;
+            }
+
+            frequencies.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                oscillator.type = waveType;
+                
+                const startTime = audioContext.currentTime + (index * baseDelay);
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+                
+                oscillator.start(startTime);
+                oscillator.stop(startTime + duration + 0.1);
+            });
         }
 
         // --- Funciones de Utilidad ---
-        
-        // MODIFICADO: extractYouTubeId ELIMINADO
         
         function getUrlParams() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1339,15 +1388,6 @@
         }
         
         // --- Lógica de Carga e Inicialización ---
-
-        // MODIFICADO: Eliminadas variables de estado de API de YouTube
-        // let youtubeAPIReady = false;
-        // let playerInitialized = false;
-        // let initializationInProgress = false;
-        // let playerInitializationWatchdog = null; 
-
-        // MODIFICADO: onYouTubeIframeAPIReady ELIMINADO
-        
         
         // MODIFICADO: tryInitializePlayer REEMPLAZADO por initializeVideoPlayer
         function initializeVideoPlayer(url) {
@@ -1382,8 +1422,7 @@
             document.getElementById('video-overlay-blocker').style.display = 'block'; // Mostrar el blocker
             document.getElementById('play-pause-btn').disabled = false; // Habilitar controles
             
-            // setupEventListeners() se llama en DOMContentLoaded, pero nos aseguramos
-            // de que los botones de control estén listos.
+            // setupEventListeners() ya se llamó en DOMContentLoaded
             
             try {
                 videoDuration = videoElement.duration;
@@ -1418,16 +1457,13 @@
                         subtext = 'Ocurrió un error desconocido.';
                 }
             }
-            showSplashError('Error del Video', subtext);
+            showSplashError('Error de Video', subtext);
         }
 
-        // MODIFICADO: onPlayerStateChange REEMPLAZADO por eventos separados
-        
         function onVideoPlay(event) {
             const stateOverlay = document.getElementById('video-state-overlay'); 
             isPlaying = true;
             document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">pause</span>';
-            // startVideoTimer(); // MODIFICADO: Ya no es necesario
             stateOverlay.classList.remove('visible'); 
             stateOverlay.style.display = 'none'; // Asegurar que esté oculto
         }
@@ -1436,7 +1472,6 @@
             const stateOverlay = document.getElementById('video-state-overlay'); 
             isPlaying = false;
             document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">play_arrow</span>';
-            // MODIFICADO: Lógica de timer eliminada
             
             if (!isInteractionActive) {
                 stateOverlay.classList.add('visible'); 
@@ -1446,14 +1481,12 @@
         function onVideoEnded(event) {
             isPlaying = false;
             document.getElementById('play-pause-btn').innerHTML = '<span class="material-icons">replay</span>';
-            // MODIFICADO: Lógica de timer eliminada
             
-            stateOverlay.classList.remove('visible'); 
+            document.getElementById('video-state-overlay').classList.remove('visible'); 
             
             showResults();
         }
         
-        // NUEVO: Este handler reemplaza a startVideoTimer y setInterval
         function onVideoTimeUpdate(event) {
             if (!videoReady || !videoElement) return;
             
@@ -1530,63 +1563,112 @@
             updateProgress();
         });
         
-        // NUEVA FUNCIÓN: fetchWithRetries (sin cambios)
+        // NUEVA FUNCIÓN: fetchWithRetries
         async function fetchWithRetries(url, retries = 3, delay = 1000) {
-            // ... (código sin cambios) ...
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout por intento
+                    
+                    const response = await fetch(url, { 
+                        signal: controller.signal, 
+                        cache: 'no-cache' 
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        return await response.json(); // Éxito
+                    }
+                    // MODIFICADO: Lanzar un error más descriptivo
+                    throw new Error(`Error HTTP ${response.status}: ${response.statusText} al intentar cargar ${url}`); 
+                } catch (error) {
+                    console.error(`Error cargando JSON (intento ${i + 1}/${retries}):`, error);
+                    if (i === retries - 1) { // Si es el último intento, rechazar
+                        throw error;
+                    }
+                    // Esperar antes de reintentar
+                    await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+                }
+            }
         }
         
         // MODIFICADO: loadQuestionsData ahora es el PASO 2 y llama a initializeVideoPlayer
         async function loadQuestionsData() {
-            console.log('PASO 2: Cargando archivo JSON...');
-            updateSplashLoading(true, 'Cargando Preguntas...'); // Mostrar spinner
+            console.log('PASO 2: Intentando cargar JSON desde:', jsonFile); // LOG MEJORADO
+            updateSplashLoading(true, 'Cargando Preguntas...'); 
             
+            let loadedData = null; // Variable para almacenar los datos cargados exitosamente
+
             if (jsonFile) {
                 try {
-                    const data = await fetchWithRetries(jsonFile, 3);
+                    loadedData = await fetchWithRetries(jsonFile, 3); // Intentar cargar
                     
-                    if (!data || !data.questions) throw new Error('JSON inválido o falta el array "questions"');
-                    
-                    // MODIFICADO: Buscar 'video_url'
-                    if (data.video_url && !videoUrlParamProvided) {
-                        videoUrl = data.video_url;
+                    if (!loadedData || typeof loadedData !== 'object') {
+                         throw new Error('JSON descargado no es un objeto válido (no es un objeto o está vacío).');
+                    }
+                    if (!loadedData.questions) {
+                        throw new Error('JSON inválido: Falta la propiedad "questions" de nivel superior.');
                     }
                     
-                    interactionsData = data; 
-                    console.log('PASO 2.1: JSON cargado y procesado.');
+                    console.log('PASO 2.1: JSON cargado y validado.');
                     
                 } catch (error) {
-                    console.error('FALLO DEFINITIVO: No se pudo cargar el JSON después de 3 intentos.');
-                    showSplashError('Error de Carga', 'No se pudo cargar el archivo de preguntas.');
-                    console.error('Último error:', error);
-                    return; 
+                    // Si falla el fetch (red/404) o la estructura (contenido), mostramos el error 
+                    // pero continuamos usando la URL del video del parámetro si existe.
+                    console.error('FALLO al cargar/validar el JSON:', error.message);
+                    
+                    // Mostrar un error de advertencia para el usuario.
+                    showSplashError('Advertencia de Interacciones', `No se pudo cargar o validar el archivo de preguntas desde ${jsonFile}. Razón: ${error.message}.`);
+                    loadedData = null; // Asegura que se use el fallback de interacciones.
                 }
-            } else {
-                console.warn('No se proveyó ?json=... Usando datos de ejemplo internos.');
-                // Usar video_url de datos de ejemplo si no hay param
-                if (interactionsData.video_url && !videoUrlParamProvided) {
-                    videoUrl = interactionsData.video_url;
-                }
-                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            questions = interactionsData.questions || [];
+            // 1. Usar datos cargados si existen, sino usar el fallback (interactionsData)
+            if (loadedData) {
+                interactionsData = loadedData;
+            } else {
+                 console.warn('Usando datos de ejemplo internos para las preguntas.');
+                 // interactionsData ya está inicializado con datos de ejemplo
+            }
             
+            // 2. Determinar la URL del video: 
+            //    Prioridad 1: Parámetro URL (?video=...) -> ya está en videoUrl y videoUrlParamProvided = true.
+            //    Prioridad 2: URL dentro del JSON/Fallback (solo si no se usó el parámetro URL)
+            if (interactionsData.video_url && !videoUrlParamProvided) {
+                videoUrl = interactionsData.video_url;
+            }
+
+            questions = interactionsData.questions || [];
             calculateTotalPoints();
             
-            // PASO 3: Ahora que el JSON está listo, iniciar el player SI TENEMOS URL.
+            // PASO 3: Iniciar el reproductor.
             if (videoUrl) {
                 initializeVideoPlayer(videoUrl);
             } else {
+                // Esto solo debería pasar si no hay ?video= Y el JSON/fallback no tiene video_url
                 showSplashError('Error Crítico', 'No se ha especificado una URL de video.');
             }
         }
         
         // NUEVA FUNCIÓN: Calcular puntos totales (sin cambios)
         function calculateTotalPoints() {
-            // ... (código sin cambios) ...
+            totalPossiblePoints = 0;
+            if (!questions) return;
+            
+            questions.forEach(interaction => {
+                const type = interaction.type;
+                if (type === 'true_false' || type === 'multiple_choice') {
+                    totalPossiblePoints += 1;
+                } else if (type === 'matching' && interaction.content.correct_matches) {
+                    totalPossiblePoints += interaction.content.correct_matches.length;
+                }
+                // 'text_media' no suma puntos
+            });
+            console.log('Total de puntos posibles calculado:', totalPossiblePoints);
         }
         
-        // --- Lógica de la Línea de Tiempo ---
+        // --- Lógica de la Línea de Tiempo (Sin cambios en las funciones) ---
 
         function createInteractiveMarkers() {
             const markersContainer = document.getElementById('markers-container');
@@ -1734,8 +1816,6 @@
             if (videoReady && videoElement) try { videoElement.pause(); } catch (e) {}
         }
 
-        // MODIFICADO: startVideoTimer ELIMINADO
-        
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
@@ -1825,17 +1905,163 @@
             }
         }
         
-        // ... (El resto de funciones de lógica de preguntas:
-        // showTextMedia, showTrueFalse, showMultipleChoice, showMatching,
-        // selectOption, selectMatchingColumnA, selectMatchingColumnB,
-        // submitAnswer, highlightChoiceAnswers, checkMatchingAnswers,
-        // highlightMatchingAnswers, showFeedback, continueVideo,
-        // updateProgress, updateQuestionCounter, shuffleArray
-        // ... no necesitan cambios ya que no interactúan
-        // directamente con el reproductor de video, solo con los overlays)
+        // 2. Mostrar "Texto Libre" o "Imagen con Texto"
+        function showTextMedia(interaction) {
+            const content = interaction.content;
+            document.getElementById('info-title').textContent = content.title || '';
+            const infoContent = document.getElementById('info-content');
+            infoContent.innerHTML = ''; // Limpiar
+            
+            if (content.image) {
+                const img = document.createElement('img');
+                img.src = content.image;
+                img.className = 'interaction-image';
+                infoContent.appendChild(img);
+            }
+            if (content.text) {
+                const p = document.createElement('p');
+                p.className = 'interaction-text';
+                p.innerHTML = content.text; // Usar innerHTML para permitir <br>, <b>, etc.
+                infoContent.appendChild(p);
+            }
+            
+            document.getElementById('info-overlay').style.display = 'flex';
+        }
+        
+        // 3. Mostrar Pregunta de Verdadero/Falso
+        function showTrueFalse(interaction) {
+            const content = interaction.content;
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            // Actualizar contador
+            updateQuestionCounter();
+            
+            // Añadir título (pregunta)
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            // Añadir contenedor de opciones
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            // Crear botón Verdadero
+            const trueBtn = document.createElement('button');
+            trueBtn.className = 'option-button';
+            trueBtn.innerHTML = '<span class="material-icons">check_circle_outline</span> Verdadero';
+            trueBtn.addEventListener('click', () => selectOption(true, trueBtn));
+            optionsContainer.appendChild(trueBtn);
+            
+            // Crear botón Falso
+            const falseBtn = document.createElement('button');
+            falseBtn.className = 'option-button';
+            falseBtn.innerHTML = '<span class="material-icons">highlight_off</span> Falso';
+            falseBtn.addEventListener('click', () => selectOption(false, falseBtn));
+            optionsContainer.appendChild(falseBtn);
+            
+            interactionContent.appendChild(optionsContainer);
+            
+            // Resetear y mostrar overlay de pregunta
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // 4. Mostrar Pregunta de Opción Múltiple
+        function showMultipleChoice(interaction) {
+            const content = interaction.content;
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            updateQuestionCounter();
+            
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            content.options.forEach((optionText, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = `${String.fromCharCode(65 + index)}. ${optionText}`;
+                button.addEventListener('click', () => selectOption(index, button));
+                optionsContainer.appendChild(button);
+            });
+            
+            interactionContent.appendChild(optionsContainer);
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
+        
+        // 5. Mostrar Pregunta de Relación de Columnas
+        function showMatching(interaction) {
+            const content = interaction.content;
+            userMatches = []; // Resetear
+            selectedColumnA = null; // Resetear
+            
+            const interactionContent = document.getElementById('interaction-content');
+            interactionContent.innerHTML = ''; // Limpiar
+            
+            updateQuestionCounter();
+            
+            const title = document.createElement('div');
+            title.className = 'interaction-title';
+            title.textContent = content.question;
+            interactionContent.appendChild(title);
+            
+            // Crear contenedor principal
+            const matchingContainer = document.createElement('div');
+            matchingContainer.className = 'matching-container';
+            
+            // Crear Columnas
+            const colA = document.createElement('div');
+            colA.className = 'matching-column';
+            colA.id = 'column-a';
+            
+            const colB = document.createElement('div');
+            colB.className = 'matching-column';
+            colB.id = 'column-b';
+            
+            // Llenar Columnas
+            // IMPORTANTE: Mezclar las columnas para que no sea obvio
+            const shuffledA = shuffleArray([...content.column_a]);
+            const shuffledB = shuffleArray([...content.column_b]);
+
+            shuffledA.forEach((itemText, shuffledIndex) => {
+                const originalIndex = content.column_a.indexOf(itemText);
+                const item = document.createElement('div');
+                item.className = 'column-item';
+                item.textContent = itemText;
+                item.dataset.index = originalIndex; // Guardar el índice original
+                item.addEventListener('click', () => selectMatchingColumnA(item, originalIndex));
+                colA.appendChild(item);
+            });
+            
+            shuffledB.forEach((itemText, shuffledIndex) => {
+                const originalIndex = content.column_b.indexOf(itemText);
+                const item = document.createElement('div');
+                item.className = 'column-item';
+                item.textContent = itemText;
+                item.dataset.index = originalIndex; // Guardar el índice original
+                item.addEventListener('click', () => selectMatchingColumnB(item, originalIndex));
+                colB.appendChild(item);
+            });
+            
+            matchingContainer.appendChild(colA);
+            matchingContainer.appendChild(colB);
+            interactionContent.appendChild(matchingContainer);
+            
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('question-overlay').style.display = 'flex';
+        }
         
         // --- Lógica de Selección y Envío (Sin cambios) ---
-        
+
         function selectOption(index, button) {
             document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
             button.classList.add('selected');
@@ -1844,36 +2070,173 @@
         }
         
         function selectMatchingColumnA(item, indexA) {
-            // ... (código sin cambios) ...
+            // Si se vuelve a hacer clic en el mismo, deseleccionar
+            if (selectedColumnA && selectedColumnA.index === indexA) {
+                selectedColumnA.element.classList.remove('selected');
+                selectedColumnA = null;
+            } else {
+                // Quitar selección anterior
+                document.querySelectorAll('#column-a .column-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedColumnA = { element: item, index: indexA };
+            }
         }
         
         function selectMatchingColumnB(item, indexB) {
-            // ... (código sin cambios) ...
+            if (!selectedColumnA) return; // No hay nada seleccionado en A
+            
+            const indexA = selectedColumnA.index;
+            
+            // Quitar cualquier emparejamiento anterior para estos elementos
+            userMatches = userMatches.filter(match => match.a_index !== indexA && match.b_index !== indexB);
+            
+            // Quitar clases de emparejamiento visual
+            document.querySelectorAll(`.paired-a-${indexA}, .paired-b-${indexB}`).forEach(el => {
+                el.classList.remove('paired-a', 'paired-b', `paired-a-${indexA}`, `paired-b-${indexB}`);
+            });
+            
+            // Añadir nuevo emparejamiento
+            userMatches.push({ a_index: indexA, b_index: indexB });
+            
+            // Añadir clases visuales
+            selectedColumnA.element.classList.add('paired-a', `paired-a-${indexA}`);
+            item.classList.add('paired-b', `paired-b-${indexB}`);
+            
+            // Resetear selección
+            selectedColumnA.element.classList.remove('selected');
+            selectedColumnA = null;
+            
+            // Habilitar botón si todos están emparejados
+            if (userMatches.length === questions[currentInteractionIndex].content.column_a.length) {
+                document.getElementById('submit-btn').disabled = false;
+            }
         }
 
         // 6. Dispatcher de Envío
         function submitAnswer() {
-            // ... (código sin cambios) ...
+            const interaction = questions[currentInteractionIndex];
+            
+            // Deshabilitar botón
+            document.getElementById('submit-btn').disabled = true;
+            
+            // Contar como respondida
+            interaction.answered = true;
+            questionsAnswered++;
+            
+            let isCorrect = false;
+            
+            switch (interaction.type) {
+                case 'true_false':
+                case 'multiple_choice':
+                    isCorrect = (selectedAnswer === interaction.content.correct_answer);
+                    if (isCorrect) userScore += 1; // Sumar 1 punto
+                    highlightChoiceAnswers(isCorrect, interaction.content.correct_answer);
+                    break;
+                case 'matching':
+                    // MODIFICADO: checkMatchingAnswers ahora devuelve el número de aciertos
+                    const correctPairs = checkMatchingAnswers(interaction.content.correct_matches);
+                    userScore += correctPairs; // Sumar puntos parciales
+                    isCorrect = (correctPairs === interaction.content.correct_matches.length); // Es 100% correcta?
+                    highlightMatchingAnswers(isCorrect, interaction.content.correct_matches);
+                    break;
+            }
+            
+            // Actualizar estadísticas
+            interaction.correct = isCorrect;
+            
+            // Reproducir sonido
+            try { createAudioFeedback(isCorrect ? 'correct' : 'incorrect'); } catch (e) {}
+            
+            // Mostrar retroalimentación
+            setTimeout(() => {
+                showFeedback(isCorrect, interaction.content.feedback);
+            }, 1500); // Esperar 1.5s para que el usuario vea la corrección
+            
+            updateProgress();
         }
         
         // 7. Funciones de Verificación y Resaltado
         
         function highlightChoiceAnswers(isCorrect, correctIndex) {
-            // ... (código sin cambios) ...
+            document.querySelectorAll('.option-button').forEach((btn, index) => {
+                if (index === correctIndex) {
+                    btn.classList.add('correct');
+                } else if (index === selectedAnswer && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+                btn.onclick = null; // Deshabilitar
+            });
         }
         
+        // MODIFICADO: Devuelve el NÚMERO de pares correctos
         function checkMatchingAnswers(correctMatches) {
-            // ... (código sin cambios) ...
+            let correctCount = 0;
+            userMatches.forEach(userMatch => {
+                const isPairCorrect = correctMatches.some(cm => 
+                    cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
+                );
+                if (isPairCorrect) {
+                    correctCount++;
+                }
+            });
+            return correctCount;
         }
         
         function highlightMatchingAnswers(isCorrect, correctMatches) {
-            // ... (código sin cambios) ...
+            // Deshabilitar clics
+            document.querySelectorAll('.column-item').forEach(el => el.onclick = null);
+
+            // Si es 100% correcto, marcar todo verde
+            if (isCorrect) {
+                 document.querySelectorAll('.column-item').forEach(el => el.classList.add('correct'));
+                 return;
+            }
+            
+            // Si es incorrecto, marcar pares individuales
+            userMatches.forEach(userMatch => {
+                const isPairCorrect = correctMatches.some(cm => 
+                    cm.a_index === userMatch.a_index && cm.b_index === userMatch.b_index
+                );
+                
+                const elA = document.querySelector(`#column-a .column-item[data-index="${userMatch.a_index}"]`);
+                const elB = document.querySelector(`#column-b .column-item[data-index="${userMatch.b_index}"]`);
+                
+                if (isPairCorrect) {
+                    elA.classList.add('correct');
+                    elB.classList.add('correct');
+                } else {
+                    elA.classList.add('incorrect');
+                    elB.classList.add('incorrect');
+                }
+            });
         }
 
         // 8. Continuar Video y Feedback
         
         function showFeedback(isCorrect, feedback) {
-            // ... (código sin cambios) ...
+            document.getElementById('question-overlay').style.display = 'none';
+            document.getElementById('info-overlay').style.display = 'none';
+            
+            const feedbackCard = document.getElementById('feedback-card');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackMessage = document.getElementById('feedback-message');
+            
+            if (isCorrect) {
+                feedbackCard.className = 'feedback-card correct';
+                feedbackIcon.innerHTML = '<span class="material-icons">check_circle</span>';
+                feedbackIcon.className = 'feedback-icon correct';
+                feedbackTitle.textContent = '¡Correcto!';
+                feedbackMessage.textContent = feedback.correct;
+            } else {
+                feedbackCard.className = 'feedback-card incorrect';
+                feedbackIcon.innerHTML = '<span class="material-icons">cancel</span>';
+                feedbackIcon.className = 'feedback-icon incorrect';
+                feedbackTitle.textContent = 'Incorrecto';
+                feedbackMessage.textContent = feedback.incorrect;
+            }
+            
+            document.getElementById('feedback-overlay').style.display = 'flex';
         }
 
         function continueVideo() {
@@ -1881,7 +2244,7 @@
             document.getElementById('info-overlay').style.display = 'none';
             document.getElementById('question-overlay').style.display = 'none';
             
-            isInteractionActive = false;
+            isInteractionActive = false; // <-- AÑADIDO
             
             // Marcar el marcador como completado
             const markers = document.querySelectorAll('.marker');
@@ -1893,18 +2256,34 @@
         }
 
         function updateProgress() {
-            // ... (código sin cambios) ...
+            if (!questions || questions.length === 0) return;
+            
+            // Contar solo las preguntas "respondibles"
+            const respondibleQuestions = questions.filter(q => q.type !== 'text_media').length;
+            const answeredRespondible = questions.filter(q => q.answered && q.type !== 'text_media').length;
+            
+            const progress = (answeredRespondible / respondibleQuestions) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
         }
         
         function updateQuestionCounter() {
-            // ... (código sin cambios) ...
+            const num = currentInteractionIndex + 1;
+            const total = questions.length;
+            document.getElementById('question-counter').innerHTML = `
+                <span class="material-icons">help_outline</span>
+                Actividad ${num} de ${total}
+            `;
         }
         
         function shuffleArray(array) {
-            // ... (código sin cambios) ...
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
-        // --- Controles de Video Adicionales ---
+        // --- Controles de Video Adicionales (Sin cambios en las funciones) ---
 
         function restartVideo() {
             if (!videoReady || !videoElement) return;
@@ -1934,7 +2313,16 @@
                 
                 // MODIFICACIÓN: Mostrar el overlay de estado al reiniciar
                 const stateOverlay = document.getElementById('video-state-overlay');
-                // ... (código de reseteo de splash sin cambios) ...
+                const titleEl = stateOverlay.querySelector('.splash-title');
+                const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+                const playButton = stateOverlay.querySelector('.splash-play-button');
+                
+                titleEl.textContent = 'Video Interactivo';
+                titleEl.style.color = 'white';
+                subtitleEl.textContent = 'Presiona para iniciar';
+                playButton.style.display = 'flex';
+                stateOverlay.classList.remove('error');
+                
                 stateOverlay.classList.add('visible');
                 
                 document.querySelectorAll('.marker').forEach(marker => {
@@ -1958,12 +2346,10 @@
             videoElement.muted = isMuted; // MODIFICADO
             const audioBtn = document.getElementById('audio-btn');
             if (isMuted) {
-                // player.mute(); // MODIFICADO
                 audioBtn.innerHTML = '<span class="material-icons">volume_off</span>';
                 audioBtn.title = 'Activar audio';
                 showNotification('Audio silenciado');
             } else {
-                // player.unMute(); // MODIFICADO
                 audioBtn.innerHTML = '<span class="material-icons">volume_up</span>';
                 audioBtn.title = 'Silenciar audio';
                 showNotification('Audio activado');
@@ -1971,31 +2357,164 @@
         }
 
         function toggleFullscreen() {
-            // ... (código sin cambios, ya apuntaba a .container) ...
+            const container = document.querySelector('.container');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(() => {
+                    showNotification('No se pudo activar pantalla completa');
+                });
+            } else {
+                document.exitFullscreen();
+            }
         }
 
         function showNotification(message) {
-            // ... (código sin cambios) ...
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px;
+                background: rgba(0,0,0,0.8); color: white;
+                padding: 12px 20px; border-radius: 4px;
+                font-size: 14px; z-index: 2000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
         }
 
-        // MODIFICADO: showResults (sin cambios en su lógica interna)
         function showResults() {
-            // ... (código sin cambios) ...
+            if (!questions || totalPossiblePoints === 0) {
+                showNotification("No hay actividades puntuables en este video.");
+                return;
+            }
+            
+            // Pausar video si está reproduciéndose
+            pauseVideo();
+            isInteractionActive = true; 
+
+            // NUEVO: Ocultar el overlay de estado si se muestran los resultados
+            document.getElementById('video-state-overlay').classList.remove('visible');
+
+            const percentage = Math.round((userScore / totalPossiblePoints) * 100);
+            
+            const resultsOverlay = document.getElementById('results-overlay');
+            const resultsIcon = document.getElementById('results-icon');
+            const resultsTitle = document.getElementById('results-title');
+            const resultsMessage = document.getElementById('results-message');
+            const resultsDetails = document.getElementById('results-details');
+            const resultsPercentage = document.getElementById('results-percentage');
+            const resultsScoreRing = document.getElementById('results-score-ring');
+            
+            // Actualizar contenido
+            resultsDetails.textContent = `Puntos: ${userScore} / ${totalPossiblePoints}`;
+            resultsPercentage.textContent = `${percentage}%`;
+
+            // Resetear clases y animación
+            resultsIcon.className = 'results-icon';
+            resultsScoreRing.classList.remove('animate');
+            
+            let message = '';
+            let title = '';
+            let icon = '';
+            let sound = '';
+            let ringColor = '#ff9500'; // Naranja (default)
+
+            if (percentage >= 90) {
+                title = '¡Excelente!';
+                message = '¡Felicidades! Has dominado este contenido.';
+                icon = 'emoji_events';
+                resultsIcon.classList.add('excellent');
+                sound = 'results_excellent';
+                ringColor = '#28a745'; // Verde
+            } else if (percentage >= 85) {
+                title = '¡Buen Trabajo!';
+                message = 'Has entendido la mayor parte del material. ¡Sigue así!';
+                icon = 'thumb_up';
+                resultsIcon.classList.add('good');
+                sound = 'results_good';
+                ringColor = '#1768ac'; // Azul
+            } else {
+                title = '¡Puedes Mejorar!';
+                message = 'No te preocupes. Revisa el video e inténtalo de nuevo.';
+                icon = 'replay';
+                resultsIcon.classList.add('improve');
+                sound = 'results_bad';
+                ringColor = '#ff9500'; // Naranja
+            }
+            
+            resultsTitle.textContent = title;
+            resultsMessage.textContent = message;
+            resultsIcon.querySelector('.material-icons').textContent = icon;
+            
+            // Reproducir sonido
+            try { createAudioFeedback(sound); } catch(e) {}
+
+            // Mostrar overlay
+            resultsOverlay.style.display = 'flex';
+            
+            // Forzar reflow para reiniciar la animación CSS
+            void resultsScoreRing.offsetWidth; 
+            
+            // Aplicar variables CSS y clase de animación
+            resultsScoreRing.style.setProperty('--ring-percentage', `${percentage * 3.6}deg`); // Convertir % a grados
+            resultsScoreRing.style.setProperty('--ring-color', ringColor);
+            resultsScoreRing.classList.add('animate');
         }
         
         // MODIFICADO: NUEVA función para mostrar errores en el Splash Screen (sin cambios)
         function showSplashError(title, message) {
-            // ... (código sin cambios) ...
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const titleEl = stateOverlay.querySelector('.splash-title');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+            
+            titleEl.textContent = title;
+            titleEl.style.color = '#dc3545'; // Red
+            subtitleEl.textContent = message;
+            
+            playButton.style.display = 'none'; // Ocultar botón de play
+            
+            stateOverlay.classList.add('visible', 'error'); // Mostrar overlay en modo error
+            stateOverlay.style.cursor = 'default'; // No es clickeable
+            
+            // Deshabilitar otros blockers
+            const blocker = document.getElementById('video-overlay-blocker');
+            if (blocker) blocker.style.display = 'none';
         }
 
         // NUEVO: Controlar el estado de carga del splash screen (sin cambios)
         function updateSplashLoading(isLoading, message = "Presiona para iniciar") {
-            // ... (código sin cambios) ...
+            const stateOverlay = document.getElementById('video-state-overlay');
+            const subtitleEl = stateOverlay.querySelector('.splash-subtitle');
+            const playButton = stateOverlay.querySelector('.splash-play-button');
+
+            subtitleEl.textContent = message;
+            if (isLoading) {
+                stateOverlay.classList.add('loading');
+                stateOverlay.style.cursor = 'default';
+            } else {
+                stateOverlay.classList.remove('loading');
+                stateOverlay.style.cursor = 'pointer';
+            }
         }
 
         // --- SDK de Elementos (sin cambios) ---
         if (window.elementSdk) {
-            // ... (código sin cambios) ...
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange: async (config) => {
+                    const descEl = document.getElementById('video-description');
+                    if (descEl) descEl.textContent = config.video_description || defaultConfig.video_description;
+                },
+                mapToCapabilities: (config) => ({
+                    recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["video_description", config.video_description || defaultConfig.video_description]
+                ])
+            });
         }
     </script>
 </body>
