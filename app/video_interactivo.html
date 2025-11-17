@@ -1342,6 +1342,9 @@
         let videoUrl = null;
         let jsonFile = null; 
         let videoUrlParamProvided = false; // 'videoParamProvided' renombrado
+        
+        // *** NUEVA VARIABLE ***
+        let hasAttemptedFallback = false; // Para evitar bucles de error
 
         // --- Funciones de Audio (sin cambios) ---
         function createAudioFeedback(type) {
@@ -1429,6 +1432,15 @@
             console.log('PASO 3: Inicializando el reproductor de video HTML5 con URL:', url); // LOG MEJORADO
             updateSplashLoading(true, 'Preparando Video...');
             
+            // *** AJUSTE ***: Limpiar listeners antiguos antes de añadir nuevos
+            // Esto es crucial para el fallback
+            videoElement.removeEventListener('loadedmetadata', onVideoReady);
+            videoElement.removeEventListener('error', onVideoError);
+            videoElement.removeEventListener('play', onVideoPlay);
+            videoElement.removeEventListener('pause', onVideoPause);
+            videoElement.removeEventListener('ended', onVideoEnded);
+            videoElement.removeEventListener('timeupdate', onVideoTimeUpdate);
+
             // Asignar listeners ANTES de setear SRC
             videoElement.addEventListener('loadedmetadata', onVideoReady);
             videoElement.addEventListener('error', onVideoError);
@@ -1445,6 +1457,7 @@
         function onVideoReady(event) {
             console.log('PASO 4: El reproductor de video está listo (loadedmetadata).');
             videoReady = true;
+            hasAttemptedFallback = false; // Reiniciar el flag de fallback si el video carga
 
             updateSplashLoading(false); // Ocultar spinner, mostrar botón de Play
             
@@ -1464,10 +1477,11 @@
             }
         }
 
-        // MODIFICADO: onPlayerError REEMPLAZADO por onVideoError
+        // *** MODIFICADO ***: onVideoError ahora intenta cargar un video de respaldo
         function onVideoError(event) {
             console.error('Error del reproductor de video:', videoElement.error);
             let subtext = 'No se pudo cargar el video.';
+            
             if (videoElement.error && videoElement.error.code) {
                  switch (videoElement.error.code) {
                     case MediaError.MEDIA_ERR_ABORTED:
@@ -1477,15 +1491,31 @@
                         subtext = 'Error de red al cargar el video.';
                         break;
                     case MediaError.MEDIA_ERR_DECODE:
-                        subtext = 'Error al decodificar el video.';
+                        subtext = 'Error al decodificar el video (posible códec corrupto).';
                         break;
                     case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
                         subtext = 'El formato del video no es compatible.';
+                        
+                        // *** NUEVA LÓGICA DE FALLBACK ***
+                        if (!hasAttemptedFallback) {
+                            hasAttemptedFallback = true;
+                            const fallbackUrl = interactionsData.video_url || "https://storage.googleapis.com/interactive-video-gemini-test/video-example.mp4";
+                            console.warn(`Error de códec. Intentando cargar video de respaldo: ${fallbackUrl}`);
+                            showSplashError('Error de Códec', 'El video principal no es compatible. Cargando video de respaldo...');
+                            // Espera un momento para que el usuario vea el mensaje y luego carga el fallback
+                            setTimeout(() => {
+                                initializeVideoPlayer(fallbackUrl);
+                            }, 1500);
+                            return; // Detiene la ejecución de esta función
+                        }
+                        // Si ya hemos intentado el fallback y también falla
+                        subtext = 'El video principal Y el video de respaldo no son compatibles.';
                         break;
                     default:
                         subtext = 'Ocurrió un error desconocido.';
                 }
             }
+            // Muestra el error final si no se pudo manejar
             showSplashError('Error de Video', subtext);
         }
 
@@ -1673,9 +1703,15 @@
             // COMPATIBILIDAD CON JSON: Busca "video_id" (del JSON de ejemplo) o "video_url"
             const jsonVideoUrl = interactionsData.video_url || interactionsData.video_id;
 
-            if (jsonVideoUrl && !videoUrlParamProvided) {
-                videoUrl = jsonVideoUrl;
+            // *** AJUSTE ***: Si cargamos el JSON, usamos el video de ESE JSON.
+            // Si el JSON falló y NO teníamos ?video=, usamos el video del FALLBACK.
+            if (loadedData && loadedData.video_url) {
+                videoUrl = loadedData.video_url; // Usar el video del JSON cargado
+            } else if (!videoUrlParamProvided) {
+                // No hay ?video=, así que usar el video del JSON (sea el cargado o el fallback)
+                videoUrl = interactionsData.video_url;
             }
+            // Si videoUrlParamProvided es true, 'videoUrl' ya tiene el valor correcto del parámetro.
 
             questions = interactionsData.questions || [];
             calculateTotalPoints();
@@ -1689,7 +1725,7 @@
             }
         }
         
-        // NUEVA FUNCIÓN: Calcular puntos totales (sin cambios)
+        // NUEVA FUNCIÓN: Calcular puntos totales (CON LOS AJUSTES DE PUNTOS)
         function calculateTotalPoints() {
             totalPossiblePoints = 0;
             if (!questions) return;
@@ -2158,7 +2194,7 @@
             }
         }
 
-        // 6. Dispatcher de Envío
+        // 6. Dispatcher de Envío (CON LOS AJUSTES DE PUNTOS)
         function submitAnswer() {
             const interaction = questions[currentInteractionIndex];
             
@@ -2350,6 +2386,7 @@
                 currentInteractionIndex = 0;
                 currentVideoTime = 0;
                 isInteractionActive = false;
+                hasAttemptedFallback = false; // *** NUEVO *** Reiniciar el flag
                 
                 videoElement.currentTime = 0; // MODIFICADO
                 videoElement.pause(); // MODIFICADO
@@ -2387,6 +2424,12 @@
                 
                 updateProgress();
                 showNotification('Video reiniciado');
+                
+                // *** NUEVO ***: Recargar el video original al reiniciar
+                if (videoUrl) {
+                    initializeVideoPlayer(videoUrl);
+                }
+                
             } catch (error) { console.error('Error restarting video:', error); }
         }
 
