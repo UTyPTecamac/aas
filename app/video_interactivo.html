@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Interactivo Avanzado</title>
-  <!-- 1. API de YouTube ELIMINADA -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
         /* MODIFICADO: Fondo transparente y altura completa */
@@ -29,6 +28,33 @@
             border-radius: 0;
         }
 
+        /* NUEVO: Barra de progreso superior en NEGRO */
+        .progress-bar {
+            background: #e6e6e6;
+            height: 6px;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: #000000; /* CAMBIADO: Ahora es negro */
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: #333333; /* Color más oscuro para el borde */
+        }
+
         /* MODIFICADO: .video-container ahora es flexible y centra su contenido */
         .video-container {
             width: 100%;
@@ -41,6 +67,9 @@
             align-items: center;
             justify-content: center;
             overflow: hidden; /* Oculta cualquier desbordamiento */
+            /* NUEVO: Esquinas redondeadas */
+            border-radius: 12px;
+            margin: 8px; /* Espacio para el borde redondeado */
         }
         
         /* NUEVO: Contenedor de proporción 16:9 */
@@ -53,6 +82,9 @@
             aspect-ratio: 16 / 9;
             position: relative;
             margin: auto; /* Centrado */
+            /* NUEVO: Esquinas redondeadas */
+            border-radius: 8px;
+            overflow: hidden; /* Importante para que el contenido respete el border-radius */
         }
 
         /* MODIFICADO: El player y overlays ahora son absolutos DENTRO del wrapper */
@@ -65,6 +97,8 @@
             width: 100%;
             height: 100%;
             border: none;
+            /* NUEVO: Heredar esquinas redondeadas */
+            border-radius: inherit;
         }
         
         /* El elemento <video> no debe mostrar controles nativos */
@@ -610,7 +644,7 @@
             box-shadow: 0 8px 25px rgba(40,167,69,0.3);
         }
         
-        /* --- Estilos para Relación de Columnas --- */
+        /* --- NUEVO: Estilos MEJORADOS para Relación de Columnas --- */
         
         .matching-container {
             display: flex;
@@ -626,6 +660,16 @@
             gap: 12px;
         }
         
+        .matching-column-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
         .column-item {
             background: #f7fafc;
             border: 2px solid #e2e8f0;
@@ -635,6 +679,25 @@
             color: #2d3748;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* NUEVO: Números para los elementos de las columnas */
+        .column-item::before {
+            content: attr(data-number);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #1768ac;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
         }
         
         .column-item:hover {
@@ -672,35 +735,9 @@
             border-color: #dc3545;
             color: #742a2a;
         }
-        
-        /* --- Barra de Progreso --- */
 
-        .progress-bar {
-            background: #e6e6e6;
-            height: 6px;
-            border-radius: 0;
-            overflow: hidden;
-            position: relative;
-        }
+        /* --- Barra de Progreso (YA ACTUALIZADA ARRIBA) --- */
 
-        .progress-fill {
-            background: #1768ac;
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 2px;
-            height: 100%;
-            background: #0f5c9c;
-        }
-        
         /* --- Controles de Video (Inferior) --- */
 
         .controls {
@@ -1105,6 +1142,11 @@
             
             .matching-container {
                 flex-direction: column;
+            }
+            
+            .video-container {
+                margin: 4px;
+                border-radius: 8px;
             }
         }
 
@@ -1943,7 +1985,7 @@
             });
         }
         
-        // --- LÓGICA CENTRAL DE INTERACCIÓN (Sin cambios en las funciones) ---
+        // --- LÓGICA CENTRAL DE INTERACCIÓN (Con mejoras para relación de columnas) ---
 
         // 1. Dispatcher Principal: Decide qué mostrar
         function showInteraction(index) {
@@ -2079,7 +2121,7 @@
             document.getElementById('question-overlay').style.display = 'flex';
         }
         
-        // 5. Mostrar Pregunta de Relación de Columnas
+        // 5. Mostrar Pregunta de Relación de Columnas (MEJORADA)
         function showMatching(interaction) {
             // COMPATIBILIDAD CON JSON: Lee "question", "column_a", "column_b"
             const content = interaction.content;
@@ -2109,27 +2151,42 @@
             colB.className = 'matching-column';
             colB.id = 'column-b';
             
+            // Añadir encabezados a las columnas
+            const headerA = document.createElement('div');
+            headerA.className = 'matching-column-header';
+            headerA.textContent = 'Columna A';
+            colA.appendChild(headerA);
+            
+            const headerB = document.createElement('div');
+            headerB.className = 'matching-column-header';
+            headerB.textContent = 'Columna B';
+            colB.appendChild(headerB);
+            
             // Llenar Columnas
             // IMPORTANTE: Mezclar las columnas para que no sea obvio
             const shuffledA = shuffleArray([...content.column_a]);
             const shuffledB = shuffleArray([...content.column_b]);
 
+            // NUEVO: Añadir números a los elementos de la columna A
             shuffledA.forEach((itemText, shuffledIndex) => {
                 const originalIndex = content.column_a.indexOf(itemText);
                 const item = document.createElement('div');
                 item.className = 'column-item';
                 item.textContent = itemText;
                 item.dataset.index = originalIndex; // Guardar el índice original
+                item.dataset.number = shuffledIndex + 1; // NUEVO: Añadir número
                 item.addEventListener('click', () => selectMatchingColumnA(item, originalIndex));
                 colA.appendChild(item);
             });
             
+            // NUEVO: Añadir números a los elementos de la columna B
             shuffledB.forEach((itemText, shuffledIndex) => {
                 const originalIndex = content.column_b.indexOf(itemText);
                 const item = document.createElement('div');
                 item.className = 'column-item';
                 item.textContent = itemText;
                 item.dataset.index = originalIndex; // Guardar el índice original
+                item.dataset.number = shuffledIndex + 1; // NUEVO: Añadir número
                 item.addEventListener('click', () => selectMatchingColumnB(item, originalIndex));
                 colB.appendChild(item);
             });
@@ -2137,6 +2194,12 @@
             matchingContainer.appendChild(colA);
             matchingContainer.appendChild(colB);
             interactionContent.appendChild(matchingContainer);
+            
+            // Añadir instrucciones
+            const instructions = document.createElement('div');
+            instructions.style.cssText = 'font-size: 14px; color: #666; margin-top: 16px; font-style: italic;';
+            instructions.textContent = 'Haz clic en un elemento de la Columna A y luego en su correspondiente en la Columna B.';
+            interactionContent.appendChild(instructions);
             
             document.getElementById('submit-btn').disabled = true;
             document.getElementById('question-overlay').style.display = 'flex';
