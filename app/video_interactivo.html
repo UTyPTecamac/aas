@@ -1297,6 +1297,7 @@
                     "id": 2,
                     "time": 15,
                     "type": "multiple_choice",
+                    "points": 1, // Añadido "points" al fallback
                     "content": {
                         "question": "(EJEMPLO) ¿Qué tipo de video es este?",
                         "options": ["YouTube", "Vimeo", "HTML5 <video>"],
@@ -1697,9 +1698,11 @@
                 const type = interaction.type;
                 // COMPATIBILIDAD CON JSON: Verifica los types
                 if (type === 'true_false' || type === 'multiple_choice') {
-                    totalPossiblePoints += 1;
+                    // --- AJUSTE 1: Leer "points" o usar 1 ---
+                    totalPossiblePoints += (interaction.points || 1);
                 } else if (type === 'matching' && interaction.content.correct_matches) {
-                    totalPossiblePoints += interaction.content.correct_matches.length;
+                    // --- AJUSTE 2: Multiplicar aciertos por "points" ---
+                    totalPossiblePoints += (interaction.content.correct_matches.length * (interaction.points || 1));
                 }
                 // 'text_media' no suma puntos
             });
@@ -2173,12 +2176,14 @@
                 case 'true_false':
                 case 'multiple_choice':
                     isCorrect = (selectedAnswer === interaction.content.correct_answer);
-                    if (isCorrect) userScore += 1; // Sumar 1 punto
+                    // --- AJUSTE 3: Usar "points" para sumar al score ---
+                    if (isCorrect) userScore += (interaction.points || 1); // Sumar puntos
                     highlightChoiceAnswers(isCorrect, interaction.content.correct_answer);
                     break;
                 case 'matching':
                     const correctPairs = checkMatchingAnswers(interaction.content.correct_matches);
-                    userScore += correctPairs; // Sumar puntos parciales
+                    // --- AJUSTE 4: Multiplicar aciertos por "points" ---
+                    userScore += (correctPairs * (interaction.points || 1)); // Sumar puntos parciales
                     isCorrect = (correctPairs === interaction.content.correct_matches.length); // Es 100% correcta?
                     highlightMatchingAnswers(isCorrect, interaction.content.correct_matches);
                     break;
