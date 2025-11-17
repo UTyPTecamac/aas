@@ -1,85 +1,89 @@
 {
-    "video_id": "jCcZfY04at4",
-    "questions": [
-        {
-            "id": 1,
-            "time": 2,
-            "type": "text_media",
-            "content": {
-                "title": "¡Bienvenido a este video interactivo!",
-                "text": "A lo largo de este video, aparecerán diferentes tipos de interacciones para probar tu conocimiento. <br><br><b>¡Presta mucha atención!</b>",
-                "image": "https://img.freepik.com/vector-gratis/bombilla-infografica-colorida_23-2147576187.jpg?semt=ais_hybrid&w=740&q=80"
-            }
-        },
-        {
-            "id": 2,
-            "time": 15,
-            "type": "true_false",
-            "content": {
-                "question": "El video trata sobre cómo aprender a programar.",
-                "correct_answer": true,
-                "feedback": {
-                    "correct": "¡Correcto! El video es una introducción a la programación.",
-                    "incorrect": "Incorrecto. El video sí trata sobre programación."
-                }
-            }
-        },
-        {
-            "id": 3,
-            "time": 30,
-            "type": "multiple_choice",
-            "content": {
-                "question": "¿Cuál de estos lenguajes se menciona como ideal para principiantes?",
-                "options": [
-                    "C++",
-                    "Java",
-                    "Python",
-                    "Assembly",
-                    "PHP"
-                ],
-                "correct_answer": 2,
-                "feedback": {
-                    "correct": "¡Exacto! Python es conocido por su sintaxis clara.",
-                    "incorrect": "No es la respuesta correcta. El video menciona Python."
-                }
-            }
-        },
-        {
-            "id": 4,
-            "time": 45,
-            "type": "matching",
-            "content": {
-                "question": "Relaciona el concepto con su descripción:",
-                "column_a": [
-                    "Algoritmo",
-                    "Variable",
-                    "Función"
-                ],
-                "column_b": [
-                    "Un espacio para guardar datos",
-                    "Un bloque de código reutilizable",
-                    "Una serie de pasos para resolver un problema"
-                ],
-                "correct_matches": [
-                    { "a_index": 0, "b_index": 2 },
-                    { "a_index": 1, "b_index": 0 },
-                    { "a_index": 2, "b_index": 1 }
-                ],
-                "feedback": {
-                    "correct": "¡Excelente! Has relacionado todos los conceptos correctamente.",
-                    "incorrect": "Algunas de tus relaciones no son correctas. Revisa las respuestas marcadas."
-                }
-            }
-        },
-        {
-            "id": 5,
-            "time": 60,
-            "type": "text_media",
-            "content": {
-                "title": "Conclusión",
-                "text": "¡Felicidades! Has completado todas las interacciones de este video. Sigue practicando.",
-                "image": null
-            }
-        }
-    ]
+"video_url": "https://utyptecamac.github.io/aas/app/videos/AD010101Conceptos_de_Virtualizacion.mp4",
+"questions": [
+{
+"id": 1,
+"time": 2,
+"type": "text_media",
+"content": {
+"title": "¡Bienvenido a este video interactivo!",
+"text": "A lo largo de este video, aparecerán diferentes tipos de interacciones para probar tu conocimiento. 
+<b>¡Presta mucha atención!</b>",
+"image": "https://img.freepik.com/vector-gratis/bombilla-infografica-colorida_23-2147576187.jpg?semt=ais_hybrid&w=740&q=80"
+}
+},
+{
+"id": 2,
+"time": 15,
+"type": "true_false",
+"points": 5,
+"content": {
+"question": "El video trata sobre cómo aprender a programar.",
+"correct_answer": true,
+"feedback": {
+"correct": "¡Correcto! Ganaste 5 puntos.",
+"incorrect": "Incorrecto. El video sí trata sobre programación."
+}
+}
+},
+{
+"id": 3,
+"time": 30,
+"type": "multiple_choice",
+"points": 10,
+"content": {
+"question": "¿Cuál de estos lenguajes se menciona como ideal para principiantes?",
+"options": [
+"C++",
+"Java",
+"Python",
+"Assembly",
+"PHP"
+],
+"correct_answer": 2,
+"feedback": {
+"correct": "¡Exacto! Python es conocido por su sintaxis clara. Ganaste 10 puntos.",
+"incorrect": "No es la respuesta correcta. El video menciona Python."
+}
+}
+},
+{
+"id": 4,
+"time": 45,
+"type": "matching",
+"points": 5,
+"content": {
+"question": "Relaciona el concepto con su descripción (5 puntos por acierto):",
+"column_a": [
+"Algoritmo",
+"Variable",
+"Función"
+],
+"column_b": [
+"Un espacio para guardar datos",
+"Un bloque de código reutilizable",
+"Una serie de pasos para resolver un problema"
+],
+"correct_matches": [
+{ "a_index": 0, "b_index": 2 },
+{ "a_index": 1, "b_index": 0 },
+{ "a_index": 2, "b_index": 1 }
+],
+"feedback": {
+"correct": "¡Excelente! Has relacionado todos los conceptos correctamente.",
+"incorrect": "Algunas de tus relaciones no son correctas. Revisa las respuestas marcadas."
+}
+}
+},
+{
+"id": 5,
+"time": 60,
+"type": "text_media",
+"content": {
+"title": "Conclusión",
+"text": "¡Felicidades! Has completado todas las interacciones de este video. Sigue practicando.",
+"image": null
+}
+}
+]
 }
